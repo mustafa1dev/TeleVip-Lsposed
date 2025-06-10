@@ -52,7 +52,7 @@ There are additional features that are not listed here.
 All TeleVip updates are posted on my Telegram channel: [TeleVip](https://t.me/t_l0_e)
 
 # Warning
-This module is intended for educational purposes only, you may have problems with your WhatsApp account, risk of banning! Use it at your own risk.
+This module is intended for educational purposes only. Its use may result in issues with your Telegram account, including the risk of banning or suspension. Use it at your own risk.
 
 # License
 
