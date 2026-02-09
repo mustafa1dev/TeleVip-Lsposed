@@ -51,6 +51,9 @@ There are additional features that are not listed here.
 
 All TeleVip updates are posted on my Telegram channel: [TeleVip](https://t.me/t_l0_e)
 
+# Warning
+This module is intended for educational purposes only. Its use may result in issues with your Telegram account, including the risk of banning or suspension. Use it at your own risk.
+
 # License
 
 This project is licensed under the GNU General Public License v3.0 (GPLv3).  
