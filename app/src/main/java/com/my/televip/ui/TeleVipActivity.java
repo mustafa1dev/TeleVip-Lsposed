@@ -23,7 +23,6 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar;
 import com.my.televip.virtuals.BaseFragment;
 import com.my.televip.virtuals.Cells.TextCheckCell;
-import com.my.televip.virtuals.Components.RecyclerListView;
 import com.my.televip.virtuals.Theme;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -77,7 +76,7 @@ public class TeleVipActivity {
         context = televip.getContext();
         updateRow();
 
-        Language.init(loadClass.getApplicationContext());
+        Language.init();
 
         ActionBar actionBar = televip.getActionBar();
         actionBar.setTitle(Language.GhostMode);
@@ -156,7 +155,7 @@ public class TeleVipActivity {
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                     ));
-                    return new RecyclerListView.Holder(view);
+                    return new Holder(view);
             }
         }
 
@@ -182,6 +181,13 @@ public class TeleVipActivity {
             public CheckHolder(TextCheckCell cell) {
                 super((View) cell.getTextCell());
                 this.cell = cell;
+            }
+        }
+
+        public class Holder extends RecyclerView.ViewHolder {
+
+            public Holder(View itemView) {
+                super(itemView);
             }
         }
 

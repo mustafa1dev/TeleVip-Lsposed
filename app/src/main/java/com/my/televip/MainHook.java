@@ -24,26 +24,9 @@ import com.my.televip.ui.Theme;
 
 public class MainHook extends Language implements IXposedHookLoadPackage {
     public static XC_LoadPackage.LoadPackageParam lpparam;
-    public static Object LaunchActivity;
 
     public static boolean isStart;
 
-    public static @NonNull ArrayList<String> getArrayList() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(HideSeenUser);
-        list.add(HideSeenGroups);
-        list.add(HideStoryView);
-        list.add(HideOnline);
-        list.add(HidePhone);
-        list.add(DisableStories);
-        list.add(HideTyping);
-        list.add(ShowDeletedMessages);
-        list.add(PreventMedia);
-        list.add(UnlockAllRestricted);
-        list.add(AllowSavingvideos);
-        list.add(TelegramPremium);
-        return list;
-    }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
@@ -59,7 +42,6 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
         XposedHelpers.findAndHookMethod(launchActivityClass, "onCreate", Bundle.class, new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
-                LaunchActivity = param.thisObject;
                 if (!isStart) {
                     TeleVip.startHook();
                     isStart = true;
@@ -106,7 +88,6 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
             } else {
                 Theme.oldTheme();
             }
-
             NEWAntiRecall.initUI(lpparam.classLoader);
             FeatureManager.readFeature();
             DownloadSpeed.init();

@@ -198,7 +198,7 @@ private static  Method getUserNameMethod;
                             }
                             int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_go_up");
 
-                            Language.init(loadClass.getApplicationContext());
+                            Language.init();
                                 if (!ClientChecker.check(ClientChecker.ClientType.Cherrygram) && !ClientChecker.check(ClientChecker.ClientType.iMe) && !ClientChecker.check(ClientChecker.ClientType.iMeWeb) && !ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.XPlus) && !ClientChecker.check(ClientChecker.ClientType.forkgram) && !ClientChecker.check(ClientChecker.ClientType.forkgramBeta) ) {
                                     lazilyAddSubItemMethod.invoke(headerItem, 8353847, drawableResource, ToTheBeginning);
                                 }
@@ -239,8 +239,7 @@ private static  Method getUserNameMethod;
                                             // إنشاء EditText مع تصميم جميل
                                             final EditText editText = new EditText(applicationContext);
                                             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                            ActiveTheme.setActiveTheme();
-                                            if (!ActiveTheme.isCurrentThemeDay) {
+                                            if (ActiveTheme.getActiveTheme()) {
                                                 editText.setTextColor(0xFF000000);
                                                 editText.setHintTextColor(0xFF424242);
                                             } else {

@@ -25,7 +25,7 @@ public class DisableStories {
 
             }
         });
-        XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController","storyEntitiesAllowed", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("8"),  new AbstractMethodHook() {
+        XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController","storyEntitiesAllowed2", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("8"),  new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 param.setResult(false);
@@ -33,25 +33,25 @@ public class DisableStories {
         }));
     }
         Class<?> StoriesControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Stories.StoriesController"), lpparam.classLoader);
-if (StoriesControllerClass != null) {
-    if (ClientChecker.check(ClientChecker.ClientType.NagramX)){
-        XposedHelpers.findAndHookMethod(StoriesControllerClass, AutomationResolver.resolve("MessagesController", "hasStories", AutomationResolver.ResolverType.Method),long.class, new AbstractMethodHook() {
-            @Override
-            protected void beforeMethod(MethodHookParam param) {
-                param.setResult(false);
+        if (StoriesControllerClass != null) {
+            if (ClientChecker.check(ClientChecker.ClientType.NagramX)) {
+                XposedHelpers.findAndHookMethod(StoriesControllerClass, AutomationResolver.resolve("StoriesController", "hasStories2", AutomationResolver.ResolverType.Method), long.class, new AbstractMethodHook() {
+                    @Override
+                    protected void beforeMethod(MethodHookParam param) {
+                        param.setResult(false);
 
-            }
-        });
-    }else {
-        XposedHelpers.findAndHookMethod(StoriesControllerClass, AutomationResolver.resolve("MessagesController", "hasStories", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
-            @Override
-            protected void beforeMethod(MethodHookParam param) {
-                param.setResult(false);
+                    }
+                });
+            } else {
+                XposedHelpers.findAndHookMethod(StoriesControllerClass, AutomationResolver.resolve("StoriesController", "hasStories", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                    @Override
+                    protected void beforeMethod(MethodHookParam param) {
+                        param.setResult(false);
 
+                    }
+                });
             }
-        });
-    }
-}
+        }
     }
 
 }

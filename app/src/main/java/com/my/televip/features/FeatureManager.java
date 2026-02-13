@@ -2,8 +2,13 @@ package com.my.televip.features;
 
 import static com.my.televip.MainHook.lpparam;
 
+
+import androidx.annotation.NonNull;
+
 import com.my.televip.language.Language;
 import com.my.televip.xSharedPreferences;
+
+import java.util.ArrayList;
 
 import de.robv.android.xposed.XSharedPreferences;
 
@@ -48,7 +53,7 @@ public class FeatureManager {
     public static void readFeature(){
         xSharedPreferences.xSharedPre = new XSharedPreferences(lpparam.packageName, Language.strTelevip);
         if (FeatureManager.isTelePremium()) { TelePremium.init(); }
-        if (FeatureManager.isHideSeenGroup() || FeatureManager.isHideSeenPrivate()) { HideSeen.init(); }
+        if (FeatureManager.isHideSeenGroup() || isHideSeenPrivate()) { HideSeen.init(); }
         if (FeatureManager.isNoStoryRead()){ NoStoryRead.init(); }
         if (FeatureManager.isHideTyping()){ HideTyping.init(); }
         if (FeatureManager.isUnlockChannelFeature()){ UnlockChannelFeature.init(); }
@@ -63,6 +68,23 @@ public class FeatureManager {
         if (FeatureManager.isDisableStories()){ DisableStories.init(); }
         if (FeatureManager.isHidePhone()){ HidePhone.init(); }
         //SaveEditMessage.init();
+    }
+
+    public static @NonNull ArrayList<String> getArrayList() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add(Language.HideSeenUser);
+        list.add(Language.HideSeenGroups);
+        list.add(Language.HideStoryView);
+        list.add(Language.HideOnline);
+        list.add(Language.HidePhone);
+        list.add(Language.DisableStories);
+        list.add(Language.HideTyping);
+        list.add(Language.ShowDeletedMessages);
+        list.add(Language.PreventMedia);
+        list.add(Language.UnlockAllRestricted);
+        list.add(Language.AllowSavingvideos);
+        list.add(Language.TelegramPremium);
+        return list;
     }
 
 }

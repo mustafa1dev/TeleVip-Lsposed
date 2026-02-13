@@ -1,10 +1,8 @@
 package com.my.televip.language;
 
 
-import android.content.Context;
-import android.content.res.Configuration;
+import com.my.televip.virtuals.messenger.LocaleController;
 
-import java.util.Locale;
 
 public class Language {
     public static String ToTheBeginning;
@@ -39,9 +37,11 @@ public class Language {
     public static String DisableStories;
     public static String strTelevip="televip";
 
-    public static void init(Context context)
+    public static void init()
     {
-        if (getAppLanguage(context).equals("ar")) {
+        LocaleController localeController = new LocaleController();
+
+        if (localeController.getCurrentLocale().getLanguage().equals("ar")) {
             ToTheBeginning="اذهب إلى أول رسالة";
             ToTheMessage="إلى الرسالة";
             InputMessageId="ادخل معرف الرسالة";
@@ -72,7 +72,7 @@ public class Language {
             ToTheClipboard = "' إلى الحافظة";
             UserOffline ="لست متصلاً بالإنترنت";
             DisableStories="اخفاء القصص";
-        }else if (getAppLanguage(context).equals("zh")) {
+        }else if (localeController.getCurrentLocale().getLanguage().equals("zh")) {
             ToTheBeginning = "跳转到第一条消息";
             ToTheMessage = "跳转到消息";
             InputMessageId = "输入消息 ID";
@@ -136,14 +136,5 @@ public class Language {
             DisableStories ="Disable 'Stories'";
         }
     }
-    public static String getAppLanguage(Context context) {
-        Configuration config = context.getResources().getConfiguration();
-        Locale locale;
 
-        // تحقق من إصدار النظام للحصول على Locale بالطريقة الصحيحة
-        locale = config.getLocales().get(0); // في الإصدارات الجديدة
-
-        // إرجاع اسم اللغة
-        return locale.getLanguage(); // مثال: "ar" للعربية
-    }
 }

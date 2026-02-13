@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import com.my.televip.Utils;
 import com.my.televip.configs.ConfigManager;
@@ -23,10 +24,6 @@ public class ApplicationLoaderHook extends Language {
             return;
 
         Class<?> applicationClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.ApplicationLoader"), loader);
-        if (applicationClass == null)
-            applicationClass = XposedHelpers.findClassIfExists("org.telegram.messenger.ApplicationLoaderImpl", loader);
-        if (applicationClass == null)
-            applicationClass = XposedHelpers.findClassIfExists("org.thunderdog.challegram.BaseApplication", loader);
         if (applicationClass == null) {
             Utils.log("Not found ApplicationLoader, " + Utils.issue);
             return;

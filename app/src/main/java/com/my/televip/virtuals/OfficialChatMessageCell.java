@@ -2,6 +2,7 @@ package com.my.televip.virtuals;
 
 import de.robv.android.xposed.XposedHelpers;
 import com.my.televip.Utils;
+import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.utils.FieldUtils;
 
 public class OfficialChatMessageCell extends ChatMessageCellDefault {
@@ -11,14 +12,14 @@ public class OfficialChatMessageCell extends ChatMessageCellDefault {
 
     public CharSequence getCurrentTimeString()
     {
-        return (CharSequence) FieldUtils.getFieldClassOfClass(this.instance, "currentTimeString");
+        return (CharSequence) FieldUtils.getFieldClassOfClass(this.instance, AutomationResolver.resolve("ChatMessageCell", "currentTimeString", AutomationResolver.ResolverType.Field));
     }
 
     public void setCurrentTimeString(CharSequence currentTimeString)
     {
         try
         {
-            XposedHelpers.setObjectField(this.instance, "currentTimeString", currentTimeString);
+            XposedHelpers.setObjectField(this.instance, AutomationResolver.resolve("ChatMessageCell", "currentTimeString", AutomationResolver.ResolverType.Field), currentTimeString);
             /*Field currentTimeStringField = FieldUtils.getFieldOfClass(this.instance, "currentTimeString");
             if (currentTimeStringField != null)
                 currentTimeStringField.set(this.instance, currentTimeString);

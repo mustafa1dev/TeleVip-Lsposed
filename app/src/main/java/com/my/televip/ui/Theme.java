@@ -1,6 +1,24 @@
 package com.my.televip.ui;
 
-import static com.my.televip.MainHook.*;
+import static com.my.televip.MainHook.AllowSavingvideos;
+import static com.my.televip.MainHook.DeveloperChannel;
+import static com.my.televip.MainHook.DisableStories;
+import static com.my.televip.MainHook.GhostMode;
+import static com.my.televip.MainHook.Ghost_Mode;
+import static com.my.televip.MainHook.HideOnline;
+import static com.my.televip.MainHook.HidePhone;
+import static com.my.televip.MainHook.HideSeenGroups;
+import static com.my.televip.MainHook.HideSeenUser;
+import static com.my.televip.MainHook.HideStoryView;
+import static com.my.televip.MainHook.HideTyping;
+import static com.my.televip.MainHook.PreventMedia;
+import static com.my.televip.MainHook.Save;
+import static com.my.televip.MainHook.ShowDeletedMessages;
+import static com.my.televip.MainHook.TelegramPremium;
+import static com.my.televip.MainHook.UnlockAllRestricted;
+import static com.my.televip.MainHook.byMustafa;
+import static com.my.televip.MainHook.lpparam;
+import static com.my.televip.MainHook.strTelevip;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +33,7 @@ import android.widget.LinearLayout;
 
 import com.my.televip.AlertDialog.onClickDialog;
 import com.my.televip.ClientChecker;
+import com.my.televip.Clients.Telegraph;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.FeatureManager;
@@ -22,12 +41,12 @@ import com.my.televip.language.Language;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActiveTheme;
+import com.my.televip.virtuals.Adapters.DrawerLayoutAdapter;
 import com.my.televip.virtuals.EventType;
 import com.my.televip.xSharedPreferences;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +57,6 @@ import de.robv.android.xposed.XposedHelpers;
 public class Theme {
 
     public static int id_item_add = -1;
-    private static Field itemsField;
     private static Constructor<?> itemConstructor;
     public static MediaPlayer mediaPlayer;
     public static boolean playing=false;
@@ -57,20 +75,19 @@ public class Theme {
     }
      */
 
-    private static void openDialog(Context applicationContext, final XC_MethodHook.MethodHookParam param){
+    private static void openDialog(Context applicationContext, final Object LaunchActivtiy){
         final Class<?> alertDialogBuilderClass = XposedHelpers.findClassIfExists(
                 AutomationResolver.resolve("org.telegram.ui.ActionBar.AlertDialog.Builder"),
                 lpparam.classLoader
         );
         if (alertDialogBuilderClass != null) {
-            ActiveTheme.setActiveTheme();
 
             xSharedPreferences.SharedPre = applicationContext.getSharedPreferences(strTelevip, Activity.MODE_PRIVATE);
-            FeatureManager.readFeature();
+            //FeatureManager.readFeature();
             Object alertDialog = XposedHelpers.newInstance(alertDialogBuilderClass, applicationContext);
             // عرض رسالة أو تخصيص النافذة
-            Language.init(loadClass.getApplicationContext());
-            ArrayList<String> list = getArrayList();
+            Language.init();
+            ArrayList<String> list = FeatureManager.getArrayList();
             final String[] items = list.toArray(new String[0]);
             XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setTitle", AutomationResolver.ResolverType.Method), Ghost_Mode);
             // إنشاء تخطيط جديد
@@ -173,7 +190,7 @@ public class Theme {
                 }
 
                 checkBox.setText(item);
-                if (!ActiveTheme.isCurrentThemeDay) {
+                if (ActiveTheme.getActiveTheme()) {
                     checkBox.setTextColor(Color.BLACK); // تغيير لون النص إلى الأبيض
                 } else {
                     checkBox.setTextColor(Color.WHITE);
@@ -200,7 +217,7 @@ public class Theme {
                         lpparam.classLoader,
                         new Class[]{listenerClass},
                         (proxy, method, args) -> {
-                            if (method.getName().equals("onClick")) {
+                            if (method.getName().equals(AutomationResolver.resolve("AlertDialog$OnButtonClickListener", "onClick", AutomationResolver.ResolverType.Method))) {
                                 onClickDialog.onClickSave(checkBoxes);
                             }
                             return null;
@@ -210,8 +227,8 @@ public class Theme {
                         lpparam.classLoader,
                         new Class[]{listenerClass},
                         (proxy, method, args) -> {
-                            if (method.getName().equals("onClick")) {
-                                onClickDialog.onClickOpenUrl(applicationContext, param);
+                            if (method.getName().equals(AutomationResolver.resolve("AlertDialog$OnButtonClickListener", "onClick", AutomationResolver.ResolverType.Method))) {
+                                onClickDialog.onClickOpenUrl(applicationContext, LaunchActivtiy);
                             }
                             return null;
                         }
@@ -219,7 +236,7 @@ public class Theme {
 
             } else {
                 onDoneListener = (DialogInterface.OnClickListener) (dialog, which) -> onClickDialog.onClickSave(checkBoxes);
-                onCnelListener = (DialogInterface.OnClickListener) (dialog, which) -> onClickDialog.onClickOpenUrl(applicationContext, param);
+                onCnelListener = (DialogInterface.OnClickListener) (dialog, which) -> onClickDialog.onClickOpenUrl(applicationContext, LaunchActivtiy);
             }
             // إعداد الزر الموجب
             XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setPositiveButton", AutomationResolver.ResolverType.Method),
@@ -241,7 +258,7 @@ public class Theme {
         AbstractMethodHook fillItemsHook = new AbstractMethodHook() {
             @Override
             protected void afterMethod(final MethodHookParam param) {
-                Language.init(loadClass.getApplicationContext());
+                Language.init();
                 ArrayList<Object> arrayList = (ArrayList<Object>) param.args[0];
                 if (arrayList != null) {
 
@@ -307,32 +324,33 @@ public class Theme {
 
         if (itemClass != null) {
             XposedHelpers.findAndHookMethod(
-                    AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter"), // اسم الكلاس
-                    lpparam.classLoader,
+                    loadClass.getDrawerLayoutAdapterClass(),
                     AutomationResolver.resolve("DrawerLayoutAdapter", "resetItems", AutomationResolver.ResolverType.Method),                                   // اسم الدالة
                     new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) throws Throwable {
-                            Object drawerLayoutAdapterInstance = param.thisObject;
 
-                            // العثور على المتغير الخاص
-                            Class<?> drawerLayoutAdapterClass = drawerLayoutAdapterInstance.getClass();
-                            if (itemsField == null) {
-                                itemsField = drawerLayoutAdapterClass.getDeclaredField(AutomationResolver.resolve("DrawerLayoutAdapter", "items", AutomationResolver.ResolverType.Field));
-                                itemsField.setAccessible(true);
+                            DrawerLayoutAdapter drawerLayoutAdapter = new DrawerLayoutAdapter(param.thisObject);
+
+                            ArrayList<?> items = (ArrayList<?>) drawerLayoutAdapter.getItems();
+                            String param2 = "para4";
+                            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
+                                param2 = "10";
                             }
-                            ArrayList<?> items = (ArrayList<?>) itemsField.get(drawerLayoutAdapterInstance);
-
                             // استدعاء الكلاس Item باستخدام Class.forName
                             if (itemConstructor == null) {
-                                itemConstructor = itemClass.getDeclaredConstructor(AutomationResolver.resolveObject("para4"));
+                                itemConstructor = itemClass.getDeclaredConstructor(AutomationResolver.resolveObject(param2));
                                 itemConstructor.setAccessible(true);
                             }
                             // استدعاء الطريقة مباشرة
 
-                            Language.init(loadClass.getApplicationContext());
-                            Object newItem = itemConstructor.newInstance(8353847, GhostMode, EventType.IconSettings());
-
+                            Language.init();
+                            Object newItem;
+                            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
+                                newItem = itemConstructor.newInstance(8353847, Language.GhostMode, 8353847, true, null, "");
+                            } else {
+                                newItem = itemConstructor.newInstance(8353847, GhostMode, EventType.IconSettings());
+                            }
                             // إضافة الكائن الجديد إلى القائمة
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
@@ -355,16 +373,22 @@ public class Theme {
                 protected void afterMethod(final MethodHookParam param) {
 
                     Object LaunchActivtiy = param.thisObject;
-                    // تنفيذ الكود بعد استدعاء الدالة
-                    ActiveTheme.setActiveTheme();
+                    if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
+                        LaunchActivtiy = param.args[0];
+                    }
+
                     Object drawerLayoutAdapter = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
                     if (drawerLayoutAdapter != null) {
-
+                        Object args = param.args[1];
+                        if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
+                            args = param.args[2];
+                        }
                         // استدعاء getId وطباعته
-                        int result = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), param.args[1]);
-                        if (result == 8353847) {
+                        int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
+                        if (id == 8353847) {
                             final Context applicationContext = (Context) LaunchActivtiy;
-                            openDialog(applicationContext, param);
+                            Language.init();
+                            openDialog(applicationContext, LaunchActivtiy);
                         }
 
                     } else {
@@ -372,11 +396,16 @@ public class Theme {
                     }
                 }
             };
+            String para = "para5";
+            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
+                para = "12";
+                Telegraph.onBindViewHolderHook();
+            }
             XposedHelpers.findAndHookMethod(
                     launchActivityClass,
-                    AutomationResolver.resolve("LaunchActivity", "lambda$onCreate$8", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para5"), onCreateHook));
+                    AutomationResolver.resolve("LaunchActivity", "lambda$onCreate$8", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject(para), onCreateHook));
         }
 
     }
-
 }
+

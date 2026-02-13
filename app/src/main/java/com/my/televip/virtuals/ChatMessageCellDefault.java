@@ -2,6 +2,7 @@ package com.my.televip.virtuals;
 
 import de.robv.android.xposed.XposedHelpers;
 import com.my.televip.Utils;
+import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.utils.FieldUtils;
 
 public class ChatMessageCellDefault {
@@ -14,19 +15,19 @@ public class ChatMessageCellDefault {
 
     public int getTimeTextWidth()
     {
-        return FieldUtils.getFieldIntOfClass(this.instance, "timeTextWidth");
+        return FieldUtils.getFieldIntOfClass(this.instance, AutomationResolver.resolve("ChatMessageCell", "timeTextWidth", AutomationResolver.ResolverType.Field));
     }
 
     public int getTimeWidth()
     {
-        return FieldUtils.getFieldIntOfClass(this.instance, "timeWidth");
+        return FieldUtils.getFieldIntOfClass(this.instance, AutomationResolver.resolve("ChatMessageCell", "timeWidth", AutomationResolver.ResolverType.Field));
     }
 
     public void setTimeTextWidth(int width)
     {
         try
         {
-            XposedHelpers.setIntField(this.instance, "timeTextWidth", width);
+            XposedHelpers.setIntField(this.instance, AutomationResolver.resolve("ChatMessageCell", "timeTextWidth", AutomationResolver.ResolverType.Field), width);
             //Field timeTextWidthField = FieldUtils.getFieldOfClass(this.instance, "timeTextWidth");
             //if (timeTextWidthField != null)
             //    timeTextWidthField.setInt(this.instance, width);
@@ -43,7 +44,7 @@ public class ChatMessageCellDefault {
     {
         try
         {
-            XposedHelpers.setIntField(this.instance, "timeWidth", width);
+            XposedHelpers.setIntField(this.instance, AutomationResolver.resolve("ChatMessageCell", "timeWidth", AutomationResolver.ResolverType.Field), width);
             /*Field timeWidthField = FieldUtils.getFieldOfClass(this.instance, "timeWidth");
             if (timeWidthField != null)
                 timeWidthField.setInt(this.instance, width);
