@@ -198,5 +198,10 @@ public class TelegramWeb {
             Class<?> UItemClass = XposedHelpers.findClassIfExists("org.telegram.ui.Components.UItem", lpparam.classLoader);
             ParameterResolver.register("12", new Class[]{UItemClass, View.class, int.class, float.class, float.class});
         }
+
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
+        }
     }
 }

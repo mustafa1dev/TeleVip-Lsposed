@@ -9,22 +9,23 @@ import com.my.televip.obfuscate.AutomationResolver;
 import de.robv.android.xposed.XposedHelpers;
 
 public class loadClass {
-    public static  Class<?> ChatActivityClass;
-    public static  Class<?> MessageObjectClass;
-    public static  Class<?> ProfileActivityClass;
-    public static  Class<?> BaseFragmentClass;
-    public static  Class<?> drawableClass;
-    public static Class<?> UserObjectClass;
-    public static Class<?> MessagesControllerClass;
-    public static Class<?> MessagesStorageClass;
-    public static Class<?> ThemeClass;
-    public static Class<?> DrawerLayoutAdapterClass;
-    public static Class<?> LocaleControllerClass;
-    public static Class<?> NotificationsControllerClass;
-    public static Class<?> NotificationCenterClass;
+    private static  Class<?> ChatActivityClass;
+    private static  Class<?> MessageObjectClass;
+    private static  Class<?> ProfileActivityClass;
+    private static  Class<?> BaseFragmentClass;
+    private static  Class<?> drawableClass;
+    private static Class<?> UserObjectClass;
+    private static Class<?> MessagesControllerClass;
+    private static Class<?> MessagesStorageClass;
+    private static Class<?> ThemeClass;
+    private static Class<?> DrawerLayoutAdapterClass;
+    private static Class<?> LocaleControllerClass;
+    private static Class<?> NotificationsControllerClass;
+    private static Class<?> NotificationCenterClass;
+    private static Class<?> LaunchActivityClass;
 
     //Context
-    public static Context applicationContext;
+    private static Context applicationContext;
 
     public static Class<?> getMessageObjectClass() {
         if (MessageObjectClass == null) {
@@ -125,6 +126,13 @@ public class loadClass {
             NotificationCenterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.NotificationCenter"), lpparam.classLoader);
         }
         return NotificationCenterClass;
+    }
+
+    public static Class<?> getLaunchActivityClass() {
+        if (LaunchActivityClass == null) {
+            LaunchActivityClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.LaunchActivity"), lpparam.classLoader);
+        }
+        return LaunchActivityClass;
     }
 
 }

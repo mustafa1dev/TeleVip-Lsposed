@@ -1,24 +1,9 @@
 package com.my.televip.ui;
 
-import static com.my.televip.MainHook.AllowSavingvideos;
-import static com.my.televip.MainHook.DeveloperChannel;
-import static com.my.televip.MainHook.DisableStories;
-import static com.my.televip.MainHook.GhostMode;
-import static com.my.televip.MainHook.Ghost_Mode;
-import static com.my.televip.MainHook.HideOnline;
-import static com.my.televip.MainHook.HidePhone;
-import static com.my.televip.MainHook.HideSeenGroups;
-import static com.my.televip.MainHook.HideSeenUser;
-import static com.my.televip.MainHook.HideStoryView;
-import static com.my.televip.MainHook.HideTyping;
-import static com.my.televip.MainHook.PreventMedia;
-import static com.my.televip.MainHook.Save;
-import static com.my.televip.MainHook.ShowDeletedMessages;
-import static com.my.televip.MainHook.TelegramPremium;
-import static com.my.televip.MainHook.UnlockAllRestricted;
-import static com.my.televip.MainHook.byMustafa;
+
+
 import static com.my.televip.MainHook.lpparam;
-import static com.my.televip.MainHook.strTelevip;
+import static com.my.televip.language.Language.*;
 
 import android.app.Activity;
 import android.content.Context;
@@ -51,7 +36,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
+
 import de.robv.android.xposed.XposedHelpers;
 
 public class Theme {

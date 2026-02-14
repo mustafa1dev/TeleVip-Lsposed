@@ -25,6 +25,7 @@ public class TelegramBeta {
 
     static {
         classList.add(new ClassInfo("org.telegram.ui.ChatActivity$13", "org.telegram.ui.ChatActivity$12"));
+        classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
 
         ParameterResolver.register("para1",new Class[]{Long.class});
         ParameterResolver.register("para2",new Class[]{int.class, int.class, CharSequence.class});
@@ -196,6 +197,10 @@ public class TelegramBeta {
         public void loadParameter12() {
             Class<?> UItemClass = XposedHelpers.findClassIfExists("org.telegram.ui.Components.UItem", lpparam.classLoader);
             ParameterResolver.register("12", new Class[]{UItemClass, View.class, int.class, float.class, float.class});
+        }
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
         }
     }
 }

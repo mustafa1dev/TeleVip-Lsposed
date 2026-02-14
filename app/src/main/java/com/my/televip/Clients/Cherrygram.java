@@ -193,5 +193,10 @@ public class Cherrygram {
                     int.class,});
         }
         public void loadParameter12() {}
+
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
+        }
     }
 }

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+
 
 public class AutomationResolver {
     public static Map<String, LoaderParameter> Loaders = new HashMap<>();
@@ -471,6 +471,9 @@ public static void loadParameter(String name){
                         break;
                     case "12":
                         loader.loadParameter12();
+                        break;
+                    case "13":
+                        loader.loadParameter13();
                         break;
                 }
         }

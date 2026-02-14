@@ -2,12 +2,11 @@ package com.my.televip.Clients;
 
 import static com.my.televip.MainHook.lpparam;
 
-import android.view.View;
-
-import androidx.recyclerview.widget.RecyclerView;
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import com.my.televip.LoaderParameter;
 import com.my.televip.MainHook;
+import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
 public class Telegraph {
@@ -44,6 +44,12 @@ public class Telegraph {
         classList.add(new ClassInfo("org.telegram.messenger.UserConfig","org.telegram.messenger.uE"));
         classList.add(new ClassInfo("org.telegram.messenger.MessagesController$ReadTask","org.telegram.messenger.Iq$NUl"));
         classList.add(new ClassInfo("org.telegram.ui.Stories.StoriesController","org.telegram.ui.Stories.t2"));
+        classList.add(new ClassInfo("org.telegram.ui.Stories.PeerStoriesView$StoryItemHolder","org.telegram.ui.Stories.j$coM2"));
+        classList.add(new ClassInfo("org.telegram.ui.ActionBar.BaseFragment","org.telegram.ui.ActionBar.cOm7"));
+        classList.add(new ClassInfo("org.telegram.ui.PhotoViewer$PhotoViewerProvider","org.telegram.ui.PhotoViewer$COM9"));
+        classList.add(new ClassInfo("org.telegram.ui.ChatActivity","org.telegram.ui.Ng"));
+        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate","org.telegram.ui.Ng$LPT6"));
+        classList.add(new ClassInfo("org.telegram.messenger.BaseController","org.telegram.messenger.com7"));
 
         fieldList.add(new FieldInfo("ApplicationLoader", "applicationContext", "b"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutAdapter", "M"));
@@ -58,6 +64,7 @@ public class Telegraph {
         fieldList.add(new FieldInfo("ChatMessageCell","currentTimeString","Ya"));
         fieldList.add(new FieldInfo("ChatMessageCell","timeTextWidth","Va"));
         fieldList.add(new FieldInfo("ChatMessageCell","timeWidth","Ua"));
+        fieldList.add(new FieldInfo("ProfileActivity","userId","L0"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
@@ -89,6 +96,12 @@ public class Telegraph {
         methodList.add(new MethodInfo("MessagesController","storiesEnabled","Dg"));
         methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed","Cg"));
         methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed2","Eg"));
+        methodList.add(new MethodInfo("PeerStoriesView$StoryItemHolder","allowScreenshots","d"));
+        methodList.add(new MethodInfo("UserConfig","getClientUserId","v"));
+        methodList.add(new MethodInfo("ProfileActivity","updateProfileData","ye"));
+        methodList.add(new MethodInfo("MessagesController","isChatNoForwards","Jc"));
+        methodList.add(new MethodInfo("ChatActivity","sendSecretMessageRead","Ax"));
+        methodList.add(new MethodInfo("ChatActivity","sendSecretMediaDelete","zx"));
 
         ParameterResolver.register("para1",new Class[]{Long.class});
         ParameterResolver.register("para2",new Class[]{int.class, int.class, CharSequence.class});
@@ -264,43 +277,79 @@ public class Telegraph {
             ParameterResolver.register("12", new Class[]{LaunchActivityClass,android.view.View.class,int.class, float.class, float.class});
 
         }
+
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
+        }
     }
 
-    public static void onBindViewHolderHook(){
-        Class<?> viewHolder = XposedHelpers.findClassIfExists("androidx.recyclerview.widget.RecyclerView$ViewHolder", lpparam.classLoader);
+    public static void onBindViewHolderHook() {
+        try {
+            Class<?> viewHolder = XposedHelpers.findClassIfExists("androidx.recyclerview.widget.RecyclerView$ViewHolder", lpparam.classLoader);
 
-        XposedHelpers.findAndHookMethod(
-                loadClass.getDrawerLayoutAdapterClass(),
-                "onBindViewHolder", viewHolder, int.class, new AbstractMethodHook() {
+            findAndHookMethod(
+                    loadClass.getDrawerLayoutAdapterClass(),
+                    "onBindViewHolder", viewHolder, int.class, new AbstractMethodHook() {
+                        @Override
+                        protected void afterMethod(MethodHookParam param) {
+                            Object holder = param.args[0];
+                            DrawerLayoutAdapter drawerLayoutAdapter = new DrawerLayoutAdapter(param.thisObject);
+
+                            int position = (int) param.args[1];
+                            ArrayList<?> items = drawerLayoutAdapter.getItems();
+
+                            int index = position - 2;
+
+                            if (index < 0 || index >= items.size()) {
+                                return;
+                            }
+
+                            Object mainMenuItem = items.get(index);
+
+                            String str = (String) XposedHelpers.getObjectField(mainMenuItem, "b");
+                            int id = XposedHelpers.getIntField(mainMenuItem, "c");
+
+                            if (id == 8353847) {
+                                Object itemView = XposedHelpers.getObjectField(holder, "itemView");
+                                XposedHelpers.callMethod(itemView, "e", 0, str, EventType.IconSettings());
+                                XposedHelpers.callMethod(itemView, "setInfo", (Object) null);
+                                XposedHelpers.callMethod(itemView, "c", (Object) null, 0);
+                                param.setResult(null);
+                            }
+                        }
+                    });
+        } catch (Throwable t){
+            Utils.log(t);
+        }
+    }
+
+    public static void removeAd(){
+        try {
+            Class<?> ad = XposedHelpers.findClassIfExists("r0.Con", lpparam.classLoader);
+            if (ad != null) {
+                findAndHookMethod(ad, "a", new XC_MethodReplacement() {
                     @Override
-                    protected void afterMethod(MethodHookParam param) {
-                        Object holder = param.args[0];
-                        DrawerLayoutAdapter drawerLayoutAdapter = new DrawerLayoutAdapter(param.thisObject);
-
-                        int position = (int) param.args[1];
-                        ArrayList<?> items = drawerLayoutAdapter.getItems();
-
-                        int index = position - 2;
-
-                        if (index < 0 || index >= items.size()) {
-                            return;
-                        }
-
-                        Object mainMenuItem = items.get(index);
-
-                        String str = (String) XposedHelpers.getObjectField(mainMenuItem, "b");
-                        int id = XposedHelpers.getIntField(mainMenuItem, "c");
-
-                        if (id == 8353847) {
-                            Object itemView = XposedHelpers.getObjectField(holder, "itemView");
-                            XposedHelpers.callMethod(itemView, "e", 0, str, EventType.IconSettings());
-                            XposedHelpers.callMethod(itemView, "setInfo", (Object) null);
-                            XposedHelpers.callMethod(itemView, "c", (Object) null, 0);
-                            param.setResult(null);
-                        }
+                    protected Object replaceHookedMethod(MethodHookParam param) {
+                        return null;
                     }
                 });
-
+                findAndHookMethod(ad, "b", new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam param) {
+                        return null;
+                    }
+                });
+                findAndHookMethod(ad, "c", new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam param) {
+                        return null;
+                    }
+                });
+            }
+        } catch (Throwable t){
+            Utils.log(t);
+        }
     }
 
 }

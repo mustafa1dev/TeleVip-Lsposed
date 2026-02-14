@@ -8,8 +8,8 @@ android {
         applicationId "com.my.televip"
         minSdk 27
         targetSdk 36
-        versionCode 105
-        versionName "2.5"
+        versionCode 175
+        versionName "2.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,7 +31,7 @@ android {
 dependencies {
     implementation libs.appcompat
     implementation libs.material
-    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly libs.api
     implementation (libs.preference)
     implementation(libs.gson)
     testImplementation libs.junit

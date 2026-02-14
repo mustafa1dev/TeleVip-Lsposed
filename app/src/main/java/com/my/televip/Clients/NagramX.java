@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.my.televip.LoaderParameter;
 import com.my.televip.MainHook;
-import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
@@ -179,7 +178,6 @@ public class NagramX {
         }
 
         public void loadParameter10() {
-            Class<?> LaunchActivityClass = XposedHelpers.findClassIfExists("org.telegram.ui.LaunchActivity", lpparam.classLoader);
             ParameterResolver.register("10", new Class[]{android.view.View.class,int.class, float.class, float.class});
         }
 
@@ -203,6 +201,11 @@ public class NagramX {
         public void loadParameter12() {
             Class<?> UItemClass = XposedHelpers.findClassIfExists("org.telegram.ui.Components.UItem", lpparam.classLoader);
             ParameterResolver.register("12", new Class[]{UItemClass, View.class, int.class, float.class, float.class});
+        }
+
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
         }
     }
 }

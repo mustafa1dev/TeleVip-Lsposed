@@ -4,13 +4,12 @@ package com.my.televip;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+import android.content.Context;
 import android.os.Bundle;
 import de.robv.android.xposed.*;
-import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
 
 //TeleVip
+import com.my.televip.Clients.Telegraph;
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.DownloadSpeed;
@@ -22,11 +21,10 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.ui.Theme;
 
 
-public class MainHook extends Language implements IXposedHookLoadPackage {
+public class MainHook implements IXposedHookLoadPackage {
     public static XC_LoadPackage.LoadPackageParam lpparam;
 
     public static boolean isStart;
-
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
@@ -35,11 +33,8 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
         }
         MainHook.lpparam = lpparam;
         Utils.pkgName = lpparam.packageName;
-        Class<?> launchActivityClass = XposedHelpers.findClass(
-                AutomationResolver.resolve("org.telegram.ui.LaunchActivity"),
-                lpparam.classLoader
-        );
-        XposedHelpers.findAndHookMethod(launchActivityClass, "onCreate", Bundle.class, new AbstractMethodHook() {
+
+        XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onCreate", Bundle.class, new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 if (!isStart) {
@@ -52,7 +47,7 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
     public static class TeleVip {
         public static void startHook() {
             if (ClientChecker.check(ClientChecker.ClientType.Cherrygram)) {
-                strTelevip = "cherrygram";
+                Language.strTelevip = "cherrygram";
                 XposedHelpers.findAndHookMethod("org.telegram.messenger.KotlinFragmentsManager",
                         lpparam.classLoader,
                         "vnwpoih23nkjhqj",
@@ -65,10 +60,10 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
                             }
                         });
             } else {
-                strTelevip = "televip";
+                Language.strTelevip = "televip";
             }
 
-            xSharedPreferences.xSharedPre = new XSharedPreferences(lpparam.packageName, strTelevip);
+            xSharedPreferences.xSharedPre = new XSharedPreferences(lpparam.packageName, Language.strTelevip);
             ClassLoader classLoader = lpparam.classLoader;
             ApplicationLoaderHook.init(classLoader);
 
@@ -91,7 +86,11 @@ public class MainHook extends Language implements IXposedHookLoadPackage {
             NEWAntiRecall.initUI(lpparam.classLoader);
             FeatureManager.readFeature();
             DownloadSpeed.init();
-            OtherFeatures.init();
+            if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+                OtherFeatures.init();
+            } else {
+                Telegraph.removeAd();
+            }
 
         }
     }

@@ -23,6 +23,9 @@ public class TGConnect {
 
     static {
         classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$13"));
+        classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
+
+
         methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
 
         ParameterResolver.register("para1",new Class[]{Long.class});
@@ -190,5 +193,10 @@ public class TGConnect {
                     int.class});
         }
         public void loadParameter12() {}
+
+        public void loadParameter13() {
+            Class<?> browser$Progress = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.browser.Browser$Progress"), lpparam.classLoader);
+            ParameterResolver.register("13", new Class[]{boolean.class ,browser$Progress});
+        }
     }
 }
