@@ -1,8 +1,5 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
-
-
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -326,115 +323,174 @@ public class NEWAntiRecall extends Language {
         }
     }
 
+    private static long channel_id;
+    private static long channelID;
+
     public static void initProcessing(ClassLoader classLoader) {
 
         if (loadClass.getMessagesStorageClass() != null) {
 
-            XposedHelpers.findAndHookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "markMessagesAsDeletedInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para11"), new AbstractMethodHook() {
-                @Override
-                protected void beforeMethod(MethodHookParam param) {
-                    long dialogId = (long) param.args[0];
-                    if (currentMessageObject != null && (System.currentTimeMillis() - lastVisibleTime) < 4000) {
-                        long objectId = currentMessageObject.getDialogId();
-                        if (objectId == dialogId)
-                            return;
-                    }
+            XposedHelpers.findAndHookMethod(
+                    loadClass.getMessagesStorageClass(),
+                    AutomationResolver.resolve(
+                            "MessagesStorage",
+                            "markMessagesAsDeletedInternal",
+                            AutomationResolver.ResolverType.Method
+                    ),
+                    AutomationResolver.merge(
+                            AutomationResolver.resolveObject("para11"),
+                            new AbstractMethodHook() {
 
-                    ArrayList<Integer> deletedMessages = new ArrayList<>();
+                                @Override
+                                protected void beforeMethod(MethodHookParam param) {
 
-                    ArrayList<Integer> original = Utils.castList(param.args[1], Integer.class);
+                                    long dialogId = (long) param.args[0];
 
-                    if (original.isEmpty())
-                        return;
+                                    if (currentMessageObject != null &&
+                                            (System.currentTimeMillis() - lastVisibleTime) < 4000) {
 
-                    long channel_id = (long) param.args[0];
-                    if (channel_id > 0)
-                        channel_id = 0;
+                                        long objectId = currentMessageObject.getDialogId();
+                                        if (objectId == dialogId) return;
+                                    }
 
-                    for (Integer msgId : original) {
-                        DeletedMessageInfo shouldDeletedMessage = isShouldDeletedMessage(channel_id, msgId);
-                        DeletedMessageInfo shouldDeletedMessage2 = isShouldDeletedMessage2(channel_id, msgId);
-                        if (shouldDeletedMessage2 != null || isDeletedMessage(channel_id, msgId) == null) {
-                            deletedMessages.add(msgId);
-                            if (shouldDeletedMessage != null)
-                                shouldDeletedMessageInfo.remove(shouldDeletedMessage);
-                            if (shouldDeletedMessage2 != null)
-                                shouldDeletedMessageInfo2.remove(shouldDeletedMessage2);
+                                    ArrayList<Integer> originalSafe =
+                                            new ArrayList<>((ArrayList<Integer>) param.args[1]);
+
+                                    if (originalSafe.isEmpty()) return;
+
+                                    channel_id = dialogId;
+                                    if (channel_id > 0) channel_id = 0;
+
+                                    ArrayList<Integer> deletedMessages = new ArrayList<>();
+                                    ArrayList<Integer> remainMessages = new ArrayList<>();
+
+                                    for (Integer msgId : originalSafe) {
+
+                                        DeletedMessageInfo s1 =
+                                                isShouldDeletedMessage(channel_id, msgId);
+                                        DeletedMessageInfo s2 =
+                                                isShouldDeletedMessage2(channel_id, msgId);
+
+                                        if (s2 != null || isDeletedMessage(channel_id, msgId) == null) {
+
+                                            deletedMessages.add(msgId);
+
+                                            if (s1 != null)
+                                                shouldDeletedMessageInfo.remove(s1);
+                                            if (s2 != null)
+                                                shouldDeletedMessageInfo2.remove(s2);
+
+                                        } else {
+                                            remainMessages.add(msgId);
+                                        }
+                                    }
+
+                                    if (!remainMessages.isEmpty()) {
+                                        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> markMessagesDeleted(param.thisObject, channel_id, remainMessages));
+                                    }
+
+                                    ArrayList<Integer> target =
+                                            (ArrayList<Integer>) param.args[1];
+
+                                    target.clear();
+
+                                    if (!deletedMessages.isEmpty()) {
+                                        target.addAll(deletedMessages);
+                                    } else {
+                                        param.setResult(null);
+                                    }
+                                }
+                            }));
+
+            XposedHelpers.findAndHookMethod(
+                    loadClass.getMessagesStorageClass(),
+                    AutomationResolver.resolve(
+                            "MessagesStorage",
+                            "updateDialogsWithDeletedMessagesInternal",
+                            AutomationResolver.ResolverType.Method
+                    ),
+                    long.class,
+                    long.class,
+                    ArrayList.class,
+                    ArrayList.class,
+                    new AbstractMethodHook() {
+
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+
+                            if (!Configs.isAntiRecall()) return;
+
+                            long dialogId = (long) param.args[0];
+
+                            if (currentMessageObject != null &&
+                                    (System.currentTimeMillis() - lastVisibleTime) < 4000) {
+
+                                long objectId = currentMessageObject.getDialogId();
+                                if (objectId == dialogId) return;
+                            }
+
+                            channelID = -((long) param.args[1]);
+                            if (channelID > 0) channelID = 0;
+
+                            Object msgIdsObj = param.args[2];
+                            if (msgIdsObj == null) return;
+
+                            ArrayList<Integer> originalSafe =
+                                    new ArrayList<>((ArrayList<Integer>) msgIdsObj);
+
+                            if (originalSafe.isEmpty()) return;
+
+                            ArrayList<Integer> deletedMessages = new ArrayList<>();
+                            ArrayList<Integer> remainMessages = new ArrayList<>();
+
+                            for (Integer msgId : originalSafe) {
+
+                                DeletedMessageInfo s1 =
+                                        isShouldDeletedMessage(channelID, msgId);
+                                DeletedMessageInfo s2 =
+                                        isShouldDeletedMessage2(channelID, msgId);
+
+                                if (s1 == null) {
+                                    if (isDeletedMessage(channelID, msgId) != null)
+                                        addShouldDeletedMessage(channelID, msgId);
+                                    else
+                                        remainMessages.add(msgId);
+
+                                } else if (s2 == null) {
+                                    if (isDeletedMessage(channelID, msgId) != null)
+                                        addShouldDeletedMessage2(channelID, msgId);
+                                    else
+                                        remainMessages.add(msgId);
+
+                                } else {
+                                    deletedMessages.add(msgId);
+                                }
+                            }
+
+                            if (!remainMessages.isEmpty()) {
+                                new android.os.Handler(
+                                        android.os.Looper.getMainLooper()
+                                ).post(() -> markMessagesDeleted(
+                                        param.thisObject,
+                                        channelID,
+                                        remainMessages
+                                ));
+                            }
+
+
+                            ArrayList<Integer> target =
+                                    (ArrayList<Integer>) param.args[2];
+
+                            target.clear();
+
+                            if (!deletedMessages.isEmpty()) {
+                                target.addAll(deletedMessages);
+                            } else {
+                                param.setResult(null);
+                            }
                         }
                     }
-
-                    ArrayList<Integer> fork = new ArrayList<>(original);
-                    fork.removeAll(deletedMessages);
-                    if (!fork.isEmpty())
-                        markMessagesDeleted(param.thisObject, channel_id, fork);
-
-                    if (deletedMessages.isEmpty())
-                        param.setResult(null);
-                    else {
-
-                        ((ArrayList<Integer>) param.args[1]).clear();
-
-                        ((ArrayList<Integer>) param.args[1]).addAll(deletedMessages);
-                    }
-                }
-            }));
-
-            XposedHelpers.findAndHookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "updateDialogsWithDeletedMessagesInternal", AutomationResolver.ResolverType.Method), long.class, long.class, ArrayList.class, ArrayList.class, new AbstractMethodHook() {
-                @Override
-                protected void beforeMethod(MethodHookParam param) {
-                    if (Configs.isAntiRecall()) {
-                        long dialogId = (long) param.args[0];
-                        if (currentMessageObject != null && (System.currentTimeMillis() - lastVisibleTime) < 4000) {
-                            long objectId = currentMessageObject.getDialogId();
-                            if (objectId == dialogId)
-                                return;
-                        }
-
-                        long channelID = -((long) param.args[1]);
-                        if (channelID > 0)
-                            channelID = 0;
-
-                        ArrayList<Integer> deletedMessages = new ArrayList<>();
-
-                        Object msgIds = param.args[2];
-                        if (msgIds == null)
-                            return;
-
-                        ArrayList<Integer> original = Utils.castList(msgIds, Integer.class);
-
-                        if (original.isEmpty())
-                            return;
-
-                        for (Integer msgId : original)
-                            if (isShouldDeletedMessage(channelID, msgId) == null)
-                                if (isDeletedMessage(channelID, msgId) != null)
-                                    addShouldDeletedMessage(channelID, msgId);
-                                else
-                                    deletedMessages.remove(msgId);
-                            else if (isShouldDeletedMessage2(channelID, msgId) == null)
-                                if (isDeletedMessage(channelID, msgId) != null)
-                                    addShouldDeletedMessage2(channelID, msgId);
-                                else
-                                    deletedMessages.remove(msgId);
-                            else
-                                deletedMessages.add(msgId);
-
-                        ArrayList<Integer> fork = new ArrayList<>(original);
-                        fork.removeAll(deletedMessages);
-                        if (!fork.isEmpty())
-                            markMessagesDeleted(param.thisObject, channelID, fork);
-
-                        if (deletedMessages.isEmpty())
-                            param.setResult(null);
-                        else {
-
-                            ((ArrayList<Integer>) param.args[2]).clear();
-
-                            ((ArrayList<Integer>) param.args[2]).addAll(deletedMessages);
-                        }
-                    }
-                }
-            });
+            );
 
             Method updateDialogsWithDeletedMessagesMethod = null;
             for (Method method : loadClass.getMessagesStorageClass().getDeclaredMethods()) {
