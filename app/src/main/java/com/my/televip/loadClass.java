@@ -23,6 +23,10 @@ public class loadClass {
     private static Class<?> NotificationsControllerClass;
     private static Class<?> NotificationCenterClass;
     private static Class<?> LaunchActivityClass;
+    private static Class<?> SharedConfigClass;
+    private static Class<?> AndroidUtilitiesClass;
+    private static Class<?> alertDialogBuilderClass;
+    private static Class<?> textSettingsCellClass;
 
     //Context
     private static Context applicationContext;
@@ -133,6 +137,34 @@ public class loadClass {
             LaunchActivityClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.LaunchActivity"), lpparam.classLoader);
         }
         return LaunchActivityClass;
+    }
+
+    public static Class<?> getSharedConfigClass() {
+        if (SharedConfigClass == null) {
+            SharedConfigClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.SharedConfig"), lpparam.classLoader);
+        }
+        return SharedConfigClass;
+    }
+
+    public static Class<?> getAndroidUtilitiesClass() {
+        if (AndroidUtilitiesClass == null) {
+            AndroidUtilitiesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.AndroidUtilities"), lpparam.classLoader);
+        }
+        return AndroidUtilitiesClass;
+    }
+
+    public static Class<?> getAlertDialogBuilderClass() {
+        if (alertDialogBuilderClass == null) {
+            alertDialogBuilderClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.AlertDialog.Builder"), lpparam.classLoader);
+        }
+        return alertDialogBuilderClass;
+    }
+
+    public static Class<?> getTextSettingsCellClass() {
+        if (textSettingsCellClass == null) {
+            textSettingsCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextSettingsCell"), lpparam.classLoader);
+        }
+        return textSettingsCellClass;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.my.televip.features;
 
+import static com.my.televip.MainHook.lpparam;
+
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
@@ -14,14 +16,15 @@ private static Method getUserMethod;
     public static void init() {
         try {
             if (loadClass.getMessagesControllerClass() != null) {
+                Class<?> readTaskClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.MessagesController$ReadTask"), lpparam.classLoader);
                 XposedHelpers.findAndHookMethod(
                         loadClass.getMessagesControllerClass(),
                         AutomationResolver.resolve("MessagesController", "completeReadTask", AutomationResolver.ResolverType.Method), // اسم الدالة
-                        AutomationResolver.merge(AutomationResolver.resolveObject("2"), new AbstractMethodHook() {
+                        AutomationResolver.merge(AutomationResolver.resolveObject("2", new Class[]{readTaskClass}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
                                 // التحقق من الإعدادات
-                                if (FeatureManager.isHideSeenPrivate() && FeatureManager.isHideSeenGroup()) {
+                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN_PRIVATE) && FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN_GROUP)) {
                                     //XposedBridge.log("completeReadTask method is blocked.");
                                     param.setResult(null); // إيقاف تنفيذ الدالة الأصلية
                                     return;
@@ -38,7 +41,7 @@ private static Method getUserMethod;
 
                                         try {
                                             if (getUserMethod == null) {
-                                                getUserMethod = loadClass.getMessagesControllerClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1"));
+                                                getUserMethod = loadClass.getMessagesControllerClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1", new Class[]{Long.class}));
                                                 getUserMethod.setAccessible(true);
                                             }
                                             // تحويل dialogId إلى Long
@@ -48,12 +51,12 @@ private static Method getUserMethod;
                                             Object user = getUserMethod.invoke(messagesControllerInstance, useridObject);
 
                                             if (user != null) {
-                                                if (FeatureManager.isHideSeenPrivate()) {
+                                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN_PRIVATE)) {
                                                     //     XposedBridge.log("completeReadTask method is blocked.");
                                                     param.setResult(null); // إيقاف تنفيذ الدالة الأصلية
                                                 }
                                             } else {
-                                                if (FeatureManager.isHideSeenGroup()) {
+                                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN_GROUP)) {
                                                     // XposedBridge.log("completeReadTask method is blocked.");
                                                     param.setResult(null); // إيقاف تنفيذ الدالة الأصلية
                                                 }

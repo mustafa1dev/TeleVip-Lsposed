@@ -51,9 +51,12 @@ public class SaveEditMessageDatabase extends SQLiteOpenHelper {
 
         // إضافة رسالة جديدة
         public void addMessage(long id, int msgId, String message) {
+
             if (!searchMessage(id,msgId,message)) {
+
                 SQLiteDatabase db = this.getWritableDatabase();
                 ContentValues values = new ContentValues();
+
                 values.put(COLUMN_ID, id);
                 values.put(COLUMN_MSG_ID, msgId);
                 values.put(COLUMN_MESSAGE, message);

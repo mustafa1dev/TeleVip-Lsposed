@@ -21,7 +21,7 @@ private static Method getClientUserIdMethod;
                 Class<?> baseControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.BaseController"), lpparam.classLoader);
                 if (baseControllerClass != null) {
 
-                    XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para1"), new AbstractMethodHook() {
+                    XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para1", new Class[]{Long.class}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
                             Object userObject = param.getResult();

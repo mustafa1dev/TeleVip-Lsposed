@@ -1,33 +1,45 @@
 package com.my.televip.virtuals.Cells;
 
 import android.content.Context;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.widget.TextView;
 
 import com.my.televip.MainHook;
+import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class TextCheckCell {
+
     Object textCell;
 
     public TextCheckCell(Context context){
-        Class<?> textCheckClass = XposedHelpers.findClassIfExists("org.telegram.ui.Cells.TextCheckCell", MainHook.lpparam.classLoader);
+        Class<?> textCheckClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextCheckCell"), MainHook.lpparam.classLoader);
         textCell = XposedHelpers.newInstance(textCheckClass, context);
     }
 
-    public TextCheckCell(Object obj){
-        textCell = obj;
-    }
-
-    public Object getTextCell(){
-        return textCell;
-    }
-
-    public void setBackgroundColor(int color){
-        XposedHelpers.callMethod(textCell, "setBackgroundColor", color);
+    public void setTextAndValueAndCheck(CharSequence text, String value, boolean checked, boolean multiline, boolean divider){
+        XposedHelpers.callMethod(textCell, "setTextAndValueAndCheck", text, value, checked, multiline,  divider);
     }
 
     public void setTextAndCheck(CharSequence text, boolean checked, boolean divider){
-        XposedHelpers.callMethod(textCell, "setTextAndCheck", text, checked, divider);
+        XposedHelpers.callMethod(textCell, "setTextAndCheck", text, checked,  divider);
     }
+
+    public void setChecked(boolean checked){
+        XposedHelpers.callMethod(textCell, "setChecked", checked);
+    }
+
+    public boolean isChecked(){
+        return (boolean) XposedHelpers.callMethod(textCell, "isChecked");
+    }
+
+    public TextView getTextView(){
+        return (TextView) XposedHelpers.getObjectField(textCell,"textView");
+    }
+
+    public View getView(){
+        return (View) textCell;
+    }
+
 }

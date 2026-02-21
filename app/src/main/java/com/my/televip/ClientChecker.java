@@ -19,46 +19,43 @@ public class ClientChecker {
     }
 
     public enum ClientType {
-        Telegram("org.telegram.messenger"),
-        TelegramWeb("org.telegram.messenger.web"),
-        TelegramPlus("org.telegram.plus"),
-        TGConnect("com.tgconnect.android"),
-        Nagram("xyz.nextalone.nagram"),
-        Nekogram("org.telegr]"),
-        Nicegram("app.nicegram"),
-        Cherrygram("uz.unnarsx.cherrygram"),
-        TelegramBeta("org.telegram.messenger.beta"),
-        NagramX("nu.gpu.nagram"),
-        XPlus("com.xplus.messenger"),
-        iMe("com.iMe.android"),
-        iMeWeb("com.iMe.android.web"),
-        forkgram("org.forkgram.messenger"),
-        forkgramBeta("org.forkclient.messenger.beta"),
-        Teegra("org.open.telegram.market"),
-        Telegraph("ir.ilmili.telegraph");
+        Telegram("org.telegram.messenger", com.my.televip.Clients.Telegram.class),
+        TelegramWeb("org.telegram.messenger.web", com.my.televip.Clients.TelegramWeb.class),
+        TelegramPlus("org.telegram.plus", com.my.televip.Clients.TelegramPlus.class),
+        TGConnect("com.tgconnect.android", com.my.televip.Clients.TGConnect.class),
+        Nagram("xyz.nextalone.nagram", com.my.televip.Clients.Nagram.class),
+        Nicegram("app.nicegram", com.my.televip.Clients.Nicegram.class),
+        Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class),
+        TelegramBeta("org.telegram.messenger.beta", com.my.televip.Clients.TelegramBeta.class),
+        NagramX("nu.gpu.nagram", com.my.televip.Clients.NagramX.class),
+        XPlus("com.xplus.messenger", com.my.televip.Clients.XPlus.class),
+        iMe("com.iMe.android", com.my.televip.Clients.iMe.class),
+        iMeWeb("com.iMe.android.web", com.my.televip.Clients.iMeWeb.class),
+        forkgram("org.forkgram.messenger", com.my.televip.Clients.forkgram.class),
+        forkgramBeta("org.forkclient.messenger.beta", com.my.televip.Clients.forkgramBeta.class),
+        Teegra("org.open.telegram.market", com.my.televip.Clients.Teegra.class),
+        Telegraph("ir.ilmili.telegraph", com.my.televip.Clients.Telegraph.class);
 
-        final String[] packageNames;
+        private final String[] packageNames;
+        private final Class<?> resolverClass;
 
-        ClientType(String packageName)
-        {
-            this.packageNames = new String[]{ packageName };
+        ClientType(String packageName, Class<?> resolverClass) {
+            this.packageNames = new String[]{packageName};
+            this.resolverClass = resolverClass;
         }
 
-        public String[] getPackageNames()
-        {
-            return packageNames;
-        }
+        public String[] getPackageNames() { return packageNames; }
+        public Class<?> getResolverClass() { return resolverClass; }
 
         public static ClientType fromPackage(String pkg){
             for (ClientType type: ClientType.values()){
                 for (String name: type.getPackageNames()){
-                    if (name.equals(pkg)){
-                        return type;
-                    }
+                    if (name.equals(pkg)) return type;
                 }
             }
             return null;
         }
+
         public static boolean containsPackage(String pkg){
             return fromPackage(pkg) != null;
         }

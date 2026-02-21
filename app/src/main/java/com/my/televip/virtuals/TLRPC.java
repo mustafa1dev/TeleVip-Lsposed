@@ -1,13 +1,11 @@
 package com.my.televip.virtuals;
 
-import java.lang.reflect.Field;
+import com.my.televip.Utils;
+import com.my.televip.utils.FieldUtils;
+
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XposedHelpers;
-import com.my.televip.ClientChecker;
-import com.my.televip.Utils;
-import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.FieldUtils;
 
 public class TLRPC {
     public static class Peer {
@@ -67,15 +65,9 @@ public class TLRPC {
         {
             try
             {
-                if (ClientChecker.check(ClientChecker.ClientType.Nekogram)) {
-                    Field field = FieldUtils.getFieldFromMultiName(this.instance.getClass(), AutomationResolver.resolve("TLRPC$TL_updateDeleteChannelMessages", "channel_id", AutomationResolver.ResolverType.Field), long.class);
-                    if (field != null)
-                        return field.getLong(this.instance);
-                }
-                else
-                    return FieldUtils.getFieldLongOfClass(this.instance, "channel_id");
+                return FieldUtils.getFieldLongOfClass(this.instance, "channel_id");
             }
-            catch (IllegalAccessException e)
+            catch (Throwable e)
             {
                 Utils.log(e);
             }
@@ -86,18 +78,10 @@ public class TLRPC {
         {
             try
             {
-                if (ClientChecker.check(ClientChecker.ClientType.Nekogram)) {
-                    Field field = FieldUtils.getFieldFromMultiName(this.instance.getClass(), AutomationResolver.resolve("TLRPC$TL_updateDeleteChannelMessages", "messages", AutomationResolver.ResolverType.Field), ArrayList.class);
-                    if (field != null) {
-                        Object messages = field.get(this.instance);
-                        if (messages != null)
-                            return Utils.castList(messages, Integer.class);
-                    }
-                }
-                else
-                    return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
+
+                return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
             }
-            catch (IllegalAccessException e)
+            catch (Throwable e)
             {
                 Utils.log(e);
             }
@@ -117,18 +101,10 @@ public class TLRPC {
         {
             try
             {
-                if (ClientChecker.check(ClientChecker.ClientType.Nekogram)) {
-                    Field field = FieldUtils.getFieldFromMultiName(this.instance.getClass(), AutomationResolver.resolve("TLRPC$TL_updateDeleteMessages", "messages", AutomationResolver.ResolverType.Field), ArrayList.class);
-                    if (field != null) {
-                        Object messages = field.get(this.instance);
-                        if (messages != null)
-                            return Utils.castList(messages, Integer.class);
-                    }
-                }
-                else
-                    return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
+
+                return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
             }
-            catch (IllegalAccessException e)
+            catch (Throwable e)
             {
                 Utils.log(e);
             }

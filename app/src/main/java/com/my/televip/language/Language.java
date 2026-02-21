@@ -23,7 +23,7 @@ public class Language {
     public static String TelegramPremium;
     public static String UnlockAllRestricted;
     public static String AllowSavingvideos;
-    public static String Ghost_Mode;
+    public static String GhostModeSettings;
     public static String Save;
     public static String DeveloperChannel;
     public static String HideOnline;
@@ -35,13 +35,21 @@ public class Language {
     public static String ToTheClipboard;
     public static String UserOffline;
     public static String DisableStories;
-    public static String strTelevip="televip";
+    public static String HideUpdateApp;
+    public static String JoinTeleVip;
+    public static String Join;
+    public static String DontShowAgain;
+    public static String RestartApp;
+    public static String strTelevip="TeleVip";
 
-    public static void init()
-    {
+    public static void init(){
         LocaleController localeController = new LocaleController();
+        init(localeController.getCurrentLocale().getLanguage());
+    }
 
-        if (localeController.getCurrentLocale().getLanguage().equals("ar")) {
+    public static void init(String language)
+    {
+        if (language.equals("ar")) {
             ToTheBeginning="اذهب إلى أول رسالة";
             ToTheMessage="إلى الرسالة";
             InputMessageId="ادخل معرف الرسالة";
@@ -60,7 +68,7 @@ public class Language {
             TelegramPremium="فتح تيليجرام المميز";
             UnlockAllRestricted="فتح جميع الخصائص المشفره والمغلقه";
             AllowSavingvideos="سماح حفظ الفيديو في معرض";
-            Ghost_Mode="مميزات وضع شبح";
+            GhostModeSettings="إعدادات وضع شبح";
             Save="حفظ";
             DeveloperChannel="قناة المطور";
             HideOnline="إخفاء حالة الاتصال بالإنترنت";
@@ -72,7 +80,12 @@ public class Language {
             ToTheClipboard = "' إلى الحافظة";
             UserOffline ="لست متصلاً بالإنترنت";
             DisableStories="اخفاء القصص";
-        }else if (localeController.getCurrentLocale().getLanguage().equals("zh")) {
+            HideUpdateApp = "اخفاء تحديث تطبيق";
+            JoinTeleVip = "انضم إلى قناة TeleVip لتكون أول من يحصل على أحدث التحديثات والميزات الجديدة أولاً بأول";
+            Join = "انضم";
+            DontShowAgain = "لا تظهر مرة اخرى";
+            RestartApp = "إعادة تشغيل التطبيق";
+        }else if (language.equals("zh")) {
             ToTheBeginning = "跳转到第一条消息";
             ToTheMessage = "跳转到消息";
             InputMessageId = "输入消息 ID";
@@ -91,7 +104,7 @@ public class Language {
             TelegramPremium = "启用 Telegram 本地会员";
             UnlockAllRestricted = "解锁频道的所有受限和加密功能";
             AllowSavingvideos = "允许将视频保存到图库";
-            Ghost_Mode = "幽灵模式";
+            GhostModeSettings = "幽灵模式设置";
             Save = "保存";
             DeveloperChannel = "开发者频道";
             HideOnline = "隐藏 '在线' 状态";
@@ -103,6 +116,11 @@ public class Language {
             ToTheClipboard = "' 到剪贴板";
             UserOffline="您当前处于离线状态";
             DisableStories = "禁用 故事";
+            HideUpdateApp = "隐藏应用更新";
+            JoinTeleVip = "加入 TeleVip 频道，第一时间获取最新更新和新功能";
+            Join = "加入";
+            DontShowAgain = "不再显示";
+            RestartApp = "重新启动应用";
         }else {
             ToTheBeginning = "Go to First Message";
             ToTheMessage="To The Message";
@@ -119,10 +137,10 @@ public class Language {
             HideSeenGroups = "Hide 'Seen' status for groups and channels";
             HideStoryView = "Hide 'Story View' status";
             HideTyping = "Hide Typing...";
-            TelegramPremium = "Enable Telegram Premium";
+            TelegramPremium = "Enable Local Premium";
             UnlockAllRestricted = "Unlock all restricted and encrypted features for channels";
             AllowSavingvideos = "Allow saving videos to the gallery";
-            Ghost_Mode = "Ghost Mode";
+            GhostModeSettings = "Ghost Mode Settings";
             Save="Save";
             DeveloperChannel="Developer Channel";
             HideOnline="Hide 'Online' status";
@@ -134,6 +152,11 @@ public class Language {
             ToTheClipboard = "' to the clipboard";
             UserOffline = "You are currently offline";
             DisableStories ="Disable 'Stories'";
+            HideUpdateApp = "Hide Update App";
+            JoinTeleVip = "Join the TeleVip channel to be among the first to get the latest updates and new features";
+            Join = "Join";
+            DontShowAgain = "Don't show again";
+            RestartApp = "Restart App";
         }
     }
 

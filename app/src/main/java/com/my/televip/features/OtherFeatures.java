@@ -2,32 +2,26 @@ package com.my.televip.features;
 
 import static com.my.televip.MainHook.lpparam;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.my.televip.AlertDialog.onClickDialog;
 import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.language.Language;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.ActiveTheme;
-import com.my.televip.xSharedPreferences;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class OtherFeatures extends Language {
@@ -43,16 +37,11 @@ private static Field otherItemField;
 private static Method addSubItemMethod;
 private static Method lazilyAddSubItemMethod;
 private static Field headerItemField;
-private static Method getMessagesControllerMethed;
-private static Field userIdFiold;
-private static Method getUserMethed;
-private static Field chatIdFiold;
-private static  Method getUserNameMethod;
 
     public static void init() {
         try {
             if (loadClass.getProfileActivityClass() != null && loadClass.getBaseFragmentClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para8"), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para8", new Class[]{boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) throws Throwable {
                         Object profileActivityInstance = param.thisObject;
@@ -63,91 +52,72 @@ private static  Method getUserNameMethod;
                         Object messagesController = getMessagesControllerMethod.invoke(profileActivityInstance);
 
                         if (messagesController != null) {
-                            // الحصول على chatId
+
                             if (chatIdField == null) {
                                 chatIdField = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "chatId", AutomationResolver.ResolverType.Field));
                                 chatIdField.setAccessible(true);
                             }
                             final long chatId = chatIdField.getLong(profileActivityInstance);
-                            // تحويل chatId إلى Long
+
                             if (chatIdObject == null) {
                                 chatIdObject = longClass.getDeclaredMethod("valueOf", long.class);
                             }
                             Object ChatIdObject = chatIdObject.invoke(null, chatId);
 
-                            // استدعاء getChat
                             if (getChatMethod == null) {
-                                getChatMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getChat", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1"));
+                                getChatMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getChat", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1", new Class[]{Long.class}));
                                 getChatMethod.setAccessible(true);
                             }
                             Object chat = getChatMethod.invoke(messagesController, ChatIdObject);
 
-                            // الحصول على userId
                             if (userIdField == null) {
                                 userIdField = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "userId", AutomationResolver.ResolverType.Field));
                                 userIdField.setAccessible(true);
                             }
                             final long userId = userIdField.getLong(profileActivityInstance);
 
-                            // تحويل userId إلى Long
                             if (userIdObject == null) {
                                 userIdObject = longClass.getDeclaredMethod("valueOf", long.class);
                             }
                             Object UseridObject = userIdObject.invoke(null, userId);
 
-                            // استدعاء getUser
                             if (getUserMethod == null) {
-                                getUserMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1"));
+                                getUserMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1",new Class[]{Long.class}));
                                 getUserMethod.setAccessible(true);
                             }
                             Object user = getUserMethod.invoke(messagesController, UseridObject);
 
-                            // الحصول على otherItem
                             if (otherItemField == null) {
                                 otherItemField = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "otherItem", AutomationResolver.ResolverType.Field));
                                 otherItemField.setAccessible(true);
                             }
                             Object otherItem = otherItemField.get(profileActivityInstance);
 
-                            // استدعاء addSubItem على otherItem
                             if (otherItem != null) {
                                 if (addSubItemMethod == null) {
                                     addSubItemMethod = otherItem.getClass().getDeclaredMethod(
                                             AutomationResolver.resolve("ActionBarMenuItem", "addSubItem", AutomationResolver.ResolverType.Method),
-                                            AutomationResolver.resolveObject("para2")
+                                            AutomationResolver.resolveObject("para2",new Class[]{int.class, int.class, CharSequence.class})
                                     );
                                     addSubItemMethod.setAccessible(true);
                                 }
 
-                                if (xSharedPreferences.SharedPre == null) {
-                                    xSharedPreferences.SharedPre = loadClass.getApplicationContext().getSharedPreferences(strTelevip, Activity.MODE_PRIVATE);
+                                int drawableResource = 0x7f0806d3;
+
+                                if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                                    drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_filled_menu_users");
                                 }
-                                if (xSharedPreferences.SharedPre != null) {
-                                    if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
-                                        if (loadClass.getDrawableClass() != null) {
-                                            int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_filled_menu_users");
-                                            if (chat != null) {
-                                                xSharedPreferences.SharedPre.edit().putString("id", String.valueOf(chatId)).apply();
-                                                //noinspection JavaReflectionInvocation
-                                                addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(chatId));
-                                            } else if (user != null) {
-                                                xSharedPreferences.SharedPre.edit().putString("id", String.valueOf(userId)).apply();
-                                                //noinspection JavaReflectionInvocation
-                                                addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(userId));
-                                            }
-                                        }
-                                    } else {
-                                        int drawableResource = 0x7f0806d3;
-                                        if (chat != null) {
-                                            xSharedPreferences.SharedPre.edit().putString("id", String.valueOf(chatId)).apply();
-                                            //noinspection JavaReflectionInvocation
-                                            addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(chatId));
-                                        } else if (user != null) {
-                                            xSharedPreferences.SharedPre.edit().putString("id", String.valueOf(userId)).apply();
-                                            //noinspection JavaReflectionInvocation
-                                            addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(userId));
-                                        }
-                                    }
+
+                                if (chat != null) {
+                                    FeatureManager.putLong("id", chatId);
+
+                                    //noinspection JavaReflectionInvocation
+                                    addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(chatId));
+                                } else if (user != null) {
+
+                                    FeatureManager.putLong("id", userId);
+                                    //noinspection JavaReflectionInvocation
+                                    addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(userId));
                                 }
                             }
                         }
@@ -157,20 +127,18 @@ private static  Method getUserNameMethod;
                 if (profileActivityClass6 != null) {
                     XposedHelpers.findAndHookMethod(
                             profileActivityClass6,
-                            AutomationResolver.resolve("ProfileActivity", "onItemClick", AutomationResolver.ResolverType.Method), // اسم الدالة
-                            AutomationResolver.merge(AutomationResolver.resolveObject("para3"), new AbstractMethodHook() {
+                            AutomationResolver.resolve("ProfileActivity", "onItemClick", AutomationResolver.ResolverType.Method),
+                            AutomationResolver.merge(AutomationResolver.resolveObject("para3", new Class[]{int.class}), new AbstractMethodHook() {
                                 @Override
                                 protected void afterMethod(MethodHookParam param) {
                                     int id = (int) param.args[0];
 
                                     if (id == 8353847) {
-                                        if (xSharedPreferences.SharedPre == null) {
-                                            xSharedPreferences.SharedPre = loadClass.getApplicationContext().getSharedPreferences(strTelevip, Activity.MODE_PRIVATE);
-                                        }
-                                        if (xSharedPreferences.SharedPre != null) {
-                                            ((ClipboardManager) loadClass.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", xSharedPreferences.SharedPre.getString("id", "")));
-                                            Toast.makeText(loadClass.getApplicationContext(), xSharedPreferences.SharedPre.getString("id", ""), Toast.LENGTH_LONG).show();
-                                        }
+
+                                        long ID = FeatureManager.getLong("id");
+
+                                        ((ClipboardManager) loadClass.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", String.valueOf(ID)));
+                                        Toast.makeText(loadClass.getApplicationContext(), String.valueOf(ID), Toast.LENGTH_LONG).show();
                                     }
 
                                 }
@@ -180,7 +148,8 @@ private static  Method getUserNameMethod;
             if (loadClass.getChatActivityClass() != null && loadClass.getDrawableClass() != null) {
                 Class<?> ChatActivityClass$16 = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ChatActivity$16"), lpparam.classLoader);
                 if (ChatActivityClass$16 != null) {
-                    XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("9"), new AbstractMethodHook() {
+                    Class<?> conClass = XposedHelpers.findClassIfExists("android.content.Context", lpparam.classLoader);
+                    XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("9", new Class[]{conClass}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) throws Throwable {
                             Object ChatActivityInstance = param.thisObject;
@@ -193,7 +162,7 @@ private static  Method getUserNameMethod;
                                 if (lazilyAddSubItemMethod == null) {
                                     lazilyAddSubItemMethod = headerItem.getClass().getDeclaredMethod(
                                             AutomationResolver.resolve("ActionBarMenuItem", "lazilyAddSubItem", AutomationResolver.ResolverType.Method),
-                                            AutomationResolver.resolveObject("para7"));
+                                            AutomationResolver.resolveObject("para7", new Class[]{int.class, int.class, CharSequence.class}));
                                     lazilyAddSubItemMethod.setAccessible(true);
                                 }
                                 int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_go_up");
@@ -213,7 +182,7 @@ private static  Method getUserNameMethod;
 
                     XposedHelpers.findAndHookMethod(
                             ChatActivityClass$16,
-                            "onItemClick", // اسم الدالة
+                            "onItemClick",
                             int.class,
                             new AbstractMethodHook() {
                                 @Override
@@ -223,20 +192,15 @@ private static  Method getUserNameMethod;
                                     final Object chatActivity = XposedHelpers.getObjectField(chatActivityInstance, AutomationResolver.resolve("ChatActivity$13", "this$0", AutomationResolver.ResolverType.Field));
                                     if (id == 8353847) {
                                         XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "scrollToMessageId", AutomationResolver.ResolverType.Method), 1, 0, true, 0, true, 0);
-                                        //  XposedBridge.log("scrollToMessageId is call.");
+
                                     } else if (id == 8353848) {
                                         final Context applicationContext = (Context) XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("BaseFragment", "getContext", AutomationResolver.ResolverType.Method));
                                         if (applicationContext != null) {
-                                            Object getResourceProvider = XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "getResourceProvider", AutomationResolver.ResolverType.Method));
-
-                                            Object alertDialog = XposedHelpers.newInstance(
-                                                    XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.AlertDialog.Builder"), lpparam.classLoader),
-                                                    applicationContext,
-                                                    getResourceProvider
-                                            );
+                                            AlertDialog alertDialog = new AlertDialog(applicationContext);
                                             if (alertDialog != null) {
-                                                XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setTitle", AutomationResolver.ResolverType.Method), InputMessageId);
-                                                // إنشاء EditText مع تصميم جميل
+                                                alertDialog.setTitle(InputMessageId);
+
+
                                                 final EditText editText = new EditText(applicationContext);
                                                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                                                 if (ActiveTheme.getActiveTheme()) {
@@ -246,74 +210,35 @@ private static  Method getUserNameMethod;
                                                     editText.setTextColor(0xFFFFFFFF);
                                                     editText.setHintTextColor(0xFFBDBDBD);
                                                 }
-                                                editText.setTextSize(18); // تكبير النص
-                                                editText.setPadding(20, 20, 20, 20); // إضافة هوامش داخلية
+                                                editText.setTextSize(18);
+                                                editText.setPadding(20, 20, 20, 20);
 
-// تحديد حجم EditText ليكون أكبر
                                                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                                         LinearLayout.LayoutParams.MATCH_PARENT,
                                                         LinearLayout.LayoutParams.WRAP_CONTENT
                                                 );
-                                                params.setMargins(20, 20, 20, 20); // إضافة هوامش خارجية
+                                                params.setMargins(20, 20, 20, 20);
                                                 editText.setLayoutParams(params);
 
-// إنشاء تخطيط (Layout) لتضمين EditText
                                                 LinearLayout layout = new LinearLayout(applicationContext);
                                                 layout.setOrientation(LinearLayout.VERTICAL);
-                                                layout.setPadding(30, 30, 30, 30); // هوامش إضافية داخل التخطيط
+                                                layout.setPadding(30, 30, 30, 30);
                                                 layout.addView(editText);
 
-                                                XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setView", AutomationResolver.ResolverType.Method), layout);
+                                                alertDialog.setView(layout);
 
-// إعداد زر الحفظ
+                                                alertDialog.setPositiveButton(Done, AlertDialog.click(() -> {
+                                                    String inputText = editText.getText().toString().trim();
 
-                                                Object onDoneListener;
-                                                Object onCnelListener;
-                                                Class<?> listenerClass = XposedHelpers.findClassIfExists(
-                                                        AutomationResolver.resolve("org.telegram.ui.ActionBar.AlertDialog$OnButtonClickListener"),
-                                                        lpparam.classLoader
-                                                );
-                                                if (listenerClass != null) {
-                                                    onDoneListener = Proxy.newProxyInstance(
-                                                            lpparam.classLoader,
-                                                            new Class[]{listenerClass},
-                                                            (proxy, method, args) -> {
-                                                                if (method.getName().equals("onClick")) {
-                                                                    // هذا AlertDialog
-                                                                    onClickDialog.onClickToMessageId(editText, chatActivity);
-                                                                }
-                                                                //noinspection SuspiciousInvocationHandlerImplementation
-                                                                return null;
-                                                            }
-                                                    );
-                                                    onCnelListener = Proxy.newProxyInstance(
-                                                            lpparam.classLoader,
-                                                            new Class[]{listenerClass},
-                                                            (proxy, method, args) -> {
-                                                                if (method.getName().equals("onClick")) {
-                                                                    Object object = args[0]; // هذا AlertDialog
-                                                                    if (object instanceof DialogInterface) {
-                                                                        DialogInterface dialog = (DialogInterface) object;
-                                                                        onClickDialog.onClickDismiss(dialog);
-                                                                    }
-                                                                }
-                                                                //noinspection SuspiciousInvocationHandlerImplementation
-                                                                return null;
-                                                            }
-                                                    );
-                                                } else {
-                                                    onDoneListener = (DialogInterface.OnClickListener) (dialog, which) -> onClickDialog.onClickToMessageId(editText, chatActivity);
-                                                    onCnelListener = (DialogInterface.OnClickListener) (dialog, which) -> onClickDialog.onClickDismiss(dialog);
-                                                }
-                                                XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setPositiveButton", AutomationResolver.ResolverType.Method), Done, onDoneListener
-                                                );
+                                                    if (!inputText.isEmpty()) {
+                                                        int msid = Integer.parseInt(inputText);
+                                                        XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "scrollToMessageId", AutomationResolver.ResolverType.Method), msid, 0, true, 0, true, 0);
+                                                    }
+                                                    }));
 
-                                                XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "setNegativeButton", AutomationResolver.ResolverType.Method),
-                                                        Cancel,
-                                                        onCnelListener
-                                                );
+                                                alertDialog.setNegativeButton(Cancel, null);
 
-                                                XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog", "show", AutomationResolver.ResolverType.Method));
+                                               alertDialog.show();
                                             } else {
                                                 Utils.log("Not found org.telegram.ui.ActionBar.AlertDialog.Builder, " + Utils.issue);
                                             }
@@ -323,85 +248,7 @@ private static  Method getUserNameMethod;
                             });
                 }
             }
-            if (loadClass.getProfileActivityClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("9"), new AbstractMethodHook() {
-                    @Override
-                    protected void afterMethod(MethodHookParam param) {
-                        final Object profileActivityInstance = param.thisObject;
 
-                        // الحصول على الحقل nameTextView (كمصفوفة Objects لأنه لا يمكننا تعريف SimpleTextView مباشرة)
-                        Object[] nameTextViewArray = (Object[]) XposedHelpers.getObjectField(profileActivityInstance, AutomationResolver.resolve("ProfileActivity", "nameTextView", AutomationResolver.ResolverType.Field));
-
-                        if (nameTextViewArray != null && nameTextViewArray.length > 1) {
-                            // الحصول على SimpleTextView[1]
-                            Object simpleTextView1 = nameTextViewArray[1];
-
-                            if (simpleTextView1 != null) {
-
-                                // إضافة حدث النقر باستخدام callMethod
-                                XposedHelpers.callMethod(simpleTextView1, AutomationResolver.resolve("SimpleTextView", "setOnClickListener", AutomationResolver.ResolverType.Method), (View.OnClickListener) v -> {
-                                    try {
-                                        // تحميل الكلاسات المطلوبة
-                                        if (loadClass.getBaseFragmentClass() != null && loadClass.getUserObjectClass() != null) {
-
-                                            // استدعاء MessagesController
-                                            if (getMessagesControllerMethed == null) {
-                                                getMessagesControllerMethed = loadClass.getBaseFragmentClass().getDeclaredMethod("getMessagesController");
-                                                getMessagesControllerMethed.setAccessible(true);
-                                            }
-                                            Object messagesController = getMessagesControllerMethed.invoke(profileActivityInstance);
-
-                                            if (messagesController != null) {
-                                                // الحصول على userId
-                                                if (userIdFiold == null) {
-                                                    userIdFiold = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "userId", AutomationResolver.ResolverType.Field));
-                                                    userIdFiold.setAccessible(true);
-                                                }
-                                                final long userId = userIdFiold.getLong(profileActivityInstance);
-
-                                                // تحويل userId إلى Long
-                                                Object userIdObject = Long.class.getDeclaredMethod("valueOf", long.class).invoke(null, userId);
-
-                                                // استدعاء getUser
-                                                if (getUserMethed == null) {
-                                                    getUserMethed = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), Long.class);
-                                                    getUserMethed.setAccessible(true);
-                                                }
-                                                //noinspection JavaReflectionInvocation
-                                                Object user = getUserMethed.invoke(messagesController, userIdObject);
-                                                if (chatIdFiold == null) {
-                                                    chatIdFiold = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "chatId", AutomationResolver.ResolverType.Field));
-                                                    chatIdFiold.setAccessible(true);
-                                                }
-                                                final long chatId = chatIdFiold.getLong(profileActivityInstance);
-
-                                                if (user != null && chatId == 0) {
-                                                    // استدعاء getUserName
-                                                    Class<?> userClass = lpparam.classLoader.loadClass(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$User"));
-                                                    if (getUserNameMethod == null) {
-                                                        getUserNameMethod = loadClass.getUserObjectClass().getDeclaredMethod(AutomationResolver.resolve("UserObject", "getUserName", AutomationResolver.ResolverType.Method), userClass);
-                                                        getUserNameMethod.setAccessible(true);
-                                                    }
-                                                    String userName = (String) getUserNameMethod.invoke(null, user);
-                                                    if (userName != null) {
-                                                        String user_name = Copied + userName + ToTheClipboard;
-                                                        if (loadClass.getApplicationContext() != null) {
-                                                            ((ClipboardManager) loadClass.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", userName));
-                                                            Toast.makeText(loadClass.getApplicationContext(), user_name, Toast.LENGTH_LONG).show();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        XposedBridge.log("Error: " + e.getMessage());
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }));
-            }
         } catch (Throwable t){
             Utils.log(t);
         }

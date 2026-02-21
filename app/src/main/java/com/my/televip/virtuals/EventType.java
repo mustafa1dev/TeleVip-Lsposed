@@ -1,7 +1,6 @@
 package com.my.televip.virtuals;
 
 
-import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
 import com.my.televip.loadClass;
 
@@ -11,11 +10,7 @@ public class EventType {
 
 
     public static int IconSettings() {
-        if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
-            return getIconSettings();
-        } else {
-            return 0x7f080806;
-        }
+        return getIconSettings();
     }
 
     private static int getIconSettings() {

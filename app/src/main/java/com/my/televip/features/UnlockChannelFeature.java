@@ -1,6 +1,8 @@
 package com.my.televip.features;
 
 
+import static com.my.televip.MainHook.lpparam;
+
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
@@ -12,7 +14,10 @@ public class UnlockChannelFeature {
     public static void init() {
         try {
             if (loadClass.getMessagesControllerClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("3"), new AbstractMethodHook() {
+
+                Class<?> TLRPC$ChatClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$Chat"), lpparam.classLoader);
+
+                XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("3", new Class[]{TLRPC$ChatClass}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         param.setResult(false);

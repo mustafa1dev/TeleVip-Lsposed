@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="xposedscope"><item>org.telegram.messenger</item>
-<item>org.telegram.plus</item>
-<item>com.tgconnect.android</item>
-<item>com.iMe.android</item>
-<item>com.xplus.messenger</item>
-<item>xyz.nextalone.nagram</item>
-<item>uz.unnarsx.cherrygram</item>
-<item>app.nicegram</item>
-<item>org.telegram.messenger.web</item>
-<item>org.telegram.messenger.beta</item>
-<item>org.forkclient.messenger.beta</item>
-<item>org.forkgram.messenger</item>
-<item>nu.gpu.nagram</item>
-<item>com.iMe.android.web</item>
-<item>org.open.telegram.market</item>
-<item>ir.ilmili.telegraph</item>
-</string-array>
+    <string-array name="xposedscope">
+        <item>org.telegram.messenger</item>
+        <item>org.telegram.plus</item>
+        <item>com.tgconnect.android</item>
+        <item>com.iMe.android</item>
+        <item>com.xplus.messenger</item>
+        <item>xyz.nextalone.nagram</item>
+        <item>uz.unnarsx.cherrygram</item>
+        <item>app.nicegram</item>
+        <item>org.telegram.messenger.web</item>
+        <item>org.telegram.messenger.beta</item>
+        <item>org.forkclient.messenger.beta</item>
+        <item>org.forkgram.messenger</item>
+        <item>nu.gpu.nagram</item>
+        <item>com.iMe.android.web</item>
+        <item>org.open.telegram.market</item>
+        <item>ir.ilmili.telegraph</item>
+    </string-array>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
 </resources>

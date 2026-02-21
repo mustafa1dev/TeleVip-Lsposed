@@ -8,6 +8,9 @@ espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.12.0"
 preference = "1.2.1"
+constraintlayout = "2.1.4"
+lifecycle-livedata-ktx = "2.6.1"
+lifecycle-viewmodel-ktx = "2.6.1"
 
 [libraries]
 api = { module = "de.robv.android.xposed:api", version.ref = "api" }
@@ -18,6 +21,9 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle-livedata-ktx" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewmodel-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
