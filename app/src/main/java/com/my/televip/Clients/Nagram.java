@@ -109,7 +109,7 @@ public class Nagram {
 
     public static void loadParameter() {
         methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$6", "lambda$onCreate$8"));
-        ParameterResolver.register("para11",new Class[]{ArrayList.class, boolean.class, int.class, int.class, long.class});
+        ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{ArrayList.class, boolean.class, int.class, int.class, long.class});
     }
 
 }

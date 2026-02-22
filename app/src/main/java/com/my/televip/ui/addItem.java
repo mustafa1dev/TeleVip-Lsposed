@@ -100,7 +100,6 @@ public class addItem {
                     }
 
                 }
-
             }
         };
 
@@ -111,7 +110,7 @@ public class addItem {
 
         GhostDrawable ghostDrawable = new GhostDrawable();
 
-        XposedHelpers.findAndHookMethod(SettingsActivity$SettingCellClass, "set", int.class, int.class, int.class, CharSequence.class, CharSequence.class, CharSequence.class, new AbstractMethodHook() {
+        XposedHelpers.findAndHookMethod(SettingsActivity$SettingCellClass, AutomationResolver.resolve("SettingsActivity$SettingCell","set", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("set", new Class[]{int.class, int.class, int.class, CharSequence.class, CharSequence.class, CharSequence.class}), new AbstractMethodHook() {
             @Override
             protected void afterMethod(MethodHookParam param) {
                 int id = (int) param.args[2];
@@ -120,22 +119,22 @@ public class addItem {
                     iconView.setImageDrawable(ghostDrawable);
                 }
             }
-        });
+        }));
 
         Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists("org.telegram.ui.Components.UniversalAdapter", lpparam.classLoader);
 
         XposedHelpers.findAndHookMethod(SettingsActivityClass, AutomationResolver.resolve("SettingsActivity", "fillItems", AutomationResolver.ResolverType.Method),
-                AutomationResolver.merge(AutomationResolver.resolveObject("10",  new Class[]{java.util.ArrayList.class, UniversalAdapterClass}), fillItemsHook));
+                AutomationResolver.merge(AutomationResolver.resolveObject("fillItems",  new Class[]{java.util.ArrayList.class, UniversalAdapterClass}), fillItemsHook));
 
         AbstractMethodHook onClickHook = new AbstractMethodHook() {
             @Override
             protected void afterMethod(final MethodHookParam param) {
                 Object uitem = param.args[0];
                 if (uitem != null){
-                    int id = XposedHelpers.getIntField(uitem, "id");
+                    int id = XposedHelpers.getIntField(uitem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                     if (id == 8353847) {
                         Object SettingsActivity = param.thisObject;
-                        Context applicationContext = (Context) XposedHelpers.callMethod(SettingsActivity, "getContext");
+                        Context applicationContext = (Context) XposedHelpers.callMethod(SettingsActivity, AutomationResolver.resolve("SettingsActivity","getContext", AutomationResolver.ResolverType.Method));
 
                         openView(applicationContext);
                     }
@@ -147,7 +146,7 @@ public class addItem {
 
         XposedHelpers.findAndHookMethod(
                 SettingsActivityClass,
-                AutomationResolver.resolve("SettingsActivity", "onClick", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("12", new Class[]{UItemClass, View.class, int.class, float.class, float.class}), onClickHook));
+                AutomationResolver.resolve("SettingsActivity", "onClick", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("onClick", new Class[]{UItemClass, View.class, int.class, float.class, float.class}), onClickHook));
     }
 
     public  void oldTheme(){
@@ -164,20 +163,16 @@ public class addItem {
                             DrawerLayoutAdapter drawerLayoutAdapter = new DrawerLayoutAdapter(param.thisObject);
 
                             ArrayList<?> items = drawerLayoutAdapter.getItems();
-                            String param2 = "para4";
-                            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                                param2 = "10";
-                            }
 
                             if (itemConstructor == null) {
-                                itemConstructor = itemClass.getDeclaredConstructor(AutomationResolver.resolveObject(param2, new Class[]{int.class, CharSequence.class, int.class}));
+                                itemConstructor = itemClass.getDeclaredConstructor(AutomationResolver.resolveObject("item", new Class[]{int.class, CharSequence.class, int.class}));
                                 itemConstructor.setAccessible(true);
                             }
 
                             Language.init();
                             Object newItem;
                             if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                                newItem = itemConstructor.newInstance(8353847, Language.GhostMode, 8353847, true, null, "");
+                                newItem = itemConstructor.newInstance(8353847, GhostMode, 8353847, true, null, "");
                             } else {
                                 newItem = itemConstructor.newInstance(8353847, GhostMode, EventType.IconSettings());
                             }
@@ -228,14 +223,14 @@ public class addItem {
                     }
                 }
             };
-            String para = "para5";
+
             if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                para = "12";
                 Telegraph.onBindViewHolderHook();
             }
+
             Method onCreateMethod = null;
             for (Method method : loadClass.getLaunchActivityClass().getDeclaredMethods()) {
-                if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject(para, new Class[]{android.view.View.class,int.class, float.class, float.class}))) {
+                if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject("onCreateMethod", new Class[]{android.view.View.class,int.class, float.class, float.class}))) {
                     onCreateMethod = method;
                 }
             }

@@ -17,7 +17,7 @@ public class UnlockChannelFeature {
 
                 Class<?> TLRPC$ChatClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$Chat"), lpparam.classLoader);
 
-                XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("3", new Class[]{TLRPC$ChatClass}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("isChatNoForwards", new Class[]{TLRPC$ChatClass}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         param.setResult(false);

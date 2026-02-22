@@ -20,7 +20,7 @@ private static Method getUserMethod;
                 XposedHelpers.findAndHookMethod(
                         loadClass.getMessagesControllerClass(),
                         AutomationResolver.resolve("MessagesController", "completeReadTask", AutomationResolver.ResolverType.Method), // اسم الدالة
-                        AutomationResolver.merge(AutomationResolver.resolveObject("2", new Class[]{readTaskClass}), new AbstractMethodHook() {
+                        AutomationResolver.merge(AutomationResolver.resolveObject("completeReadTask", new Class[]{readTaskClass}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
                                 // التحقق من الإعدادات
@@ -41,7 +41,7 @@ private static Method getUserMethod;
 
                                         try {
                                             if (getUserMethod == null) {
-                                                getUserMethod = loadClass.getMessagesControllerClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1", new Class[]{Long.class}));
+                                                getUserMethod = loadClass.getMessagesControllerClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("getUser", new Class[]{Long.class}));
                                                 getUserMethod.setAccessible(true);
                                             }
                                             // تحويل dialogId إلى Long

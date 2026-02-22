@@ -21,8 +21,6 @@ public class AutomationResolver {
 
     public static Class<?>[] resolveObject(String name, Class<?>[] classes) {
 
-        resolverRegistry.loadParameter();
-
         if (resolverRegistry.hasParameter(name)) {
             return resolverRegistry.resolveParameter(name);
         }

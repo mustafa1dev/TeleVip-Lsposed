@@ -19,23 +19,23 @@ public class TextCheckCell {
     }
 
     public void setTextAndValueAndCheck(CharSequence text, String value, boolean checked, boolean multiline, boolean divider){
-        XposedHelpers.callMethod(textCell, "setTextAndValueAndCheck", text, value, checked, multiline,  divider);
+        XposedHelpers.callMethod(textCell, AutomationResolver.resolve("TextCheckCell","setTextAndValueAndCheck", AutomationResolver.ResolverType.Method), text, value, checked, multiline,  divider);
     }
 
     public void setTextAndCheck(CharSequence text, boolean checked, boolean divider){
-        XposedHelpers.callMethod(textCell, "setTextAndCheck", text, checked,  divider);
+        XposedHelpers.callMethod(textCell, AutomationResolver.resolve("TextCheckCell","setTextAndCheck", AutomationResolver.ResolverType.Method), text, checked,  divider);
     }
 
     public void setChecked(boolean checked){
-        XposedHelpers.callMethod(textCell, "setChecked", checked);
+        XposedHelpers.callMethod(textCell, AutomationResolver.resolve("TextCheckCell","setChecked", AutomationResolver.ResolverType.Method), checked);
     }
 
     public boolean isChecked(){
-        return (boolean) XposedHelpers.callMethod(textCell, "isChecked");
+        return (boolean) XposedHelpers.callMethod(textCell, AutomationResolver.resolve("TextCheckCell","isChecked", AutomationResolver.ResolverType.Method));
     }
 
     public TextView getTextView(){
-        return (TextView) XposedHelpers.getObjectField(textCell,"textView");
+        return (TextView) XposedHelpers.getObjectField(textCell,AutomationResolver.resolve("TextCheckCell","textView", AutomationResolver.ResolverType.Field));
     }
 
     public View getView(){

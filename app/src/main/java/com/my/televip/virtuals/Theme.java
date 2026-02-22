@@ -59,31 +59,31 @@ public class Theme {
     }
 
     public static int getColor(int key){
-        return (int)XposedHelpers.callStaticMethod(loadClass.getThemeClass(), "getColor", key);
+        return (int)XposedHelpers.callStaticMethod(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","getColor", AutomationResolver.ResolverType.Method), key);
     }
 
     public static int getKey_windowBackgroundGray(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_windowBackgroundGray");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_windowBackgroundGray", AutomationResolver.ResolverType.Field));
     }
 
     public static int getKey_actionBarDefault(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_actionBarDefault");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_actionBarDefault", AutomationResolver.ResolverType.Field));
     }
 
     public static int getKey_actionBarDefaultTitle(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_actionBarDefaultTitle");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_actionBarDefaultTitle", AutomationResolver.ResolverType.Field));
     }
 
     public static int getKey_actionBarDefaultIcon(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_actionBarDefaultIcon");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_actionBarDefaultIcon", AutomationResolver.ResolverType.Field));
     }
 
     public static int getKey_windowBackgroundWhite(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_windowBackgroundWhite");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_windowBackgroundWhite", AutomationResolver.ResolverType.Field));
     }
 
     public static int getKey_switchTrackBlueChecked(){
-        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), "key_switchTrackBlueChecked");
+        return (int)XposedHelpers.getStaticObjectField(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","key_switchTrackBlueChecked", AutomationResolver.ResolverType.Field));
     }
 
 

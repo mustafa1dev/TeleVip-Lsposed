@@ -1,6 +1,8 @@
 package com.my.televip;
 
 
+import static com.my.televip.obfuscate.AutomationResolver.resolverRegistry;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ public class MainHook implements IXposedHookLoadPackage {
     }
 
     public void startHook() {
+        resolverRegistry.loadParameter();
         Language.init();
         FeatureManager.init();
         SettingsActivity.init();
@@ -58,6 +61,7 @@ public class MainHook implements IXposedHookLoadPackage {
                 AutomationResolver.resolve("org.telegram.ui.SettingsActivity"),
                 lpparam.classLoader
         );
+
         Class<?> SettingsActivity$SettingCell$FactoryClass = XposedHelpers.findClassIfExists(
                 AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell$Factory"),
                 lpparam.classLoader

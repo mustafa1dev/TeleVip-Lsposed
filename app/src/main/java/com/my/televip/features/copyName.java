@@ -32,9 +32,7 @@ public class copyName {
         try {
             if (loadClass.getProfileActivityClass() != null) {
 
-                Class<?> conClass = XposedHelpers.findClassIfExists("android.content.Context", lpparam.classLoader);
-
-                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("9", new Class[]{conClass}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
                         final Object profileActivityInstance = param.thisObject;

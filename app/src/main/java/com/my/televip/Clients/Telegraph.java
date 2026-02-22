@@ -139,6 +139,11 @@ public class Telegraph {
         classList.add(new ClassInfo("org.telegram.ui.ChatActivity","org.telegram.ui.Ng"));
         classList.add(new ClassInfo("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate","org.telegram.ui.Ng$LPT6"));
         classList.add(new ClassInfo("org.telegram.messenger.BaseController","org.telegram.messenger.com7"));
+        classList.add(new ClassInfo("org.telegram.messenger.AndroidUtilities","org.telegram.messenger.cOM3"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.TextCheckCell","org.telegram.ui.Cells.U0"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.ShadowSectionCell","org.telegram.ui.Cells.Y"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.HeaderCell","org.telegram.ui.Cells.lpt8"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.TextSettingsCell","org.telegram.ui.Cells.v1"));
 
         fieldList.add(new FieldInfo("ApplicationLoader", "applicationContext", "b"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutAdapter", "M"));
@@ -154,11 +159,20 @@ public class Telegraph {
         fieldList.add(new FieldInfo("ChatMessageCell","timeTextWidth","Va"));
         fieldList.add(new FieldInfo("ChatMessageCell","timeWidth","Ua"));
         fieldList.add(new FieldInfo("ProfileActivity","userId","L0"));
+        fieldList.add(new FieldInfo("LaunchActivity","frameLayout","I"));
+        fieldList.add(new FieldInfo("Theme","key_windowBackgroundGray","Z7"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefault","q9"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultTitle","t9"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultIcon","t9"));
+        fieldList.add(new FieldInfo("Theme","key_windowBackgroundWhite","d7"));
+        fieldList.add(new FieldInfo("Theme","key_switchTrackBlueChecked","O7"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
+        methodList.add(new MethodInfo("AlertDialog","setMessage", "G"));
         methodList.add(new MethodInfo("AlertDialog","setPositiveButton", "F"));
         methodList.add(new MethodInfo("AlertDialog","setNegativeButton", "z"));
+        methodList.add(new MethodInfo("AlertDialog","setNeutralButton", "A"));
         methodList.add(new MethodInfo("AlertDialog","show", "R"));
         methodList.add(new MethodInfo("AlertDialog$OnButtonClickListener","onClick", "a"));
         methodList.add(new MethodInfo("LaunchActivity","lambda$onCreate$8", "C1"));
@@ -191,6 +205,18 @@ public class Telegraph {
         methodList.add(new MethodInfo("MessagesController","isChatNoForwards","Jc"));
         methodList.add(new MethodInfo("ChatActivity","sendSecretMessageRead","Ax"));
         methodList.add(new MethodInfo("ChatActivity","sendSecretMediaDelete","zx"));
+        methodList.add(new MethodInfo("TextCheckCell","setTextAndValueAndCheck","j"));
+        methodList.add(new MethodInfo("TextCheckCell","setTextAndCheck","i"));
+        methodList.add(new MethodInfo("TextCheckCell","isChecked","d"));
+        methodList.add(new MethodInfo("AndroidUtilities","isTablet","k4"));
+        methodList.add(new MethodInfo("Theme","getColor","u2"));
+        methodList.add(new MethodInfo("TextSettingsCell","setText","c"));
+
+        Class<?> mainMenuItem = XposedHelpers.findClassIfExists("org.telegram.messenger.GraphDrawerMenuController$MainMenuItem", lpparam.classLoader);
+        ParameterResolver.register("item", new Class[]{int.class, String.class, int.class, boolean.class, mainMenuItem, String.class});
+
+        ParameterResolver.register("onCreateMethod", new Class[]{loadClass.getLaunchActivityClass(),android.view.View.class,int.class, float.class, float.class});
+
     }
 
     public static void onBindViewHolderHook() {

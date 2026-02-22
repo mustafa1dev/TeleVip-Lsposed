@@ -27,6 +27,9 @@ public class loadClass {
     private static Class<?> AndroidUtilitiesClass;
     private static Class<?> alertDialogBuilderClass;
     private static Class<?> textSettingsCellClass;
+    private static Class<?> TLRPC$EncryptedChatClass;
+    private static Class<?> TLObjectClass;
+    private static Class<?> ContextClass;
 
     //Context
     private static Context applicationContext;
@@ -165,6 +168,27 @@ public class loadClass {
             textSettingsCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextSettingsCell"), lpparam.classLoader);
         }
         return textSettingsCellClass;
+    }
+
+    public static Class<?> getTLRPC$EncryptedChatClass() {
+        if (TLRPC$EncryptedChatClass == null) {
+            TLRPC$EncryptedChatClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$EncryptedChat"), lpparam.classLoader);
+        }
+        return TLRPC$EncryptedChatClass;
+    }
+
+    public static Class<?> getTLObjectClass() {
+        if (TLObjectClass == null) {
+            TLObjectClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLObject"), lpparam.classLoader);
+        }
+        return TLObjectClass;
+    }
+
+    public static Class<?> getContextClass() {
+        if (ContextClass == null) {
+            ContextClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("android.content.Context"), lpparam.classLoader);
+        }
+        return ContextClass;
     }
 
 }

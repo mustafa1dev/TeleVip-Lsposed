@@ -41,7 +41,7 @@ private static Field headerItemField;
     public static void init() {
         try {
             if (loadClass.getProfileActivityClass() != null && loadClass.getBaseFragmentClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para8", new Class[]{boolean.class}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createActionBarMenu", new Class[]{boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) throws Throwable {
                         Object profileActivityInstance = param.thisObject;
@@ -65,7 +65,7 @@ private static Field headerItemField;
                             Object ChatIdObject = chatIdObject.invoke(null, chatId);
 
                             if (getChatMethod == null) {
-                                getChatMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getChat", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1", new Class[]{Long.class}));
+                                getChatMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getChat", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("getChat", new Class[]{Long.class}));
                                 getChatMethod.setAccessible(true);
                             }
                             Object chat = getChatMethod.invoke(messagesController, ChatIdObject);
@@ -82,7 +82,7 @@ private static Field headerItemField;
                             Object UseridObject = userIdObject.invoke(null, userId);
 
                             if (getUserMethod == null) {
-                                getUserMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("para1",new Class[]{Long.class}));
+                                getUserMethod = messagesController.getClass().getDeclaredMethod(AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.resolveObject("getUser",new Class[]{Long.class}));
                                 getUserMethod.setAccessible(true);
                             }
                             Object user = getUserMethod.invoke(messagesController, UseridObject);
@@ -97,7 +97,7 @@ private static Field headerItemField;
                                 if (addSubItemMethod == null) {
                                     addSubItemMethod = otherItem.getClass().getDeclaredMethod(
                                             AutomationResolver.resolve("ActionBarMenuItem", "addSubItem", AutomationResolver.ResolverType.Method),
-                                            AutomationResolver.resolveObject("para2",new Class[]{int.class, int.class, CharSequence.class})
+                                            AutomationResolver.resolveObject("addSubItem",new Class[]{int.class, int.class, CharSequence.class})
                                     );
                                     addSubItemMethod.setAccessible(true);
                                 }
@@ -128,7 +128,7 @@ private static Field headerItemField;
                     XposedHelpers.findAndHookMethod(
                             profileActivityClass6,
                             AutomationResolver.resolve("ProfileActivity", "onItemClick", AutomationResolver.ResolverType.Method),
-                            AutomationResolver.merge(AutomationResolver.resolveObject("para3", new Class[]{int.class}), new AbstractMethodHook() {
+                            AutomationResolver.merge(AutomationResolver.resolveObject("onItemClick", new Class[]{int.class}), new AbstractMethodHook() {
                                 @Override
                                 protected void afterMethod(MethodHookParam param) {
                                     int id = (int) param.args[0];
@@ -148,8 +148,8 @@ private static Field headerItemField;
             if (loadClass.getChatActivityClass() != null && loadClass.getDrawableClass() != null) {
                 Class<?> ChatActivityClass$16 = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ChatActivity$16"), lpparam.classLoader);
                 if (ChatActivityClass$16 != null) {
-                    Class<?> conClass = XposedHelpers.findClassIfExists("android.content.Context", lpparam.classLoader);
-                    XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("9", new Class[]{conClass}), new AbstractMethodHook() {
+
+                    XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) throws Throwable {
                             Object ChatActivityInstance = param.thisObject;
@@ -162,7 +162,7 @@ private static Field headerItemField;
                                 if (lazilyAddSubItemMethod == null) {
                                     lazilyAddSubItemMethod = headerItem.getClass().getDeclaredMethod(
                                             AutomationResolver.resolve("ActionBarMenuItem", "lazilyAddSubItem", AutomationResolver.ResolverType.Method),
-                                            AutomationResolver.resolveObject("para7", new Class[]{int.class, int.class, CharSequence.class}));
+                                            AutomationResolver.resolveObject("lazilyAddSubItem", new Class[]{int.class, int.class, CharSequence.class}));
                                     lazilyAddSubItemMethod.setAccessible(true);
                                 }
                                 int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_go_up");

@@ -1,5 +1,6 @@
 package com.my.televip.Clients;
 
+import com.my.televip.loadClass;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -110,5 +111,13 @@ public class Teegra {
         classList.add(new ClassInfo("org.telegram.ui.ProfileActivity$6", "org.telegram.ui.ProfileActivity$5"));
         classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$12"));
         methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
+
+        ParameterResolver.register("item",new Class[]{int.class, String.class,int.class});
+
+
+        ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{long.class,ArrayList.class, boolean.class, boolean.class});
+        ParameterResolver.register("markMessagesAsDeleted",new Class[]{long.class, java.util.ArrayList.class, boolean.class, boolean.class,boolean.class});
+
+        ParameterResolver.register("deleteMessages",new Class[]{java.util.ArrayList.class, java.util.ArrayList.class, loadClass.getTLRPC$EncryptedChatClass(), long.class, boolean.class, boolean.class, boolean.class, long.class, loadClass.getTLObjectClass()});
     }
 }

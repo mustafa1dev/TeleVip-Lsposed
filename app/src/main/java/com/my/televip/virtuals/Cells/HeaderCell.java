@@ -22,7 +22,7 @@ public class HeaderCell {
     }
 
     public void setText(CharSequence text){
-        XposedHelpers.callMethod(headerCell, "setText", text);
+        XposedHelpers.callMethod(headerCell, AutomationResolver.resolve("HeaderCell","setText", AutomationResolver.ResolverType.Method), text);
     }
 
 }

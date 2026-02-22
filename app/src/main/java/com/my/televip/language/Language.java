@@ -40,6 +40,7 @@ public class Language {
     public static String Join;
     public static String DontShowAgain;
     public static String RestartApp;
+    public static String Restartrequired;
     public static String strTelevip="TeleVip";
 
     public static void init(){
@@ -85,6 +86,7 @@ public class Language {
             Join = "انضم";
             DontShowAgain = "لا تظهر مرة اخرى";
             RestartApp = "إعادة تشغيل التطبيق";
+            Restartrequired = "إعادة التشغيل مطلوبة";
         }else if (language.equals("zh")) {
             ToTheBeginning = "跳转到第一条消息";
             ToTheMessage = "跳转到消息";
@@ -121,6 +123,7 @@ public class Language {
             Join = "加入";
             DontShowAgain = "不再显示";
             RestartApp = "重新启动应用";
+            Restartrequired = "需要重新启动";
         }else {
             ToTheBeginning = "Go to First Message";
             ToTheMessage="To The Message";
@@ -157,6 +160,7 @@ public class Language {
             Join = "Join";
             DontShowAgain = "Don't show again";
             RestartApp = "Restart App";
+            Restartrequired = "Restart required";
         }
     }
 

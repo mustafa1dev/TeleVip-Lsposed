@@ -29,7 +29,7 @@ public class HideUpdateApp {
                 XposedHelpers.findAndHookMethod(
                         loadClass.getSharedConfigClass(),
                         AutomationResolver.resolve("SharedConfig", "setNewAppVersionAvailable", AutomationResolver.ResolverType.Method),
-                        AutomationResolver.merge(AutomationResolver.resolveObject("13", new Class[]{appUpdate}), new XC_MethodReplacement() {
+                        AutomationResolver.merge(AutomationResolver.resolveObject("setNewAppVersionAvailable", new Class[]{appUpdate}), new XC_MethodReplacement() {
                             @Override
                             protected Object replaceHookedMethod(MethodHookParam param) {
                                 return false;

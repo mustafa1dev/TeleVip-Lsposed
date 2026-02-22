@@ -21,7 +21,7 @@ public class HideStoryRead {
                 XposedHelpers.findAndHookMethod(
                         StoriesControllerClass,
                         AutomationResolver.resolve("StoriesController", "markStoryAsRead", AutomationResolver.ResolverType.Method),
-                        AutomationResolver.merge(AutomationResolver.resolveObject("1", new Class[]{classsStories$PeerStories, classStories$StoryItem, boolean.class}), new AbstractMethodHook() {
+                        AutomationResolver.merge(AutomationResolver.resolveObject("markStoryAsRead", new Class[]{classsStories$PeerStories, classStories$StoryItem, boolean.class}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
                                 param.setResult(false);

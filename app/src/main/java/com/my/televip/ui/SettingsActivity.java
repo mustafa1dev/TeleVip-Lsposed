@@ -21,6 +21,7 @@ import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.language.Language;
 import com.my.televip.loadClass;
+import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.ActiveTheme;
 import com.my.televip.virtuals.Cells.HeaderCell;
@@ -186,7 +187,7 @@ public class SettingsActivity {
             }
         });
 
-        XposedHelpers.findAndHookMethod(loadClass.getAndroidUtilitiesClass(), "isTablet", new AbstractMethodHook() {
+        XposedHelpers.findAndHookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities","isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 if (isSettings) {
@@ -226,7 +227,6 @@ public class SettingsActivity {
                     if (position == ghostModeRow) {
                         headerCell.cell.setText(Language.GhostModeSettings);
                     }
-
                     break;
                 case 1:
                     TextCheckCellHolder ch = (TextCheckCellHolder) holder;
@@ -235,17 +235,17 @@ public class SettingsActivity {
                     } else if (position == hideSeenGroupsRow) {
                         ch.cell.setTextAndCheck(Language.HideSeenGroups, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN_GROUP), false);
                     } else if (position == hideStoryViewRow) {
-                        ch.cell.setTextAndCheck(Language.HideStoryView, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ), false);
+                        ch.cell.setTextAndCheck(Language.HideStoryView, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ),false);
                     } else if (position == hideOnlineRow) {
-                        ch.cell.setTextAndCheck(Language.HideOnline, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE), false);
+                        ch.cell.setTextAndValueAndCheck(Language.HideOnline, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE), true, false);
                     } else if (position == hidePhoneRow) {
-                        ch.cell.setTextAndCheck(Language.HidePhone, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE), false);
+                        ch.cell.setTextAndValueAndCheck(Language.HidePhone, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE), true, false);
                     } else if (position == hideTypingRow) {
                         ch.cell.setTextAndCheck(Language.HideTyping, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING), false);
                     } else if (position == HideUpdateAppRow) {
-                        ch.cell.setTextAndCheck(Language.HideUpdateApp, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP), false);
+                        ch.cell.setTextAndValueAndCheck(Language.HideUpdateApp,Language.Restartrequired , FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP),true, false);
                     } else if (position == disableStoriesRow) {
-                        ch.cell.setTextAndCheck(Language.DisableStories, FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES), false);
+                        ch.cell.setTextAndValueAndCheck(Language.DisableStories, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES),true, false);
                     } else if (position == showDeletedMessagesRow) {
                         ch.cell.setTextAndCheck(Language.ShowDeletedMessages, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
                     } else if (position == preventMediaRow) {
@@ -255,7 +255,7 @@ public class SettingsActivity {
                     } else if (position == allowSavingvideosRow) {
                         ch.cell.setTextAndCheck(Language.AllowSavingvideos, FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
                     } else if (position == telegramPremiumRow) {
-                        ch.cell.setTextAndCheck(Language.TelegramPremium, FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM), false);
+                        ch.cell.setTextAndValueAndCheck(Language.TelegramPremium, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM),true, false);
                     }
                     ch.cell.getTextView().setLines(0);
                     ch.cell.getTextView().setMaxLines(0);

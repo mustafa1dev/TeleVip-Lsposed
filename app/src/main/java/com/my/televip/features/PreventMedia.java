@@ -14,13 +14,13 @@ private static Field messageOwnerField;
     public static void init() {
         try {
             if (loadClass.getChatActivityClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMessageRead", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("5", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), boolean.class}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMessageRead", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendSecretMessageRead", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         param.setResult(null);
                     }
                 }));
-                XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMediaDelete", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("6", new Class[]{com.my.televip.loadClass.getMessageObjectClass()}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMediaDelete", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendSecretMediaDelete", new Class[]{com.my.televip.loadClass.getMessageObjectClass()}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         param.setResult(null);
@@ -34,7 +34,7 @@ private static Field messageOwnerField;
 
                 Class<?> photoViewerproviderClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.PhotoViewer$PhotoViewerProvider"), lpparam.classLoader);
 
-                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("7", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), photoViewerproviderClass, java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("PhotoViewer$PhotoViewerProvider", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), photoViewerproviderClass, java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) throws Throwable {
                         param.args[2] = null;
@@ -57,7 +57,7 @@ private static Field messageOwnerField;
                         }
                     }
                 }));
-                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "closePhoto", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("para6", new Class[]{boolean.class, boolean.class}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "closePhoto", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("closePhoto", new Class[]{boolean.class, boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         Object thisObject = param.thisObject;
