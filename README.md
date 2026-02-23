@@ -26,6 +26,8 @@ A module for modifying Telegram with the following features:
 
 12. Disable Stories
 
+13. Hide Update App
+
 There are additional features that are not listed here.
 
 # Support clients
