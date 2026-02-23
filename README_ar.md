@@ -20,23 +20,24 @@
 توجد ميزات إضافية لم يتم ذكرها هنا.
 
 # التطبيقات المدعومة
-1. Telegram 12.4.1 (65102)
-2. Plus 12.3.1.2 (21950)
+1. Telegram 12.4.3 (65272)
+2. Plus 12.3.1.3 (21970)
 3. TG Connect 11.13.1 (11130109)
-4. Nagram 12.3.1 (1228)
+4. Nagram 12.4.1 (1230)
 5. Skygram 10.20.6 (40639) TeleVip 1.4.6
-6. iMe 12.3.2 (12030202)
-7. iMe Direct 12.3.2 (12030229)
+6. iMe 12.3.3 (12030322)
+7. iMe Direct 12.3.3 (12030319)
 8. X Plus 12.0.1 (61669)
 9. Cherrygram 11.9.1 (59100) TeleVip 2.0
-10. Nicegram 1.50.1 (1989)
-11. Telegram web 12.4.1 (65109)
-12. Telegram Beta 12.4.1 (65109)
+10. Nicegram 1.51.1 (2009)
+11. Telegram web 12.4.3 (65279)
+12. Telegram Beta 12.4.3 (65279)
 13. Nekogram 11.5.3S (55150) TeleVip 1.4.6
 14. ForkGram 12.3.2.0 (638608)
-15. ForkClient Beta 12.3.2.0 (638609)
-16. NagramX 12.3.1-905e275 (1235)
+15. ForkClient Beta 12.4.2.0 (651109)
+16. NagramX 12.3.1-d662051 (1236)
 17. Teegra 10.3.2 (41469)
+18. Telegraph 12.3.1.1 (63862)
 
 # تيليجرام
 
