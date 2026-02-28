@@ -9,7 +9,7 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class LocaleController {
 
-    public Object localeController;
+    Object localeController;
 
     public LocaleController(){
         localeController = XposedHelpers.callStaticMethod(loadClass.getLocaleControllerClass(), AutomationResolver.resolve("LocaleController", "getInstance", AutomationResolver.ResolverType.Method));

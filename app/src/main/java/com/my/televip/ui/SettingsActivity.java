@@ -51,7 +51,10 @@ public class SettingsActivity {
     private int HideUpdateAppRow;
 
     private int disableStoriesRow;
+    private int disableNumberRoundingRow;
+
     private int showDeletedMessagesRow;
+    private int SaveEditsHistoryRow;
     private int preventMediaRow;
     private int unlockAllRestrictedRow;
     private int allowSavingvideosRow;
@@ -79,7 +82,10 @@ public class SettingsActivity {
         HideUpdateAppRow = rowCount++;
 
         disableStoriesRow = rowCount++;
+        disableNumberRoundingRow = rowCount++;
+
         showDeletedMessagesRow = rowCount++;
+        SaveEditsHistoryRow = rowCount++;
         preventMediaRow = rowCount++;
         unlockAllRestrictedRow = rowCount++;
         allowSavingvideosRow = rowCount++;
@@ -205,8 +211,8 @@ public class SettingsActivity {
             if (position == ghostModeRow) {
                 return 0;
             } else if (position == hideSeenUserRow || position == hideSeenGroupsRow || position == hideStoryViewRow || position == hideOnlineRow ||
-                    position == hidePhoneRow || position == hideTypingRow || position == disableStoriesRow || position == showDeletedMessagesRow || position == preventMediaRow ||
-                    position == unlockAllRestrictedRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow) {
+                    position == hidePhoneRow || position == hideTypingRow || position == disableStoriesRow || disableNumberRoundingRow == position || position == showDeletedMessagesRow || position == preventMediaRow ||
+                    position == unlockAllRestrictedRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow || position == SaveEditsHistoryRow) {
                 return 1;
             } else if (position == btnChannelRow || position == btnRestartAppRow) {
                 return 2;
@@ -246,8 +252,12 @@ public class SettingsActivity {
                         ch.cell.setTextAndValueAndCheck(Language.HideUpdateApp,Language.Restartrequired , FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP),true, false);
                     } else if (position == disableStoriesRow) {
                         ch.cell.setTextAndValueAndCheck(Language.DisableStories, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES),true, false);
+                    } else if (position == disableNumberRoundingRow) {
+                        ch.cell.setTextAndValueAndCheck(Language.DisableNumberRounding, "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_Disable_Number_Rounding),true, false);
                     } else if (position == showDeletedMessagesRow) {
                         ch.cell.setTextAndCheck(Language.ShowDeletedMessages, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
+                    } else if (position == SaveEditsHistoryRow) {
+                        ch.cell.setTextAndCheck(Language.SaveEditsHistory, FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History), false);
                     } else if (position == preventMediaRow) {
                         ch.cell.setTextAndCheck(Language.PreventMedia, FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA), false);
                     } else if (position == unlockAllRestrictedRow) {
@@ -326,6 +336,9 @@ public class SettingsActivity {
                     } else if (pos == showDeletedMessagesRow) {
                         FeatureManager.putBoolean(FeatureManager.KEY_SHOW_DELETED, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_SHOW_DELETED);
+                    } else if (pos == SaveEditsHistoryRow) {
+                        FeatureManager.putBoolean(FeatureManager.KEY_Save_Edits_History, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_Save_Edits_History);
                     } else if (pos == preventMediaRow) {
                         FeatureManager.putBoolean(FeatureManager.KEY_PREVENT_MEDIA, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_PREVENT_MEDIA);
@@ -338,6 +351,9 @@ public class SettingsActivity {
                     } else if (pos == telegramPremiumRow) {
                         FeatureManager.putBoolean(FeatureManager.KEY_TELE_PREMIUM, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_TELE_PREMIUM);
+                    } else if (pos == disableNumberRoundingRow) {
+                        FeatureManager.putBoolean(FeatureManager.KEY_Disable_Number_Rounding, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_Disable_Number_Rounding);
                     }
 
                 } else if (viewType == 2) {

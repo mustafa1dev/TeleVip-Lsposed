@@ -26,6 +26,7 @@ public class MainHook implements IXposedHookLoadPackage {
     public boolean isStart;
     @SuppressLint("StaticFieldLeak")
     public static Activity launchActivity;
+    public static int id = 8353847;
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {

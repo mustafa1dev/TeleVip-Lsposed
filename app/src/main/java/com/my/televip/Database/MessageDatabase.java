@@ -10,7 +10,7 @@ import com.my.televip.language.Language;
 
 import java.io.File;
 
-public class SaveEditMessageDatabase extends SQLiteOpenHelper {
+public class MessageDatabase extends SQLiteOpenHelper {
         private static final String DATABASE_NAME = "SaveMessages.db";
         private static final int DATABASE_VERSION = 1;
 
@@ -26,7 +26,7 @@ public class SaveEditMessageDatabase extends SQLiteOpenHelper {
                         COLUMN_MESSAGE + " TEXT " +
                         ");";
 
-        public SaveEditMessageDatabase(Context context) {
+        public MessageDatabase(Context context) {
             super(context, getDataBasePath(context), null, DATABASE_VERSION);
         }
 
@@ -49,7 +49,6 @@ public class SaveEditMessageDatabase extends SQLiteOpenHelper {
             onCreate(db);
         }
 
-        // إضافة رسالة جديدة
         public void addMessage(long id, int msgId, String message) {
 
             if (!searchMessage(id,msgId,message)) {
@@ -66,7 +65,6 @@ public class SaveEditMessageDatabase extends SQLiteOpenHelper {
             }
         }
 
-        // البحث الدقيق عن رسالة (تطابق كامل لجميع الحقول)
         public boolean searchMessage(long id, int msgId, String message) {
             SQLiteDatabase db = this.getReadableDatabase();
             String query = "SELECT * FROM " + TABLE_MESSAGES +
@@ -85,4 +83,19 @@ public class SaveEditMessageDatabase extends SQLiteOpenHelper {
             db.close();
             return exists;
         }
+
+    public String getMessage(long id, int msgId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
+                " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
+        String message = null;
+        if (cursor.moveToFirst()) {
+            message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+        }
+        cursor.close();
+        db.close();
+        return message; // يرجع null إذا ما وجد
+    }
 }

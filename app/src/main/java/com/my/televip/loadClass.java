@@ -9,11 +9,11 @@ import com.my.televip.obfuscate.AutomationResolver;
 import de.robv.android.xposed.XposedHelpers;
 
 public class loadClass {
-    private static  Class<?> ChatActivityClass;
-    private static  Class<?> MessageObjectClass;
-    private static  Class<?> ProfileActivityClass;
-    private static  Class<?> BaseFragmentClass;
-    private static  Class<?> drawableClass;
+    private static Class<?> ChatActivityClass;
+    private static Class<?> MessageObjectClass;
+    private static Class<?> ProfileActivityClass;
+    private static Class<?> BaseFragmentClass;
+    private static Class<?> drawableClass;
     private static Class<?> UserObjectClass;
     private static Class<?> MessagesControllerClass;
     private static Class<?> MessagesStorageClass;
@@ -29,7 +29,32 @@ public class loadClass {
     private static Class<?> textSettingsCellClass;
     private static Class<?> TLRPC$EncryptedChatClass;
     private static Class<?> TLObjectClass;
+    private static Class<?> PeerStoriesView$StoryItemHoldeClass;
+    private static Class<?> TLRPC$UserClass;
+    private static Class<?> StoriesControllerClass;
+    private static Class<?> FileLoadOperationClass;
+    private static Class<?> ConnectionsManagerClass;
+    private static Class<?> TL_account$updateStatusClass;
+    private static Class<?> RequestDelegateClass;
+    private static Class<?> ApplicationLoaderClass;
+    private static Class<?> RequestDelegateTimestampClass;
+    private static Class<?> QuickAckDelegateClass;
+    private static Class<?> WriteToSocketDelegateClass;
     private static Class<?> ContextClass;
+    private static Class<?> BaseControllerClass;
+    private static Class<?> MessagesController$ReadTaskClass;
+    private static Class<?> TL_stories$StoryItemClass;
+    private static Class<?> TL_stories$PeerStoriesClass;
+    private static Class<?> ChatActivity$ChatActivityEnterViewDelegateClass;
+    private static Class<?> TLRPC$TL_help_appUpdateClass;
+    private static Class<?> TLRPC$TL_updateDeleteMessagesClass;
+    private static Class<?> TLRPC$TL_updateDeleteChannelMessagesClass;
+    private static Class<?> ChatMessageCellClass;
+    private static Class<?> DownloadControllerClass;
+    private static Class<?> TLRPC$MessageClass;
+    private static Class<?> SecretMediaViewerClass;
+    private static Class<?> PhotoViewer$PhotoViewerProviderClass;
+    private static Class<?> UserConfigClass;
 
     //Context
     private static Context applicationContext;
@@ -97,10 +122,18 @@ public class loadClass {
         return ThemeClass;
     }
 
+
+    public static Class<?> getApplicationLoaderClass() {
+        if (ApplicationLoaderClass == null) {
+            ApplicationLoaderClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.ApplicationLoader"), lpparam.classLoader);
+        }
+        return ApplicationLoaderClass;
+    }
+
     public static Context getApplicationContext() {
         if (applicationContext == null) {
                     applicationContext = (Context) XposedHelpers.getStaticObjectField(
-                    XposedHelpers.findClass(AutomationResolver.resolve("org.telegram.messenger.ApplicationLoader"), lpparam.classLoader),
+                    getApplicationLoaderClass(),
                     AutomationResolver.resolve("ApplicationLoader", "applicationContext", AutomationResolver.ResolverType.Field)
             );
         }
@@ -189,6 +222,174 @@ public class loadClass {
             ContextClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("android.content.Context"), lpparam.classLoader);
         }
         return ContextClass;
+    }
+
+    public static Class<?> getPeerStoriesView$StoryItemHoldeClass() {
+        if (PeerStoriesView$StoryItemHoldeClass == null) {
+            PeerStoriesView$StoryItemHoldeClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Stories.PeerStoriesView$StoryItemHolder"), lpparam.classLoader);
+        }
+        return PeerStoriesView$StoryItemHoldeClass;
+    }
+
+    public static Class<?> getTLRPC$UserClass() {
+        if (TLRPC$UserClass == null) {
+            TLRPC$UserClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$User"), lpparam.classLoader);
+        }
+        return TLRPC$UserClass;
+    }
+
+    public static Class<?> getStoriesControllerClass() {
+        if (StoriesControllerClass == null) {
+            StoriesControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Stories.StoriesController"), lpparam.classLoader);
+        }
+        return StoriesControllerClass;
+    }
+
+    public static Class<?> getFileLoadOperationClass() {
+        if (FileLoadOperationClass == null) {
+            FileLoadOperationClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.FileLoadOperation"), lpparam.classLoader);
+        }
+        return FileLoadOperationClass;
+    }
+
+    public static Class<?> getConnectionsManagerClass() {
+        if (ConnectionsManagerClass == null) {
+            ConnectionsManagerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.ConnectionsManager"), lpparam.classLoader);
+        }
+        return ConnectionsManagerClass;
+    }
+
+    public static Class<?> getTL_account$updateStatusClass() {
+        if (TL_account$updateStatusClass == null) {
+            TL_account$updateStatusClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.tl.TL_account$updateStatus"), lpparam.classLoader);
+        }
+        return TL_account$updateStatusClass;
+    }
+
+    public static Class<?> getRequestDelegateClass() {
+        if (RequestDelegateClass == null) {
+            RequestDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.RequestDelegate"), lpparam.classLoader);
+        }
+        return RequestDelegateClass;
+    }
+
+    public static Class<?> getRequestDelegateTimestampClass() {
+        if (RequestDelegateTimestampClass == null) {
+            RequestDelegateTimestampClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.RequestDelegateTimestamp"), lpparam.classLoader);
+        }
+        return RequestDelegateTimestampClass;
+    }
+
+    public static Class<?> getQuickAckDelegateClass() {
+        if (QuickAckDelegateClass == null) {
+            QuickAckDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.QuickAckDelegate"), lpparam.classLoader);
+        }
+        return QuickAckDelegateClass;
+    }
+
+    public static Class<?> getWriteToSocketDelegateClass() {
+        if (WriteToSocketDelegateClass == null) {
+            WriteToSocketDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.WriteToSocketDelegate"), lpparam.classLoader);
+        }
+        return WriteToSocketDelegateClass;
+    }
+
+    public static Class<?> getBaseControllerClass() {
+        if (BaseControllerClass == null) {
+            BaseControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.BaseController"), lpparam.classLoader);
+        }
+        return BaseControllerClass;
+    }
+
+    public static Class<?> getMessagesController$ReadTaskClass() {
+        if (MessagesController$ReadTaskClass == null) {
+            MessagesController$ReadTaskClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.MessagesController$ReadTask"), lpparam.classLoader);
+        }
+        return MessagesController$ReadTaskClass;
+    }
+
+    public static Class<?> getTL_stories$StoryItemClass() {
+        if (TL_stories$StoryItemClass == null) {
+            TL_stories$StoryItemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.tl.TL_stories$StoryItem"), lpparam.classLoader);
+        }
+        return TL_stories$StoryItemClass;
+    }
+
+    public static Class<?> getTL_stories$PeerStoriesClass() {
+        if (TL_stories$PeerStoriesClass == null) {
+            TL_stories$PeerStoriesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.tl.TL_stories$PeerStories"), lpparam.classLoader);
+        }
+        return TL_stories$PeerStoriesClass;
+    }
+
+    public static Class<?> getChatActivity$ChatActivityEnterViewDelegateClass() {
+        if (ChatActivity$ChatActivityEnterViewDelegateClass == null) {
+            ChatActivity$ChatActivityEnterViewDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate"), lpparam.classLoader);
+        }
+        return ChatActivity$ChatActivityEnterViewDelegateClass;
+    }
+
+    public static Class<?> getTLRPC$TL_help_appUpdateClass() {
+        if (TLRPC$TL_help_appUpdateClass == null) {
+            TLRPC$TL_help_appUpdateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_help_appUpdate"), lpparam.classLoader);
+        }
+        return TLRPC$TL_help_appUpdateClass;
+    }
+
+    public static Class<?> getTLRPC$TL_updateDeleteMessagesClass() {
+        if (TLRPC$TL_updateDeleteMessagesClass == null) {
+            TLRPC$TL_updateDeleteMessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_updateDeleteMessages"), lpparam.classLoader);
+        }
+        return TLRPC$TL_updateDeleteMessagesClass;
+    }
+
+    public static Class<?> getTLRPC$TL_updateDeleteChannelMessagesClass() {
+        if (TLRPC$TL_updateDeleteChannelMessagesClass == null) {
+            TLRPC$TL_updateDeleteChannelMessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_updateDeleteChannelMessages"), lpparam.classLoader);
+        }
+        return TLRPC$TL_updateDeleteChannelMessagesClass;
+    }
+
+    public static Class<?> getChatMessageCellClass() {
+        if (ChatMessageCellClass == null) {
+            ChatMessageCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.ChatMessageCell"), lpparam.classLoader);
+        }
+        return ChatMessageCellClass;
+    }
+
+    public static Class<?> getDownloadControllerClass() {
+        if (DownloadControllerClass == null) {
+            DownloadControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.DownloadController"), lpparam.classLoader);
+        }
+        return DownloadControllerClass;
+    }
+
+    public static Class<?> getTLRPC$MessageClass() {
+        if (TLRPC$MessageClass == null) {
+            TLRPC$MessageClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$Message"), lpparam.classLoader);
+        }
+        return TLRPC$MessageClass;
+    }
+
+    public static Class<?> getSecretMediaViewerClass() {
+        if (SecretMediaViewerClass == null) {
+            SecretMediaViewerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.SecretMediaViewer"), lpparam.classLoader);
+        }
+        return SecretMediaViewerClass;
+    }
+
+    public static Class<?> getPhotoViewer$PhotoViewerProviderClass() {
+        if (PhotoViewer$PhotoViewerProviderClass == null) {
+            PhotoViewer$PhotoViewerProviderClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.PhotoViewer$PhotoViewerProvider"), lpparam.classLoader);
+        }
+        return PhotoViewer$PhotoViewerProviderClass;
+    }
+
+    public static Class<?> getUserConfigClass() {
+        if (UserConfigClass == null) {
+            UserConfigClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.UserConfig"), lpparam.classLoader);
+        }
+        return UserConfigClass;
     }
 
 }

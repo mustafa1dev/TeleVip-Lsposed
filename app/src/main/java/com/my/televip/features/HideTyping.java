@@ -1,27 +1,30 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
-
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class HideTyping {
 
+    public static boolean isEnable = false;
+
     public static void init() {
+        isEnable = true;
+
         try {
-            Class<?> chatActivityEnterViewDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate"), lpparam.classLoader);
-            if (chatActivityEnterViewDelegateClass != null) {
+            if (loadClass.getChatActivity$ChatActivityEnterViewDelegateClass() != null) {
                 XposedHelpers.findAndHookMethod(
-                        chatActivityEnterViewDelegateClass,
+                        loadClass.getChatActivity$ChatActivityEnterViewDelegateClass(),
                         AutomationResolver.resolve("ChatActivity$ChatActivityEnterViewDelegate", "needSendTyping", AutomationResolver.ResolverType.Method),
                         new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                //XposedBridge.log("needSendTyping method is blocked.");
-                                param.setResult(null);
+                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING)) {
+                                    param.setResult(null);
+                                }
                             }
                         });
             }

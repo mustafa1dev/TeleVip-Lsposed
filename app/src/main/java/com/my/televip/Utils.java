@@ -1,7 +1,5 @@
 package com.my.televip;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,7 +23,7 @@ public class Utils {
 
     public static void log(Throwable throwable)
     {
-        XposedBridge.log(throwable);
+        XposedBridge.log("[TeleVip] pkgName: "+ pkgName +" " +throwable);
     }
 
     public static <T> ArrayList<T> castList(Object obj, Class<T> clazz)

@@ -77,12 +77,11 @@ public class addItem {
 
                     int color1 = 0xFFF46F6F;
                     int color2 = 0xFFDF5555;
-                    int id = 8353847;
 
-                    Object uitem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), id,
+                    Object uitem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), MainHook.id,
                             color1,
                             color2,
-                            id,
+                            MainHook.id,
                             GhostMode,
                             byMustafa);
                     if (id_item_add == -1) {
@@ -114,7 +113,7 @@ public class addItem {
             @Override
             protected void afterMethod(MethodHookParam param) {
                 int id = (int) param.args[2];
-                if (id == 8353847) {
+                if (id == MainHook.id) {
                     ImageView iconView = (ImageView) XposedHelpers.getObjectField(param.thisObject, "iconView") ;
                     iconView.setImageDrawable(ghostDrawable);
                 }
@@ -132,7 +131,7 @@ public class addItem {
                 Object uitem = param.args[0];
                 if (uitem != null){
                     int id = XposedHelpers.getIntField(uitem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
-                    if (id == 8353847) {
+                    if (id == MainHook.id) {
                         Object SettingsActivity = param.thisObject;
                         Context applicationContext = (Context) XposedHelpers.callMethod(SettingsActivity, AutomationResolver.resolve("SettingsActivity","getContext", AutomationResolver.ResolverType.Method));
 
@@ -172,18 +171,17 @@ public class addItem {
                             Language.init();
                             Object newItem;
                             if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                                newItem = itemConstructor.newInstance(8353847, GhostMode, 8353847, true, null, "");
+                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, MainHook.id, true, null, "");
                             } else {
-                                newItem = itemConstructor.newInstance(8353847, GhostMode, EventType.IconSettings());
+                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.IconSettings());
                             }
-
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
-                                if (!ClientChecker.check(ClientChecker.ClientType.TelegramPlus)) {
+                                if (!ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
                                     typedItems.add(newItem);
                                 } else {
-                                    typedItems.add(10, newItem);
+                                    typedItems.add(0, newItem);
                                 }
                             }
                         }
@@ -207,7 +205,7 @@ public class addItem {
                         }
 
                         int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
-                        if (id == 8353847) {
+                        if (id == MainHook.id) {
 
                             Object drawerLayoutContainer = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
                             if (drawerLayoutContainer != null) {

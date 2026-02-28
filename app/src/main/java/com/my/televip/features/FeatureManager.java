@@ -28,13 +28,15 @@ public class FeatureManager {
     public static final String KEY_PREVENT_MEDIA = "PreventMedia";
     public static final String KEY_HIDE_PHONE = "HidePhone";
     public static final String KEY_SHOW_DELETED = "ShowDeletedMessages";
+    public static final String KEY_Save_Edits_History = "SaveEditsHistory";
     public static final String KEY_DISABLE_STORIES = "DisableStories";
+    public static final String KEY_Disable_Number_Rounding = "DisableNumberRounding";
 
     public static boolean getBoolean(String key) {
         try {
             return sharedPreferences.getBoolean(key, false);
         } catch (ClassCastException e) {
-            // حذف القيمة القديمة الخاطئة
+
             sharedPreferences.edit().remove(key).apply();
             return false;
         }
@@ -98,8 +100,6 @@ public class FeatureManager {
         }
         if (getBoolean(KEY_SHOW_DELETED)) {
             NEWAntiRecall.initProcessing();
-            NEWAntiRecall.init(lpparam.classLoader);
-            NEWAntiRecall.initAutoDownload(lpparam.classLoader);
         }
         if (getBoolean(KEY_DISABLE_STORIES)) {
             DisableStories.init();
@@ -110,9 +110,14 @@ public class FeatureManager {
         if (getBoolean(KEY_HIDE_UPDATE_APP)) {
             HideUpdateApp.init();
         }
+        if (getBoolean(KEY_Disable_Number_Rounding)) {
+            DisableNumberRounding.init();
+        }
+        if (getBoolean(KEY_Save_Edits_History)) {
+            SaveEditsHistory.init();
+        }
 
         DownloadSpeed.init();
-        //SaveEditMessage.init();
 
         NEWAntiRecall.initUI(lpparam.classLoader);
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
@@ -125,32 +130,34 @@ public class FeatureManager {
 
     public static void readFeature(String key) {
 
-        if (key.equals(KEY_TELE_PREMIUM) && getBoolean(key)) {
+        if (key.equals(KEY_TELE_PREMIUM) && getBoolean(key) && !TelePremium.isEnable) {
             TelePremium.init();
-        } else if (key.equals(KEY_HIDE_SEEN_PRIVATE) && getBoolean(key) || key.equals(KEY_HIDE_SEEN_GROUP) && getBoolean(key)) {
+        } else if ((key.equals(KEY_HIDE_SEEN_PRIVATE) && getBoolean(key) || key.equals(KEY_HIDE_SEEN_GROUP) && getBoolean(key)) && !HideSeen.isEnable ) {
             HideSeen.init();
-        } else if (key.equals(KEY_HIDE_STORY_READ) && getBoolean(key)) {
+        } else if (key.equals(KEY_HIDE_STORY_READ) && getBoolean(key) && !HideStoryRead.isEnable) {
             HideStoryRead.init();
-        } else if (key.equals(KEY_HIDE_TYPING) && getBoolean(key)) {
+        } else if (key.equals(KEY_HIDE_TYPING) && getBoolean(key) && !HideTyping.isEnable) {
             HideTyping.init();
-        } else if (key.equals(KEY_UNLOCK_CHANNEL) && getBoolean(key)) {
+        } else if (key.equals(KEY_UNLOCK_CHANNEL) && getBoolean(key) && !UnlockChannelFeature.isEnable) {
             UnlockChannelFeature.init();
-        } else if (key.equals(KEY_ALLOW_SAVE_GALLERY) && getBoolean(key)) {
+        } else if (key.equals(KEY_ALLOW_SAVE_GALLERY) && getBoolean(key) && !AllowSaveToGallery.isEnable) {
             AllowSaveToGallery.init();
-        } else if (key.equals(KEY_HIDE_ONLINE) && getBoolean(key)) {
+        } else if (key.equals(KEY_HIDE_ONLINE) && getBoolean(key) && !HideOnline.isEnable) {
             HideOnline.init();
-        } else if (key.equals(KEY_PREVENT_MEDIA) && getBoolean(key)) {
+        } else if (key.equals(KEY_PREVENT_MEDIA) && getBoolean(key) && !PreventMedia.isEnable) {
             PreventMedia.init();
-        } else if (key.equals(KEY_SHOW_DELETED) && getBoolean(key)) {
+        } else if (key.equals(KEY_SHOW_DELETED) && getBoolean(key) && !NEWAntiRecall.isEnable) {
             NEWAntiRecall.initProcessing();
-            NEWAntiRecall.init(lpparam.classLoader);
-            NEWAntiRecall.initAutoDownload(lpparam.classLoader);
-        } else if (key.equals(KEY_DISABLE_STORIES) && getBoolean(key)) {
+        } else if (key.equals(KEY_DISABLE_STORIES) && getBoolean(key) && !DisableStories.isEnable) {
             DisableStories.init();
-        } else if (key.equals(KEY_HIDE_PHONE) && getBoolean(key)) {
+        } else if (key.equals(KEY_HIDE_PHONE) && getBoolean(key) && !HidePhone.isEnable) {
             HidePhone.init();
-        } else if (key.equals(KEY_HIDE_UPDATE_APP) && getBoolean(key)) {
+        } else if (key.equals(KEY_HIDE_UPDATE_APP) && getBoolean(key) && !HideUpdateApp.isEnable) {
             HideUpdateApp.init();
+        } else if (key.equals(KEY_Disable_Number_Rounding) && getBoolean(key) && !DisableNumberRounding.isEnable) {
+            DisableNumberRounding.init();
+        } else if (key.equals(KEY_Save_Edits_History) && getBoolean(key) && !SaveEditsHistory.isEnable) {
+            SaveEditsHistory.init();
         }
     }
 

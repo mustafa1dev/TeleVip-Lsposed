@@ -1,67 +1,75 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
-
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+
 import java.lang.reflect.Field;
+
 import de.robv.android.xposed.XposedHelpers;
 
 public class PreventMedia {
 private static Field messageOwnerField;
+    public static boolean isEnable = false;
+
     public static void init() {
+        isEnable = true;
+
         try {
             if (loadClass.getChatActivityClass() != null) {
                 XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMessageRead", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendSecretMessageRead", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        param.setResult(null);
+                        if (FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA)) {
+                            param.setResult(null);
+                        }
                     }
                 }));
                 XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "sendSecretMediaDelete", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendSecretMediaDelete", new Class[]{com.my.televip.loadClass.getMessageObjectClass()}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        param.setResult(null);
+                        if (FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA)) {
+                            param.setResult(null);
+                        }
                     }
                 }));
             }
 
-            Class<?> SecretMediaViewerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.SecretMediaViewer"), lpparam.classLoader);
+            if (loadClass.getSecretMediaViewerClass() != null) {
 
-            if (SecretMediaViewerClass != null) {
-
-                Class<?> photoViewerproviderClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.PhotoViewer$PhotoViewerProvider"), lpparam.classLoader);
-
-                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("PhotoViewer$PhotoViewerProvider", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), photoViewerproviderClass, java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getSecretMediaViewerClass(), AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("PhotoViewer$PhotoViewerProvider", new Class[]{com.my.televip.loadClass.getMessageObjectClass(), loadClass.getPhotoViewer$PhotoViewerProviderClass(), java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) throws Throwable {
-                        param.args[2] = null;
-                        param.args[3] = null;
-                        // الحصول على كائن ChatActivity
-                        Object forwardingMessage = param.args[0];
+                        if (FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA)) {
+                            param.args[2] = null;
+                            param.args[3] = null;
 
-                        if (forwardingMessage != null) {
-                            // الوصول إلى الحقل messageOwner داخل forwardingMessage
-                            Class<?> forwardingMessageClass = forwardingMessage.getClass();
-                            if (messageOwnerField == null) {
-                                messageOwnerField = forwardingMessageClass.getDeclaredField(AutomationResolver.resolve("MessageObject", "messageOwner", AutomationResolver.ResolverType.Field));
-                                messageOwnerField.setAccessible(true);
-                            }
-                            Object messageOwner = messageOwnerField.get(forwardingMessage);
+                            Object forwardingMessage = param.args[0];
 
-                            if (messageOwner != null) {
-                                XposedHelpers.setObjectField(messageOwner, AutomationResolver.resolve("TLRPC$Message", "ttl", AutomationResolver.ResolverType.Field), 0x7FFFFFFF);
+                            if (forwardingMessage != null) {
+                                Class<?> forwardingMessageClass = forwardingMessage.getClass();
+                                if (messageOwnerField == null) {
+                                    messageOwnerField = forwardingMessageClass.getDeclaredField(AutomationResolver.resolve("MessageObject", "messageOwner", AutomationResolver.ResolverType.Field));
+                                    messageOwnerField.setAccessible(true);
+                                }
+                                Object messageOwner = messageOwnerField.get(forwardingMessage);
+
+                                if (messageOwner != null) {
+                                    XposedHelpers.setObjectField(messageOwner, AutomationResolver.resolve("TLRPC$Message", "ttl", AutomationResolver.ResolverType.Field), 0x7FFFFFFF);
+                                }
                             }
                         }
                     }
                 }));
-                XposedHelpers.findAndHookMethod(SecretMediaViewerClass, AutomationResolver.resolve("SecretMediaViewer", "closePhoto", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("closePhoto", new Class[]{boolean.class, boolean.class}), new AbstractMethodHook() {
+
+                XposedHelpers.findAndHookMethod(loadClass.getSecretMediaViewerClass(), AutomationResolver.resolve("SecretMediaViewer", "closePhoto", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("closePhoto", new Class[]{boolean.class, boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        Object thisObject = param.thisObject;
-                        XposedHelpers.setObjectField(thisObject, AutomationResolver.resolve("SecretMediaViewer", "onClose", AutomationResolver.ResolverType.Field), null);
+                        if (FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA)) {
+                            Object thisObject = param.thisObject;
+                            XposedHelpers.setObjectField(thisObject, AutomationResolver.resolve("SecretMediaViewer", "onClose", AutomationResolver.ResolverType.Field), null);
+                        }
                     }
                 }));
             }

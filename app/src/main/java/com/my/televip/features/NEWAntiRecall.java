@@ -20,11 +20,11 @@ import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.structs.DeletedMessageInfo;
 import com.my.televip.utils.FieldUtils;
-import com.my.televip.virtuals.MessageObject;
 import com.my.televip.virtuals.OfficialChatMessageCell;
-import com.my.televip.virtuals.TLRPC;
+import com.my.televip.virtuals.tgnet.TLRPC;
 import com.my.televip.virtuals.Theme;
-import com.my.televip.virtuals.UserConfig;
+import com.my.televip.virtuals.messenger.UserConfig;
+import com.my.televip.virtuals.messenger.MessageObject;
 import com.my.televip.virtuals.nekogram.NekoChatMessageCell;
 
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-public class NEWAntiRecall extends Language {
+public class NEWAntiRecall {
     private static long lastVisibleTime = -1;
     private static MessageObject currentMessageObject;
     private static final Handler storage = new Handler(makeLooper("Storage"));
@@ -52,7 +52,9 @@ public class NEWAntiRecall extends Language {
 
     public static final boolean DEBUG_MODE=false;
 
-    public static Looper makeLooper(String str) {
+    public static boolean isEnable = false;
+
+        public static Looper makeLooper(String str) {
         HandlerThread handlerThread = new HandlerThread("TeleVip - " + str, Process.THREAD_PRIORITY_DISPLAY);
         handlerThread.start();
         return handlerThread.getLooper();
@@ -176,15 +178,15 @@ public class NEWAntiRecall extends Language {
 
     public static void initUI(ClassLoader classLoader)
     {
-        Class<?> chatMessageCell = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.ChatMessageCell"), classLoader);
-        if (chatMessageCell != null) {
-            XposedHelpers.findAndHookMethod(chatMessageCell, AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.resolve("org.telegram.messenger.MessageObject"), new AbstractMethodHook() {
+
+        if (loadClass.getChatMessageCellClass() != null) {
+            XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.resolve("org.telegram.messenger.MessageObject"), new AbstractMethodHook() {
                 @Override
                 protected void afterMethod(MethodHookParam param) {
                     try {
                             currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
                             lastVisibleTime = System.currentTimeMillis();
-                            String text = Configs.getAntiRecallText().isEmpty() ? (deleted): Configs.getAntiRecallText();
+                            String text = Configs.getAntiRecallText().isEmpty() ? (Language.deleted): Configs.getAntiRecallText();
                             Object msgObj = param.args[0];
                             if (msgObj == null)
                                 return;
@@ -241,7 +243,7 @@ public class NEWAntiRecall extends Language {
         }
     }
 
-    public static void init(ClassLoader classLoader)
+    public static void init()
     {
         if (loadClass.getMessagesControllerClass() != null) {
             Method[] messagesControllerMethods = loadClass.getMessagesControllerClass().getDeclaredMethods();
@@ -260,18 +262,17 @@ public class NEWAntiRecall extends Language {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         try {
-                                Class<?> TL_updateDeleteMessages = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_updateDeleteMessages"), classLoader);
-                                Class<?> TL_updateDeleteChannelMessages = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_updateDeleteChannelMessages"), classLoader);
+
                                 CopyOnWriteArrayList<Object> updates = new CopyOnWriteArrayList<>(Utils.castList(param.args[0], Object.class));
                                 if (!updates.isEmpty()) {
                                     ArrayList<Object> newUpdates = new ArrayList<>();
 
                                     for (Object item : updates) {
-                                        if (!item.getClass().equals(TL_updateDeleteChannelMessages) && !item.getClass().equals(TL_updateDeleteMessages))
+                                        if (!item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteChannelMessagesClass()) && !item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteMessagesClass()))
                                             newUpdates.add(item);
 
 
-                                        if (item.getClass().equals(TL_updateDeleteChannelMessages)) {
+                                        if (item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteChannelMessagesClass())) {
                                             TLRPC.TL_updateDeleteChannelMessages channelMessages = new TLRPC.TL_updateDeleteChannelMessages(item);
 
                                             Object dialogMessage = XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("MessagesController", "dialogMessage", AutomationResolver.ResolverType.Field));
@@ -288,7 +289,7 @@ public class NEWAntiRecall extends Language {
 
                                             markMessagesDeletedForController(param.thisObject, -channelMessages.getChannelID(), channelMessages.getMessages());
                                         }
-                                        if (item.getClass().equals(TL_updateDeleteMessages)) {
+                                        if (item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteMessagesClass())) {
 
                                             ArrayList<Integer> messages = new TLRPC.TL_updateDeleteMessages(item).getMessages();
                                             SparseArray<Object> dialogMessages = (SparseArray<Object>) XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("MessagesController", "dialogMessagesByIds", AutomationResolver.ResolverType.Field));
@@ -304,7 +305,7 @@ public class NEWAntiRecall extends Language {
                                             markMessagesDeletedForController(param.thisObject, DeletedMessageInfo.NOT_CHANNEL, messages);
                                         }
 
-                                        if (DEBUG_MODE && (item.getClass().equals(TL_updateDeleteMessages) || item.getClass().equals(TL_updateDeleteChannelMessages)))
+                                        if (DEBUG_MODE && (item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteMessagesClass()) || item.getClass().equals(loadClass.getTLRPC$TL_updateDeleteChannelMessagesClass())))
                                             Utils.log("Protected message! event: " + item.getClass());
                                     }
                                     param.args[0] = newUpdates;
@@ -323,7 +324,9 @@ public class NEWAntiRecall extends Language {
         }
     }
 
+
     public static void initProcessing() {
+        isEnable = true;
 
         if (loadClass.getMessagesStorageClass() != null) {
 
@@ -548,7 +551,7 @@ public class NEWAntiRecall extends Language {
                         AutomationResolver.resolve("MessagesController", "deleteMessages", AutomationResolver.ResolverType.Method),
                         AutomationResolver.merge(AutomationResolver.resolveObject("deleteMessages", new Class[]{java.util.ArrayList.class,
                                         java.util.ArrayList.class,
-                                        loadClass.getTLRPC$EncryptedChatClass(), // الفئة المحددة
+                                        loadClass.getTLRPC$EncryptedChatClass(),
                                         long.class,
                                         boolean.class,
                                         int.class,
@@ -590,14 +593,18 @@ public class NEWAntiRecall extends Language {
         } else {
             Utils.log("Not found NotificationCenter, " + Utils.issue);
         }
+
+        NEWAntiRecall.init();
+        NEWAntiRecall.initAutoDownload();
+
     }
 
-    public static void initAutoDownload(ClassLoader classLoader) {
-        Class<?> downloadController = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.DownloadController"), classLoader);
-        if (downloadController == null)
+    public static void initAutoDownload() {
+
+        if (loadClass.getDownloadControllerClass() == null)
             return;
 
-        XposedHelpers.findAndHookMethod(downloadController, AutomationResolver.resolve("DownloadController", "canDownloadMedia", AutomationResolver.ResolverType.Method), AutomationResolver.resolve("org.telegram.tgnet.TLRPC$Message"), new AbstractMethodHook() {
+        XposedHelpers.findAndHookMethod(loadClass.getDownloadControllerClass(), AutomationResolver.resolve("DownloadController", "canDownloadMedia", AutomationResolver.ResolverType.Method), loadClass.getTLRPC$MessageClass(), new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 TLRPC.Message message = new TLRPC.Message(param.args[0]);

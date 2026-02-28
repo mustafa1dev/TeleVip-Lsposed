@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.my.televip.ClientChecker;
+import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.language.Language;
@@ -112,12 +113,12 @@ private static Field headerItemField;
                                     FeatureManager.putLong("id", chatId);
 
                                     //noinspection JavaReflectionInvocation
-                                    addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(chatId));
+                                    addSubItemMethod.invoke(otherItem, MainHook.id, drawableResource, String.valueOf(chatId));
                                 } else if (user != null) {
 
                                     FeatureManager.putLong("id", userId);
                                     //noinspection JavaReflectionInvocation
-                                    addSubItemMethod.invoke(otherItem, 8353847, drawableResource, String.valueOf(userId));
+                                    addSubItemMethod.invoke(otherItem, MainHook.id, drawableResource, String.valueOf(userId));
                                 }
                             }
                         }
@@ -133,7 +134,7 @@ private static Field headerItemField;
                                 protected void afterMethod(MethodHookParam param) {
                                     int id = (int) param.args[0];
 
-                                    if (id == 8353847) {
+                                    if (id == MainHook.id) {
 
                                         long ID = FeatureManager.getLong("id");
 
@@ -169,7 +170,7 @@ private static Field headerItemField;
 
                                 Language.init();
                                 if (!ClientChecker.check(ClientChecker.ClientType.Cherrygram) && !ClientChecker.check(ClientChecker.ClientType.iMe) && !ClientChecker.check(ClientChecker.ClientType.iMeWeb) && !ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.XPlus) && !ClientChecker.check(ClientChecker.ClientType.forkgram) && !ClientChecker.check(ClientChecker.ClientType.forkgramBeta)) {
-                                    lazilyAddSubItemMethod.invoke(headerItem, 8353847, drawableResource, ToTheBeginning);
+                                    lazilyAddSubItemMethod.invoke(headerItem, MainHook.id, drawableResource, ToTheBeginning);
                                 }
                                 drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "player_new_order");
 
@@ -190,7 +191,7 @@ private static Field headerItemField;
                                     int id = (int) param.args[0];
                                     Object chatActivityInstance = param.thisObject;
                                     final Object chatActivity = XposedHelpers.getObjectField(chatActivityInstance, AutomationResolver.resolve("ChatActivity$13", "this$0", AutomationResolver.ResolverType.Field));
-                                    if (id == 8353847) {
+                                    if (id == MainHook.id) {
                                         XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "scrollToMessageId", AutomationResolver.ResolverType.Method), 1, 0, true, 0, true, 0);
 
                                     } else if (id == 8353848) {

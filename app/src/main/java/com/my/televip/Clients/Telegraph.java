@@ -3,6 +3,7 @@ package com.my.televip.Clients;
 import static com.my.televip.MainHook.lpparam;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
+import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
@@ -245,7 +246,7 @@ public class Telegraph {
                             String str = (String) XposedHelpers.getObjectField(mainMenuItem, "b");
                             int id = XposedHelpers.getIntField(mainMenuItem, "c");
 
-                            if (id == 8353847) {
+                            if (id == MainHook.id) {
                                 Object itemView = XposedHelpers.getObjectField(holder, "itemView");
                                 XposedHelpers.callMethod(itemView, "e", 0, str, EventType.IconSettings());
                                 XposedHelpers.callMethod(itemView, "setInfo", (Object) null);
