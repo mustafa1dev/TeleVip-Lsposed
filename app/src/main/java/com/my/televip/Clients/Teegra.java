@@ -108,10 +108,6 @@ public class Teegra {
     }
 
     public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ProfileActivity$6", "org.telegram.ui.ProfileActivity$5"));
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$12"));
-        methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
-
         ParameterResolver.register("item",new Class[]{int.class, String.class,int.class});
 
 

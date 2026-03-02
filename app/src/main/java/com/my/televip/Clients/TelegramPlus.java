@@ -105,9 +105,5 @@ public class TelegramPlus {
         }
     }
 
-    public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ProfileActivity$6", "org.telegram.ui.ProfileActivity$6"));
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$14"));
-        methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
-    }
+    public static void loadParameter() {}
 }

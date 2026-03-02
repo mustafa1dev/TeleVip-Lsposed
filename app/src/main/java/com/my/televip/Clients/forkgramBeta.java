@@ -104,8 +104,5 @@ public class forkgramBeta {
             return has;
         }
     }
-    public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$17"));
-        methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$7"));
-    }
+    public static void loadParameter() {}
 }

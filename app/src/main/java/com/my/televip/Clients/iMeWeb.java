@@ -106,9 +106,5 @@ public class iMeWeb {
         }
     }
 
-    public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ProfileActivity$6", "org.telegram.ui.ProfileActivity$7"));
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$31"));
-        methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$25"));
-    }
+    public static void loadParameter() {}
 }

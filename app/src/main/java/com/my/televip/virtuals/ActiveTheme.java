@@ -16,13 +16,13 @@ public class ActiveTheme {
                 activeTheme = !activeTheme;
                 return !activeTheme;
             }
-            // الحصول على الكائن الحالي من ThemeInfo
+
             Object currentThemeInfo = XposedHelpers.callStaticMethod(
                     loadClass.getThemeClass(),
                     AutomationResolver.resolve("Theme","getActiveTheme", AutomationResolver.ResolverType.Method));
 
             if (currentThemeInfo != null) {
-                // التحقق من قيمة isCurrentThemeDay
+
                 return !((boolean) XposedHelpers.callMethod(currentThemeInfo, AutomationResolver.resolve("Theme", "isDark", AutomationResolver.ResolverType.Method)));
             } else {
                 XposedBridge.log("getActiveTheme returned null.");

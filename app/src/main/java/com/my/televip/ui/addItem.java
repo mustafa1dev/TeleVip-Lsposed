@@ -173,12 +173,12 @@ public class addItem {
                             if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
                                 newItem = itemConstructor.newInstance(MainHook.id, GhostMode, MainHook.id, true, null, "");
                             } else {
-                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.IconSettings());
+                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.getIconSettings());
                             }
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
-                                if (!ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+                                if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
                                     typedItems.add(newItem);
                                 } else {
                                     typedItems.add(0, newItem);
@@ -237,6 +237,7 @@ public class addItem {
                 Utils.log("Failed to hook onCreateMethod! Reason: No method found, " + Utils.issue);
                 return;
             }
+
             XposedBridge.hookMethod(onCreateMethod, onCreateHook);
         }
 

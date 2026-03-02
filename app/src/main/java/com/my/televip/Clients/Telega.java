@@ -1,6 +1,5 @@
 package com.my.televip.Clients;
 
-import com.my.televip.loadClass;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -10,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class Nagram {
+public class Telega {
     private static final List<ClassInfo> classList = new ArrayList<>();
     private static final List<FieldInfo> fieldList = new ArrayList<>();
     private static final List<MethodInfo> methodList = new ArrayList<>();
+
 
     public static class ClassResolver
     {
@@ -103,15 +102,9 @@ public class Nagram {
             if (classes != null){
                 has = true;
             }
-
             return has;
         }
     }
 
-    public static void loadParameter() {
-        ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{ArrayList.class, boolean.class, int.class, int.class, long.class});
-
-        ParameterResolver.register("putMessages",new Class[]{int.class, int.class, int.class, long.class, long.class, loadClass.getTLRPC$messages_MessagesClass(), boolean.class});
-    }
-
+    public static void loadParameter() {}
 }

@@ -1,5 +1,8 @@
 package com.my.televip.Clients;
 
+import android.view.View;
+
+import com.my.televip.loadClass;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -106,6 +109,11 @@ public class Nicegram {
     }
 
     public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$13"));
+
+        ParameterResolver.register("fillMessageMenu",new Class[]{loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class});
+
+        ParameterResolver.register("processSelectedOption",new Class[]{int.class, View.class});
+
+
     }
 }

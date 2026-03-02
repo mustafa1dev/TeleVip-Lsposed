@@ -106,11 +106,6 @@ public class TGConnect {
     }
 
     public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$13"));
         classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
-
-
-        methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
-
     }
 }

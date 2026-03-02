@@ -9,11 +9,7 @@ import de.robv.android.xposed.XposedHelpers;
 public class EventType {
 
 
-    public static int IconSettings() {
-        return getIconSettings();
-    }
-
-    private static int getIconSettings() {
+    public static int getIconSettings() {
         if (loadClass.getDrawableClass() == null) {
             Utils.log("Not found org.telegram.messenger.R$drawable, " + Utils.issue);
             return 0;

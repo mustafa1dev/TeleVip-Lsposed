@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.my.televip.ClientChecker;
 import com.my.televip.Clients.Telegraph;
+import com.my.televip.Utils;
 import com.my.televip.language.Language;
 import com.my.televip.loadClass;
 
@@ -50,6 +51,24 @@ public class FeatureManager {
         }
     }
 
+    public static String getString(String key) {
+        try {
+            return sharedPreferences.getString(key, null);
+        } catch (ClassCastException e) {
+
+            sharedPreferences.edit().remove(key).apply();
+            return null;
+        }
+    }
+
+    public static void putString(String key, String v) {
+        try {
+            sharedPreferences.edit().putString(key, v).apply();
+        } catch (ClassCastException e) {
+            sharedPreferences.edit().remove(key).apply();
+        }
+    }
+
     public static long getLong(String key) {
         try {
             return sharedPreferences.getLong(key, 0);
@@ -64,6 +83,14 @@ public class FeatureManager {
             sharedPreferences.edit().putLong(key, l).apply();
         } catch (ClassCastException e) {
             sharedPreferences.edit().remove(key).apply();
+        }
+    }
+
+    public static void remove(String key){
+        try {
+            sharedPreferences.edit().remove(key).apply();
+        } catch (Throwable t){
+            Utils.log(t);
         }
     }
 

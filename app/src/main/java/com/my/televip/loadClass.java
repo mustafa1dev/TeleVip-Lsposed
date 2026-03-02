@@ -55,6 +55,7 @@ public class loadClass {
     private static Class<?> SecretMediaViewerClass;
     private static Class<?> PhotoViewer$PhotoViewerProviderClass;
     private static Class<?> UserConfigClass;
+    private static Class<?> TLRPC$messages_MessagesClass;
 
     //Context
     private static Context applicationContext;
@@ -390,6 +391,12 @@ public class loadClass {
             UserConfigClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.UserConfig"), lpparam.classLoader);
         }
         return UserConfigClass;
+    }
+    public static Class<?> getTLRPC$messages_MessagesClass() {
+        if (TLRPC$messages_MessagesClass == null) {
+            TLRPC$messages_MessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$messages_Messages"), lpparam.classLoader);
+        }
+        return TLRPC$messages_MessagesClass;
     }
 
 }

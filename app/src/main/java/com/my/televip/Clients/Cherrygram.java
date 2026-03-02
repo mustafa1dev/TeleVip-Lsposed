@@ -106,9 +106,5 @@ public class Cherrygram {
         }
     }
 
-        public static void loadParameter() {
-            classList.add(new ClassInfo("org.telegram.ui.ProfileActivity$6", "org.telegram.ui.ProfileActivity$6"));
-            classList.add(new ClassInfo("org.telegram.ui.ChatActivity$13", "org.telegram.ui.ChatActivity$13"));
-            methodList.add(new MethodInfo("LaunchActivity", "lambda$onCreate$8", "lambda$onCreate$6"));
-        }
+        public static void loadParameter() {}
 }

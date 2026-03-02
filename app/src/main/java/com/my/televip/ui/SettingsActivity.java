@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.my.televip.ClientChecker;
 import com.my.televip.Drawable.ArrowDrawable;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
@@ -82,10 +83,17 @@ public class SettingsActivity {
         HideUpdateAppRow = rowCount++;
 
         disableStoriesRow = rowCount++;
-        disableNumberRoundingRow = rowCount++;
+
+        if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+            disableNumberRoundingRow = rowCount++;
+        }
 
         showDeletedMessagesRow = rowCount++;
-        SaveEditsHistoryRow = rowCount++;
+
+        if (!ClientChecker.check(ClientChecker.ClientType.Teegra)) {
+            SaveEditsHistoryRow = rowCount++;
+        }
+
         preventMediaRow = rowCount++;
         unlockAllRestrictedRow = rowCount++;
         allowSavingvideosRow = rowCount++;

@@ -1,11 +1,10 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
-
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.my.televip.ClientChecker;
 import com.my.televip.Database.MessageDatabase;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
@@ -73,13 +72,23 @@ public class SaveEditsHistory {
 
                                             if (dialogId != 0 && messageDatabase.getMessage(dialogId, message.getID()) != null) {
 
-                                                ArrayList<Integer> icons = (ArrayList<Integer>) param.args[1];
-                                                ArrayList<CharSequence> items = (ArrayList<CharSequence>) param.args[2];
-                                                ArrayList<Integer> options = (ArrayList<Integer>) param.args[3];
+                                                ArrayList<Integer> icons;
+                                                ArrayList<CharSequence> items;
+                                                ArrayList<Integer> options;
+
+                                                if (ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+                                                    icons = (ArrayList<Integer>) param.args[2];
+                                                    items = (ArrayList<CharSequence>) param.args[3];
+                                                    options = (ArrayList<Integer>) param.args[4];
+                                                } else {
+                                                    icons = (ArrayList<Integer>) param.args[1];
+                                                    items = (ArrayList<CharSequence>) param.args[2];
+                                                    options = (ArrayList<Integer>) param.args[3];
+                                                }
 
                                                 items.add(Language.EditsHistory);
                                                 options.add(MainHook.id);
-                                                icons.add(EventType.IconSettings());
+                                                icons.add(EventType.getIconSettings());
                                             }
                                         }
                                     }
@@ -129,6 +138,7 @@ public class SaveEditsHistory {
                                                     textView.setTextSize(16);
                                                     textView.setTextColor(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
                                                     textView.setMovementMethod(new ScrollingMovementMethod());
+                                                    textView.setTextIsSelectable(true);
 
                                                     ScrollView scrollView = new ScrollView(MainHook.launchActivity);
                                                     scrollView.addView(textView);
@@ -144,17 +154,22 @@ public class SaveEditsHistory {
                         }
                     }));
 
-            Class<?> TLRPC$messages_MessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$messages_Messages"), lpparam.classLoader);
-
             XposedHelpers.findAndHookMethod(
-                    loadClass.getMessagesStorageClass(), "putMessages", TLRPC$messages_MessagesClass, long.class, int.class, int.class, boolean.class, int.class, long.class, new AbstractMethodHook() {
+                    loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage","putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{loadClass.getTLRPC$messages_MessagesClass(), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
                             if (FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History)) {
                                 int load_type = (int) param.args[2];
+                                if (ClientChecker.check(ClientChecker.ClientType.Nagram)){
+                                    load_type = (int) param.args[0];
+                                }
+
                                 if (load_type == -2) {
                                     Object messagesStorageObject = param.thisObject;
                                     Object messagesObject = param.args[0];
+                                    if (ClientChecker.check(ClientChecker.ClientType.Nagram)){
+                                        messagesObject = param.args[5];
+                                    }
 
                                     if (messagesObject != null) {
                                         MessagesStorage messagesStorage = new MessagesStorage(messagesStorageObject);
@@ -208,7 +223,7 @@ public class SaveEditsHistory {
                                 }
                             }
                         }
-                    });
+                    }));
         } catch (Throwable t){
             Utils.log(t);
         }

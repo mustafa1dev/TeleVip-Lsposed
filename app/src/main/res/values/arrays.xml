@@ -17,6 +17,7 @@
         <item>com.iMe.android.web</item>
         <item>org.open.telegram.market</item>
         <item>ir.ilmili.telegraph</item>
+        <item>ru.dahl.messenger</item>
     </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">

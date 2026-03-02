@@ -106,7 +106,5 @@ public class NagramX {
         }
     }
 
-    public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$16", "org.telegram.ui.ChatActivity$13"));
-    }
+    public static void loadParameter() {}
 }

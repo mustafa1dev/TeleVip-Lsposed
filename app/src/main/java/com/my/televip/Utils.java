@@ -20,10 +20,12 @@ public class Utils {
         XposedBridge.log("[TeleVip] pkgName: "+ pkgName +" " + text);
     }
 
+    public static void log(Throwable throwable) {
+        XposedBridge.log("[TeleVip] pkgName: " + pkgName + " " + throwable);
 
-    public static void log(Throwable throwable)
-    {
-        XposedBridge.log("[TeleVip] pkgName: "+ pkgName +" " +throwable);
+        for (StackTraceElement element : throwable.getStackTrace()) {
+            XposedBridge.log("[TeleVip] at " + element.toString());
+        }
     }
 
     public static <T> ArrayList<T> castList(Object obj, Class<T> clazz)

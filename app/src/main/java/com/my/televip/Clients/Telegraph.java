@@ -167,6 +167,9 @@ public class Telegraph {
         fieldList.add(new FieldInfo("Theme","key_actionBarDefaultIcon","t9"));
         fieldList.add(new FieldInfo("Theme","key_windowBackgroundWhite","d7"));
         fieldList.add(new FieldInfo("Theme","key_switchTrackBlueChecked","O7"));
+        fieldList.add(new FieldInfo("ChatActivity","selectedObject","W4"));
+        fieldList.add(new FieldInfo("MessagesStorage","database","b"));
+        fieldList.add(new FieldInfo("UserConfig","clientUserId","i"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
@@ -176,7 +179,6 @@ public class Telegraph {
         methodList.add(new MethodInfo("AlertDialog","setNeutralButton", "A"));
         methodList.add(new MethodInfo("AlertDialog","show", "R"));
         methodList.add(new MethodInfo("AlertDialog$OnButtonClickListener","onClick", "a"));
-        methodList.add(new MethodInfo("LaunchActivity","lambda$onCreate$8", "C1"));
         methodList.add(new MethodInfo("Theme","getActiveTheme", "T3"));
         methodList.add(new MethodInfo("Theme","isDark", "J"));
         methodList.add(new MethodInfo("Theme","getEventType", "O2"));
@@ -212,11 +214,17 @@ public class Telegraph {
         methodList.add(new MethodInfo("AndroidUtilities","isTablet","k4"));
         methodList.add(new MethodInfo("Theme","getColor","u2"));
         methodList.add(new MethodInfo("TextSettingsCell","setText","c"));
+        methodList.add(new MethodInfo("LocaleController","formatShortNumber","x0"));
+        methodList.add(new MethodInfo("ChatActivity","fillMessageMenu","Tr"));
+        methodList.add(new MethodInfo("ChatActivity","processSelectedOption","Nw"));
+        methodList.add(new MethodInfo("MessagesStorage","putMessages","N7"));
 
         Class<?> mainMenuItem = XposedHelpers.findClassIfExists("org.telegram.messenger.GraphDrawerMenuController$MainMenuItem", lpparam.classLoader);
         ParameterResolver.register("item", new Class[]{int.class, String.class, int.class, boolean.class, mainMenuItem, String.class});
 
         ParameterResolver.register("onCreateMethod", new Class[]{loadClass.getLaunchActivityClass(),android.view.View.class,int.class, float.class, float.class});
+
+        ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
 
     }
 
@@ -248,7 +256,7 @@ public class Telegraph {
 
                             if (id == MainHook.id) {
                                 Object itemView = XposedHelpers.getObjectField(holder, "itemView");
-                                XposedHelpers.callMethod(itemView, "e", 0, str, EventType.IconSettings());
+                                XposedHelpers.callMethod(itemView, "e", 0, str, EventType.getIconSettings());
                                 XposedHelpers.callMethod(itemView, "setInfo", (Object) null);
                                 XposedHelpers.callMethod(itemView, "c", (Object) null, 0);
                                 param.setResult(null);
