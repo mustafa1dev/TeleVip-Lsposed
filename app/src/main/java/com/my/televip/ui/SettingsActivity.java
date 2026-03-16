@@ -33,6 +33,9 @@ import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.messenger.browser.Browser;
 import com.my.televip.virtuals.ui.LaunchActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.robv.android.xposed.XposedHelpers;
 
 public class SettingsActivity {
@@ -41,7 +44,12 @@ public class SettingsActivity {
 
     private int rowCount;
     private final Context context;
+
     private int ghostModeRow;
+    private int storiesRow;
+    private int messagesRow;
+    private int mediaRow;
+    private int otherFeaturesRow;
 
     private int hideSeenUserRow;
     private int hideSeenGroupsRow;
@@ -55,15 +63,20 @@ public class SettingsActivity {
     private int disableNumberRoundingRow;
 
     private int showDeletedMessagesRow;
+    private int showMessageIDRow;
     private int SaveEditsHistoryRow;
+
     private int preventMediaRow;
     private int unlockAllRestrictedRow;
     private int allowSavingvideosRow;
-    private int telegramPremiumRow;
 
-    private int shadowRow;
-    private int shadow2Row;
-    private int shadow3Row;
+    private int telegramPremiumRow;
+    private int fixTLErrorRow;
+
+    private int ConnectionsRow;
+    private int DownloadSpeedRow;
+
+    private final List<Integer> shadowRows = new ArrayList<>();
 
     private int btnChannelRow;
     private int btnRestartAppRow;
@@ -72,42 +85,78 @@ public class SettingsActivity {
 
     private void updateRow(){
         rowCount = 0;
+
+        // GhostMode
         ghostModeRow = rowCount++;
 
         hideSeenUserRow = rowCount++;
         hideSeenGroupsRow = rowCount++;
-        hideStoryViewRow = rowCount++;
         hideOnlineRow = rowCount++;
-        hidePhoneRow = rowCount++;
         hideTypingRow = rowCount++;
-        HideUpdateAppRow = rowCount++;
+        hidePhoneRow = rowCount++;
+
+
+        shadowRows.add(rowCount++);
+
+        // Stories
+        storiesRow = rowCount++;
 
         disableStoriesRow = rowCount++;
+        hideStoryViewRow = rowCount++;
 
-        if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
-            disableNumberRoundingRow = rowCount++;
-        }
+
+        shadowRows.add(rowCount++);
+
+        // Messages
+        messagesRow = rowCount++;
 
         showDeletedMessagesRow = rowCount++;
-
+        if (!ClientChecker.check(ClientChecker.ClientType.NagramX)) {
+            showMessageIDRow = rowCount++;
+        }
         if (!ClientChecker.check(ClientChecker.ClientType.Teegra)) {
             SaveEditsHistoryRow = rowCount++;
         }
 
-        preventMediaRow = rowCount++;
-        unlockAllRestrictedRow = rowCount++;
-        allowSavingvideosRow = rowCount++;
-        telegramPremiumRow = rowCount++;
+        shadowRows.add(rowCount++);
 
-        shadowRow = rowCount++;
+        //Connections
+        ConnectionsRow = rowCount++;
+        DownloadSpeedRow = rowCount++;
+
+        shadowRows.add(rowCount++);
+
+        // Media
+        mediaRow = rowCount++;
+
+        preventMediaRow = rowCount++;
+        allowSavingvideosRow = rowCount++;
+
+
+        shadowRows.add(rowCount++);
+
+        // Other Features
+        otherFeaturesRow = rowCount++;
+
+        unlockAllRestrictedRow = rowCount++;
+        telegramPremiumRow = rowCount++;
+        if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+            disableNumberRoundingRow = rowCount++;
+        }
+        HideUpdateAppRow = rowCount++;
+        if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+            fixTLErrorRow = rowCount++;
+        }
+
+        shadowRows.add(rowCount++);
 
         btnChannelRow = rowCount++;
 
-        shadow2Row = rowCount++;
+        shadowRows.add(rowCount++);
 
         btnRestartAppRow = rowCount++;
 
-        shadow3Row = rowCount++;
+        shadowRows.add(rowCount++);
     }
 
     public View createView() {
@@ -168,8 +217,8 @@ public class SettingsActivity {
         isSettings =false;
     }
 
-    public SettingsActivity(Context context) {
-        this.context =  context;
+    public SettingsActivity() {
+        this.context =  MainHook.launchActivity;
         Language.init();
         isSettings = true;
         if (!FeatureManager.getBoolean("DontShowAgain")) {
@@ -213,18 +262,18 @@ public class SettingsActivity {
 
     private class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-
         @Override
         public int getItemViewType(int position) {
-            if (position == ghostModeRow) {
+            if (position == ghostModeRow || position == storiesRow || position == messagesRow || position == mediaRow || position == otherFeaturesRow || position == ConnectionsRow) {
                 return 0;
             } else if (position == hideSeenUserRow || position == hideSeenGroupsRow || position == hideStoryViewRow || position == hideOnlineRow ||
                     position == hidePhoneRow || position == hideTypingRow || position == disableStoriesRow || disableNumberRoundingRow == position || position == showDeletedMessagesRow || position == preventMediaRow ||
-                    position == unlockAllRestrictedRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow || position == SaveEditsHistoryRow) {
+                    position == unlockAllRestrictedRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow ||
+                    position == SaveEditsHistoryRow || position == fixTLErrorRow || position == showMessageIDRow || position == DownloadSpeedRow) {
                 return 1;
             } else if (position == btnChannelRow || position == btnRestartAppRow) {
                 return 2;
-            } else if (position == shadowRow || position == shadow2Row || position == shadow3Row) {
+            } else if (shadowRows.contains(position)) {
                 return 3;
             }
             return 0;
@@ -240,6 +289,16 @@ public class SettingsActivity {
                     HeaderCellHolder headerCell = (HeaderCellHolder) holder;
                     if (position == ghostModeRow) {
                         headerCell.cell.setText(Language.GhostModeSettings);
+                    } else if (position == storiesRow){
+                        headerCell.cell.setText(Language.StoriesSettings);
+                    } else if (position == messagesRow){
+                        headerCell.cell.setText(Language.MessagesSettings);
+                    } else if (position == mediaRow){
+                        headerCell.cell.setText(Language.MediaSettings);
+                    } else if (position == otherFeaturesRow){
+                        headerCell.cell.setText(Language.OtherFeaturesSettings);
+                    } else if (position == ConnectionsRow){
+                        headerCell.cell.setText(Language.Connections);
                     }
                     break;
                 case 1:
@@ -261,19 +320,25 @@ public class SettingsActivity {
                     } else if (position == disableStoriesRow) {
                         ch.cell.setTextAndValueAndCheck(Language.DisableStories, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES),true, false);
                     } else if (position == disableNumberRoundingRow) {
-                        ch.cell.setTextAndValueAndCheck(Language.DisableNumberRounding, "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_Disable_Number_Rounding),true, false);
+                        ch.cell.setTextAndValueAndCheck(Language.DisableNumberRounding, "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING),true, false);
+                    } else if (position == showMessageIDRow) {
+                        ch.cell.setTextAndCheck(Language.ShowMessageID, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID), false);
                     } else if (position == showDeletedMessagesRow) {
                         ch.cell.setTextAndCheck(Language.ShowDeletedMessages, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
                     } else if (position == SaveEditsHistoryRow) {
-                        ch.cell.setTextAndCheck(Language.SaveEditsHistory, FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History), false);
+                        ch.cell.setTextAndCheck(Language.SaveEditsHistory, FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY), false);
                     } else if (position == preventMediaRow) {
                         ch.cell.setTextAndCheck(Language.PreventMedia, FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA), false);
                     } else if (position == unlockAllRestrictedRow) {
                         ch.cell.setTextAndCheck(Language.UnlockAllRestricted, FeatureManager.getBoolean(FeatureManager.KEY_UNLOCK_CHANNEL), false);
                     } else if (position == allowSavingvideosRow) {
-                        ch.cell.setTextAndCheck(Language.AllowSavingvideos, FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
+                        ch.cell.setTextAndCheck(Language.AllowSavingVideos, FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
                     } else if (position == telegramPremiumRow) {
                         ch.cell.setTextAndValueAndCheck(Language.TelegramPremium, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM),true, false);
+                    } else if (position == fixTLErrorRow) {
+                        ch.cell.setTextAndCheck(Language.FixTLError, FeatureManager.getBoolean(FeatureManager.KEY_FIX_TL_ERROR), false);
+                    } else if (position == DownloadSpeedRow) {
+                        ch.cell.setTextAndCheck(Language.DownloadSpeed, FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED), false);
                     }
                     ch.cell.getTextView().setLines(0);
                     ch.cell.getTextView().setMaxLines(0);
@@ -345,8 +410,8 @@ public class SettingsActivity {
                         FeatureManager.putBoolean(FeatureManager.KEY_SHOW_DELETED, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_SHOW_DELETED);
                     } else if (pos == SaveEditsHistoryRow) {
-                        FeatureManager.putBoolean(FeatureManager.KEY_Save_Edits_History, checked);
-                        FeatureManager.readFeature(FeatureManager.KEY_Save_Edits_History);
+                        FeatureManager.putBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_SAVE_EDITS_HISTORY);
                     } else if (pos == preventMediaRow) {
                         FeatureManager.putBoolean(FeatureManager.KEY_PREVENT_MEDIA, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_PREVENT_MEDIA);
@@ -360,8 +425,17 @@ public class SettingsActivity {
                         FeatureManager.putBoolean(FeatureManager.KEY_TELE_PREMIUM, checked);
                         FeatureManager.readFeature(FeatureManager.KEY_TELE_PREMIUM);
                     } else if (pos == disableNumberRoundingRow) {
-                        FeatureManager.putBoolean(FeatureManager.KEY_Disable_Number_Rounding, checked);
-                        FeatureManager.readFeature(FeatureManager.KEY_Disable_Number_Rounding);
+                        FeatureManager.putBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING);
+                    } else if (pos == fixTLErrorRow) {
+                        FeatureManager.putBoolean(FeatureManager.KEY_FIX_TL_ERROR, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_FIX_TL_ERROR);
+                    } else if (pos == showMessageIDRow) {
+                        FeatureManager.putBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_SHOW_MESSAGE_ID);
+                    } else if (pos == DownloadSpeedRow) {
+                        FeatureManager.putBoolean(FeatureManager.KEY_DOWNLOAD_SPEED, checked);
+                        FeatureManager.readFeature(FeatureManager.KEY_DOWNLOAD_SPEED);
                     }
 
                 } else if (viewType == 2) {

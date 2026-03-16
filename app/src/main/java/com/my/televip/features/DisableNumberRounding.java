@@ -20,7 +20,7 @@ public class DisableNumberRounding {
                         new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_Disable_Number_Rounding)) {
+                                if (FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING)) {
                                     int[] rounded = (int[]) param.args[1];
                                     int number = (int) param.args[0];
                                     if (rounded != null) {

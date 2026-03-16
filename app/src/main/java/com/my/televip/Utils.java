@@ -1,7 +1,12 @@
 package com.my.televip;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.my.televip.obfuscate.struct.ResolverRegistry;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,12 +26,35 @@ public class Utils {
     }
 
     public static void log(Throwable throwable) {
-        XposedBridge.log("[TeleVip] pkgName: " + pkgName + " " + throwable);
+        StringBuilder log = new StringBuilder();
+
+        log.append("[TeleVip] pkgName: ").append(pkgName).append(" ").append(throwable).append("\n");
+        log.append("appName = ").append(ResolverRegistry.getResolverClass().getSimpleName()).append("\n");
+
+        try {
+            PackageManager pm = MainHook.launchActivity.getPackageManager();
+            PackageInfo info = pm.getPackageInfo(MainHook.launchActivity.getPackageName(), 0);
+            String versionName = info.versionName;
+            int versionCode = info.versionCode;
+
+            log.append("versionName: ").append(versionName).append("\n");
+            log.append("versionCode: ").append(versionCode).append("\n");
+        } catch (Exception e) {
+            log.append("versionName/versionCode: error retrieving\n");
+        }
+
+        log.append("OS Version: ").append(Build.VERSION.RELEASE).append("\n");
+        log.append("SDK: ").append(Build.VERSION.SDK_INT).append("\n");
+        log.append("Manufacturer: ").append(Build.MANUFACTURER).append("\n");
+        log.append("Model: ").append(Build.MODEL).append("\n");
 
         for (StackTraceElement element : throwable.getStackTrace()) {
-            XposedBridge.log("[TeleVip] at " + element.toString());
+            log.append("[TeleVip] at ").append(element.toString()).append("\n");
         }
+
+        XposedBridge.log(log.toString());
     }
+
 
     public static <T> ArrayList<T> castList(Object obj, Class<T> clazz)
     {
@@ -40,70 +68,6 @@ public class Utils {
         }
         return result;
     }
-/*
-    public static void readDeletedMessages()
-    {
-        if (deletedMessagesSavePath == null)
-            return;
-
-        try
-        {
-            JsonElement valueJsonElement = JsonParser.parseReader(new BufferedReader(new FileReader(deletedMessagesSavePath)));
-
-            if (!valueJsonElement.isJsonNull() && valueJsonElement instanceof JsonObject jsonObject) {
-                jsonObject.entrySet().forEach(entry -> {
-                    JsonObject jsonObject2 = entry.getValue().getAsJsonObject();
-                    jsonObject2.entrySet().forEach(entry2 -> {
-                        JsonArray jsonModule = entry2.getValue().getAsJsonArray();
-                        CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>();
-                        jsonModule.forEach(id -> list.add(id.getAsInt()));
-                        AntiRecall.insertDeletedMessageFromSaveFile(Integer.parseInt(entry.getKey().trim()), Long.parseLong(entry2.getKey().trim()), list);
-                    });
-                });
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveDeletedMessages()
-    {
-        if (deletedMessagesSavePath == null)
-            return;
-
-        JsonObject valueJsonObject = new JsonObject();
-
-        List<Integer> accounts = new ArrayList<>();
-
-        for (DeletedMessageInfo deletedMessageInfo : AntiRecall.getDeletedMessagesIds())
-        {
-            if (!accounts.contains(deletedMessageInfo.getSelectedAccount()))
-                accounts.add(deletedMessageInfo.getSelectedAccount());
-        }
-
-        if (!accounts.isEmpty())
-        {
-            for (int account : accounts) {
-                JsonObject valueJsonObject2 = new JsonObject();
-
-                for (DeletedMessageInfo deletedMessageInfo : AntiRecall.getDeletedMessagesIds()) {
-                    if (deletedMessageInfo.getSelectedAccount() == account)
-                    {
-                        JsonArray jsonModule = new JsonArray();
-                        deletedMessageInfo.getMessageIds().forEach(jsonModule::add);
-                        valueJsonObject2.add(String.valueOf(deletedMessageInfo.getChannelID()), jsonModule);
-                    }
-                }
-
-                valueJsonObject.add(String.valueOf(account), valueJsonObject2);
-            }
-        }
-
-        FileUtils.save(deletedMessagesSavePath, BUILDER_GSON.toJson(valueJsonObject), false);
-    }
-*/
     public static Gson getBuilderGson() {
         return BUILDER_GSON;
     }

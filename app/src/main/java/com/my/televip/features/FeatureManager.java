@@ -1,7 +1,5 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 
@@ -10,6 +8,7 @@ import com.my.televip.Clients.Telegraph;
 import com.my.televip.Utils;
 import com.my.televip.language.Language;
 import com.my.televip.loadClass;
+import com.my.televip.virtuals.ui.Cells.ChatMessageCell;
 
 
 public class FeatureManager {
@@ -29,9 +28,12 @@ public class FeatureManager {
     public static final String KEY_PREVENT_MEDIA = "PreventMedia";
     public static final String KEY_HIDE_PHONE = "HidePhone";
     public static final String KEY_SHOW_DELETED = "ShowDeletedMessages";
-    public static final String KEY_Save_Edits_History = "SaveEditsHistory";
+    public static final String KEY_SAVE_EDITS_HISTORY = "SaveEditsHistory";
     public static final String KEY_DISABLE_STORIES = "DisableStories";
-    public static final String KEY_Disable_Number_Rounding = "DisableNumberRounding";
+    public static final String KEY_DISABLE_NUMBER_ROUNDING = "DisableNumberRounding";
+    public static final String KEY_FIX_TL_ERROR = "FixTLError";
+    public static final String KEY_SHOW_MESSAGE_ID = "ShowMessageID";
+    public static final String KEY_DOWNLOAD_SPEED = "DownloadSpeed";
 
     public static boolean getBoolean(String key) {
         try {
@@ -125,8 +127,11 @@ public class FeatureManager {
         if (getBoolean(KEY_PREVENT_MEDIA)) {
             PreventMedia.init();
         }
+        if (getBoolean(KEY_SHOW_DELETED) || getBoolean(KEY_SHOW_MESSAGE_ID)) {
+            ChatMessageCell.init();
+        }
         if (getBoolean(KEY_SHOW_DELETED)) {
-            NEWAntiRecall.initProcessing();
+            ShowDeletedMessages.initProcessing();
         }
         if (getBoolean(KEY_DISABLE_STORIES)) {
             DisableStories.init();
@@ -137,16 +142,19 @@ public class FeatureManager {
         if (getBoolean(KEY_HIDE_UPDATE_APP)) {
             HideUpdateApp.init();
         }
-        if (getBoolean(KEY_Disable_Number_Rounding)) {
+        if (getBoolean(KEY_DISABLE_NUMBER_ROUNDING)) {
             DisableNumberRounding.init();
         }
-        if (getBoolean(KEY_Save_Edits_History)) {
+        if (getBoolean(KEY_SAVE_EDITS_HISTORY)) {
             SaveEditsHistory.init();
         }
+        if (getBoolean(KEY_FIX_TL_ERROR)) {
+            FixTLError.init();
+        }
+        if (getBoolean(KEY_DOWNLOAD_SPEED)) {
+            DownloadSpeed.init();
+        }
 
-        DownloadSpeed.init();
-
-        NEWAntiRecall.initUI(lpparam.classLoader);
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
             OtherFeatures.init();
             copyName.init();
@@ -173,18 +181,24 @@ public class FeatureManager {
             HideOnline.init();
         } else if (key.equals(KEY_PREVENT_MEDIA) && getBoolean(key) && !PreventMedia.isEnable) {
             PreventMedia.init();
-        } else if (key.equals(KEY_SHOW_DELETED) && getBoolean(key) && !NEWAntiRecall.isEnable) {
-            NEWAntiRecall.initProcessing();
+        } else if ((key.equals(KEY_SHOW_DELETED) && getBoolean(key) || key.equals(KEY_SHOW_MESSAGE_ID) && getBoolean(key))  && !ChatMessageCell.isEnable) {
+            ChatMessageCell.init();
+        } else if (key.equals(KEY_SHOW_DELETED) && getBoolean(key) && !ShowDeletedMessages.isEnable) {
+            ShowDeletedMessages.initProcessing();
         } else if (key.equals(KEY_DISABLE_STORIES) && getBoolean(key) && !DisableStories.isEnable) {
             DisableStories.init();
         } else if (key.equals(KEY_HIDE_PHONE) && getBoolean(key) && !HidePhone.isEnable) {
             HidePhone.init();
         } else if (key.equals(KEY_HIDE_UPDATE_APP) && getBoolean(key) && !HideUpdateApp.isEnable) {
             HideUpdateApp.init();
-        } else if (key.equals(KEY_Disable_Number_Rounding) && getBoolean(key) && !DisableNumberRounding.isEnable) {
+        } else if (key.equals(KEY_DISABLE_NUMBER_ROUNDING) && getBoolean(key) && !DisableNumberRounding.isEnable) {
             DisableNumberRounding.init();
-        } else if (key.equals(KEY_Save_Edits_History) && getBoolean(key) && !SaveEditsHistory.isEnable) {
+        } else if (key.equals(KEY_SAVE_EDITS_HISTORY) && getBoolean(key) && !SaveEditsHistory.isEnable) {
             SaveEditsHistory.init();
+        } else if (key.equals(KEY_FIX_TL_ERROR) && getBoolean(key) && !FixTLError.isEnable) {
+            FixTLError.init();
+        } else if (key.equals(KEY_DOWNLOAD_SPEED) && getBoolean(key) && !DownloadSpeed.isEnable) {
+            DownloadSpeed.init();
         }
     }
 

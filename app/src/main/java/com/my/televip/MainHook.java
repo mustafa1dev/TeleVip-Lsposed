@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.FeatureManager;
+import com.my.televip.features.SaveEditsHistory;
 import com.my.televip.language.Language;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.ui.SettingsActivity;
@@ -76,6 +77,15 @@ public class MainHook implements IXposedHookLoadPackage {
         }
 
         FeatureManager.readFeature();
+
+        XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onDestroy", new AbstractMethodHook() {
+            @Override
+            protected void beforeMethod(MethodHookParam param) {
+                if (SaveEditsHistory.messageDatabase != null) {
+                    SaveEditsHistory.messageDatabase.closeDatabase();
+                }
+            }
+        });
 
     }
 

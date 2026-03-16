@@ -6,96 +6,186 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.my.televip.Utils;
 import com.my.televip.language.Language;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MessageDatabase extends SQLiteOpenHelper {
-        private static final String DATABASE_NAME = "SaveMessages.db";
-        private static final int DATABASE_VERSION = 1;
 
-        public static final String TABLE_MESSAGES = "messages";
-        public static final String COLUMN_ID = "id";
-        public static final String COLUMN_MSG_ID = "msg_id";
-        public static final String COLUMN_MESSAGE = "message";
+    private static final String DATABASE_NAME = "SaveMessages.db";
+    private static final int DATABASE_VERSION = 1;
 
-        private static final String TABLE_CREATE =
-                "CREATE TABLE " + TABLE_MESSAGES + " (" +
-                        COLUMN_ID + " LONG, " +
-                        COLUMN_MSG_ID + " INTEGER, " +
-                        COLUMN_MESSAGE + " TEXT " +
-                        ");";
+    public static final String TABLE_MESSAGES = "messages";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_MSG_ID = "msg_id";
+    public static final String COLUMN_MESSAGE = "message";
+    public static final String COLUMN_MESSAGE_EDITED = "message_Edited";
+    public static final String COLUMN_MSG_COUNT = "msg_count";
 
-        public MessageDatabase(Context context) {
-            super(context, getDataBasePath(context), null, DATABASE_VERSION);
+    private static final String TABLE_CREATE =
+            "CREATE TABLE " + TABLE_MESSAGES + " (" +
+                    COLUMN_ID + " LONG, " +
+                    COLUMN_MSG_ID + " INTEGER, " +
+                    COLUMN_MSG_COUNT + " INTEGER, " +
+                    COLUMN_MESSAGE + " TEXT, " +
+                    COLUMN_MESSAGE_EDITED + " TEXT " +
+                    ");";
+
+    private final SQLiteDatabase database;
+
+    public MessageDatabase(Context context) {
+        super(context, getDataBasePath(context), null, DATABASE_VERSION);
+
+        database = getWritableDatabase();
+    }
+
+    public static String getDataBasePath(Context context) {
+        File appDir = new File(context.getDataDir(), Language.strTelevip);
+        if (!appDir.exists()) {
+            appDir.mkdirs();
         }
+        return new File(appDir, DATABASE_NAME).getAbsolutePath();
+    }
 
-        public static String getDataBasePath(Context context){
-            File appDir = new File(context.getDataDir(), Language.strTelevip);
-            if (!appDir.exists()){
-                appDir.mkdirs();
-            }
-            return new File(appDir,DATABASE_NAME).getAbsolutePath();
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(TABLE_CREATE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+        onCreate(db);
+    }
+
+    public void closeDatabase() {
+        if (database != null && database.isOpen()) {
+            database.close();
         }
+    }
 
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(TABLE_CREATE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
-            onCreate(db);
-        }
-
-        public void addMessage(long id, int msgId, String message) {
-
-            if (!searchMessage(id,msgId,message)) {
-
-                SQLiteDatabase db = this.getWritableDatabase();
+    public void addMessage(long id, int msgId, String message) {
+        try {
+            if (!searchMessage(id, msgId, message)) {
                 ContentValues values = new ContentValues();
-
                 values.put(COLUMN_ID, id);
                 values.put(COLUMN_MSG_ID, msgId);
                 values.put(COLUMN_MESSAGE, message);
 
-                db.insert(TABLE_MESSAGES, null, values);
-                db.close();
-            }
-        }
+                int maxMsgCount = getMaxMessageCount(id, msgId);
+                values.put(COLUMN_MSG_COUNT, maxMsgCount + 1);
 
-        public boolean searchMessage(long id, int msgId, String message) {
-            SQLiteDatabase db = this.getReadableDatabase();
+                String formattedDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US).format(new Date());
+                values.put(COLUMN_MESSAGE_EDITED, formattedDate);
+
+                database.insert(TABLE_MESSAGES, null, values);
+            }
+        } catch (Throwable t) {
+            Utils.log(t);
+        }
+    }
+    public boolean searchMessage(long id, int msgId, String message) {
+        if (message == null) return false;
+
+        try {
             String query = "SELECT * FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " +
                     COLUMN_MSG_ID + " = ? AND " +
                     COLUMN_MESSAGE + " = ?";
-
-            Cursor cursor = db.rawQuery(query, new String[]{
+            Cursor cursor = database.rawQuery(query, new String[]{
                     String.valueOf(id),
                     String.valueOf(msgId),
                     message
             });
-
             boolean exists = cursor.getCount() > 0;
             cursor.close();
-            db.close();
             return exists;
+        } catch (Throwable ignored) {}
+        return false;
+    }
+
+    public boolean searchMessage(long id, int msgId) {
+        try {
+            String query = "SELECT * FROM " + TABLE_MESSAGES +
+                    " WHERE " + COLUMN_ID + " = ? AND " +
+                    COLUMN_MSG_ID + " = ?";
+            Cursor cursor = database.rawQuery(query, new String[]{
+                    String.valueOf(id),
+                    String.valueOf(msgId)
+            });
+            boolean exists = cursor.getCount() > 0;
+            cursor.close();
+            return exists;
+        } catch (Throwable ignored) {
         }
+        return false;
+    }
+
 
     public String getMessage(long id, int msgId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
-                " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
-        String message = null;
-        if (cursor.moveToFirst()) {
-            message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+        try {
+            String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
+                    " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
+            Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
+            String message = null;
+            if (cursor.moveToFirst()) {
+                message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+            }
+            cursor.close();
+            return message;
+        } catch (Throwable ignored) {
         }
-        cursor.close();
-        db.close();
-        return message; // يرجع null إذا ما وجد
+        return null;
+    }
+
+    public String getMessage(long id, int msgId, int msgCount) {
+        try {
+            String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
+                    " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ? AND " + COLUMN_MSG_COUNT + " = ?";
+            Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId), String.valueOf(msgCount)});
+            String message = null;
+            if (cursor.moveToFirst()) {
+                message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+            }
+            cursor.close();
+            return message;
+        } catch (Throwable ignored) {
+        }
+        return null;
+    }
+
+    public String getMessageEdited(long id, int msgId, int msgCount) {
+        try {
+            String query = "SELECT " + COLUMN_MESSAGE_EDITED + " FROM " + TABLE_MESSAGES +
+                    " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ? AND " + COLUMN_MSG_COUNT + " = ?";
+            Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId), String.valueOf(msgCount)});
+            String messageEdited = null;
+            if (cursor.moveToFirst()) {
+                messageEdited = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE_EDITED));
+            }
+            cursor.close();
+            return messageEdited;
+        } catch (Throwable ignored) {
+        }
+        return null;
+    }
+
+    public int getMaxMessageCount(long id, int msgId) {
+        int maxCount = 0;
+        try {
+            String query = "SELECT MAX(" + COLUMN_MSG_COUNT + ") as max_count FROM " + TABLE_MESSAGES +
+                    " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
+            Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
+            if (cursor.moveToFirst()) {
+                maxCount = cursor.getInt(cursor.getColumnIndexOrThrow("max_count"));
+            }
+            cursor.close();
+        } catch (Throwable ignored) {
+        }
+        return maxCount;
     }
 }

@@ -41,13 +41,13 @@ public class addItem {
     @SuppressLint("StaticFieldLeak")
     public static FrameLayout settings;
 
-    private  void openView(Context context){
+    private void openView(){
         if (settings == null) {
             settings = new FrameLayout(MainHook.launchActivity);
         }
 
         settings.removeAllViews();
-        SettingsActivity settingsActivity = new SettingsActivity(context);
+        SettingsActivity settingsActivity = new SettingsActivity();
         settings.addView(settingsActivity.createView());
         show(settings);
     }
@@ -132,10 +132,8 @@ public class addItem {
                 if (uitem != null){
                     int id = XposedHelpers.getIntField(uitem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                     if (id == MainHook.id) {
-                        Object SettingsActivity = param.thisObject;
-                        Context applicationContext = (Context) XposedHelpers.callMethod(SettingsActivity, AutomationResolver.resolve("SettingsActivity","getContext", AutomationResolver.ResolverType.Method));
 
-                        openView(applicationContext);
+                        openView();
                     }
                 }
             }
@@ -212,8 +210,7 @@ public class addItem {
                                 XposedHelpers.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method));
                             }
 
-                            final Context applicationContext = (Context) LaunchActivtiy;
-                            openView(applicationContext);
+                            openView();
                         }
 
                     } else {

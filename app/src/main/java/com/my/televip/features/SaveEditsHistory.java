@@ -32,7 +32,7 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class SaveEditsHistory {
 
-    private static MessageDatabase messageDatabase;
+    public static MessageDatabase messageDatabase;
 
     public static boolean isEnable = false;
 
@@ -46,7 +46,7 @@ public class SaveEditsHistory {
                     loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History)) {
+                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
                                 if (chatActivity.getSelectedObject() != null) {
@@ -101,7 +101,7 @@ public class SaveEditsHistory {
                     loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History)) {
+                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
                                 int option = (int) param.args[0];
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
@@ -128,12 +128,34 @@ public class SaveEditsHistory {
                                                     dialogId = channel_id;
                                                 }
 
-                                                if (dialogId != 0 && messageDatabase.getMessage(dialogId, message.getID()) != null) {
+                                                if (dialogId != 0 & messageDatabase.searchMessage(dialogId, message.getID())) {
+
                                                     AlertDialog alertDialog = new AlertDialog(MainHook.launchActivity);
                                                     alertDialog.setTitle(Language.EditsHistory);
 
                                                     TextView textView = new TextView(MainHook.launchActivity);
-                                                    textView.setText(messageDatabase.getMessage(dialogId, message.getID()));
+
+                                                    int maxMsgCount = messageDatabase.getMaxMessageCount(dialogId, message.getID());
+
+                                                    StringBuilder builder = new StringBuilder();
+
+                                                    if (maxMsgCount > 0) {
+
+                                                        for (int i = 1; i <= maxMsgCount; i++) {
+
+                                                            String msg = messageDatabase.getMessage(dialogId, message.getID(), i);
+                                                            String messageEdited = messageDatabase.getMessageEdited(dialogId, message.getID(), i);
+
+                                                            if (msg != null && messageEdited != null) {
+                                                                builder.append(Language.Message).append(i).append(Language.Edited).append(messageEdited).append("\n");
+                                                                builder.append(msg).append("\n");
+                                                            }
+                                                        }
+                                                    } else {
+                                                        builder.append(messageDatabase.getMessage(dialogId, message.getID()));
+                                                    }
+
+                                                    textView.setText(builder.toString());
                                                     textView.setPadding(32, 32, 32, 32);
                                                     textView.setTextSize(16);
                                                     textView.setTextColor(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
@@ -158,7 +180,7 @@ public class SaveEditsHistory {
                     loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage","putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{loadClass.getTLRPC$messages_MessagesClass(), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_Save_Edits_History)) {
+                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
                                 int load_type = (int) param.args[2];
                                 if (ClientChecker.check(ClientChecker.ClientType.Nagram)){
                                     load_type = (int) param.args[0];

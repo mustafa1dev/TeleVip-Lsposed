@@ -1,31 +1,23 @@
 package com.my.televip.features;
 
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.SparseArray;
 
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.configs.Configs;
-import com.my.televip.language.Language;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.structs.DeletedMessageInfo;
-import com.my.televip.utils.FieldUtils;
-import com.my.televip.virtuals.OfficialChatMessageCell;
-import com.my.televip.virtuals.tgnet.TLRPC;
-import com.my.televip.virtuals.Theme;
-import com.my.televip.virtuals.messenger.UserConfig;
 import com.my.televip.virtuals.messenger.MessageObject;
-import com.my.televip.virtuals.nekogram.NekoChatMessageCell;
+import com.my.televip.virtuals.messenger.NotificationCenter;
+import com.my.televip.virtuals.messenger.UserConfig;
+import com.my.televip.virtuals.tgnet.TLRPC;
+import com.my.televip.virtuals.ui.Cells.ChatMessageCell;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,9 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-public class NEWAntiRecall {
-    private static long lastVisibleTime = -1;
-    private static MessageObject currentMessageObject;
+public class ShowDeletedMessages {
     private static final Handler storage = new Handler(makeLooper("Storage"));
 
     private static final CopyOnWriteArraySet<DeletedMessageInfo> deletedMessageInfos = new CopyOnWriteArraySet<>();
@@ -162,86 +152,6 @@ public class NEWAntiRecall {
         }
     }
 
-    private static String getCurrentTimeStringClassName(Object chatMessageCellInstance)
-    {
-        Object currentTimeString = FieldUtils.getFieldClassOfClass(chatMessageCellInstance, AutomationResolver.resolve("ChatMessageCell", "currentTimeString", AutomationResolver.ResolverType.Field));
-        assert currentTimeString != null;
-        return currentTimeString.getClass().getSimpleName();
-    }
-
-    public static SpannableStringBuilder convertToStringBuilder(CharSequence charSequence) {
-        if (charSequence != null)
-            return charSequence instanceof SpannableStringBuilder ? (SpannableStringBuilder) charSequence : new SpannableStringBuilder(charSequence);
-        else
-            return null;
-    }
-
-    public static void initUI(ClassLoader classLoader)
-    {
-
-        if (loadClass.getChatMessageCellClass() != null) {
-            XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.resolve("org.telegram.messenger.MessageObject"), new AbstractMethodHook() {
-                @Override
-                protected void afterMethod(MethodHookParam param) {
-                    try {
-                            currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
-                            lastVisibleTime = System.currentTimeMillis();
-                            String text = Configs.getAntiRecallText().isEmpty() ? (Language.deleted): Configs.getAntiRecallText();
-                            Object msgObj = param.args[0];
-                            if (msgObj == null)
-                                return;
-                            MessageObject messageObject = new MessageObject(msgObj);
-                            TLRPC.Message owner = messageObject.getMessageOwner();
-                            if (owner == null)
-                                return;
-                            int flags = owner.getFlags();
-                            if ((flags & FLAG_DELETED) != 0) {
-                                if (getCurrentTimeStringClassName(param.thisObject).equals("SpannableStringBuilder")) {
-                                    NekoChatMessageCell cell = new NekoChatMessageCell(param.thisObject);
-                                    SpannableStringBuilder time = cell.getCurrentTimeString();
-                                    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
-                                    if (Configs.isAntiRecallTextColorful())
-                                        spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.rgb(Configs.getAntiRecallTextRed(), Configs.getAntiRecallTextGreen(), Configs.getAntiRecallTextBlue())), 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    spannableStringBuilder.append(" ");
-                                    time.insert(0, spannableStringBuilder);
-                                    cell.setCurrentTimeString(time);
-                                    TextPaint paint = Theme.getTextPaint(classLoader);
-                                    if (paint != null) {
-                                        int ceil = (int) Math.ceil(paint.measureText(spannableStringBuilder, 0, spannableStringBuilder.length()));
-                                        cell.setTimeTextWidth(ceil + cell.getTimeTextWidth());
-                                        cell.setTimeWidth(ceil + cell.getTimeWidth());
-                                    }
-                                } else {
-                                    OfficialChatMessageCell cell = new OfficialChatMessageCell(param.thisObject);
-                                    SpannableStringBuilder time = convertToStringBuilder(cell.getCurrentTimeString());
-                                    if (time == null)
-                                        return;
-                                    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
-                                    if (Configs.isAntiRecallTextColorful())
-                                        spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.rgb(Configs.getAntiRecallTextRed(), Configs.getAntiRecallTextGreen(), Configs.getAntiRecallTextBlue())), 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                    spannableStringBuilder.append(" ");
-                                    time.insert(0, spannableStringBuilder);
-                                    cell.setCurrentTimeString(time);
-                                    TextPaint paint = Theme.getTextPaint(classLoader);
-                                    if (paint != null) {
-                                        int ceil = (int) Math.ceil(paint.measureText(spannableStringBuilder, 0, spannableStringBuilder.length()));
-                                        cell.setTimeTextWidth(ceil + cell.getTimeTextWidth());
-                                        cell.setTimeWidth(ceil + cell.getTimeWidth());
-                                    }
-                                }
-                            } else {
-                                TextPaint paint = Theme.getTextPaint(classLoader);
-                                paint.setShadowLayer(0, 0, 0, Color.WHITE);
-                            }
-                    } catch (Throwable throwable) {
-                        Utils.log(throwable);
-                    }
-                }
-            });
-        } else {
-            Utils.log("Not found ChatMessageCell, " + Utils.issue);
-        }
-    }
 
     public static void init()
     {
@@ -334,8 +244,8 @@ public class NEWAntiRecall {
                 @Override
                 protected void beforeMethod(MethodHookParam param) {
                     long dialogId = (long) param.args[0];
-                    if (currentMessageObject != null && (System.currentTimeMillis() - lastVisibleTime) < 4000) {
-                        long objectId = currentMessageObject.getDialogId();
+                    if (ChatMessageCell.currentMessageObject != null && (System.currentTimeMillis() - ChatMessageCell.lastVisibleTime) < 4000) {
+                        long objectId = ChatMessageCell.currentMessageObject.getDialogId();
                         if (objectId == dialogId)
                             return;
                     }
@@ -384,8 +294,8 @@ public class NEWAntiRecall {
                 protected void beforeMethod(MethodHookParam param) {
                     if (Configs.isAntiRecall()) {
                         long dialogId = (long) param.args[0];
-                        if (currentMessageObject != null && (System.currentTimeMillis() - lastVisibleTime) < 4000) {
-                            long objectId = currentMessageObject.getDialogId();
+                        if (ChatMessageCell.currentMessageObject != null && (System.currentTimeMillis() - ChatMessageCell.lastVisibleTime) < 4000) {
+                            long objectId = ChatMessageCell.currentMessageObject.getDialogId();
                             if (objectId == dialogId)
                                 return;
                         }
@@ -453,8 +363,8 @@ public class NEWAntiRecall {
                 protected void beforeMethod(MethodHookParam param) {
                     if (Configs.isAntiRecall()) {
                         long dialogId = (long) param.args[0];
-                        if (currentMessageObject != null && (System.currentTimeMillis() - lastVisibleTime) < 4000) {
-                            long objectId = currentMessageObject.getDialogId();
+                        if (ChatMessageCell.currentMessageObject != null && (System.currentTimeMillis() - ChatMessageCell.lastVisibleTime) < 4000) {
+                            long objectId = ChatMessageCell.currentMessageObject.getDialogId();
                             if (objectId == dialogId)
                                 return;
                         }
@@ -543,34 +453,34 @@ public class NEWAntiRecall {
             Utils.log("Not found NotificationsController, " + Utils.issue);
         }
 
-            if (loadClass.getMessagesControllerClass() != null) {
+        if (loadClass.getMessagesControllerClass() != null) {
 
 
-                XposedHelpers.findAndHookMethod(
-                        loadClass.getMessagesControllerClass(),
-                        AutomationResolver.resolve("MessagesController", "deleteMessages", AutomationResolver.ResolverType.Method),
-                        AutomationResolver.merge(AutomationResolver.resolveObject("deleteMessages", new Class[]{java.util.ArrayList.class,
-                                        java.util.ArrayList.class,
-                                        loadClass.getTLRPC$EncryptedChatClass(),
-                                        long.class,
-                                        boolean.class,
-                                        int.class,
-                                        boolean.class,
-                                        long.class,
-                                        loadClass.getTLObjectClass(),
-                                        int.class,
-                                        boolean.class,
-                                        int.class}),
-                                new AbstractMethodHook() {
-                                    @Override
-                                    protected void beforeMethod(MethodHookParam param) {
-                                        isDeleteMessage = true;
-                                    }
+            XposedHelpers.findAndHookMethod(
+                    loadClass.getMessagesControllerClass(),
+                    AutomationResolver.resolve("MessagesController", "deleteMessages", AutomationResolver.ResolverType.Method),
+                    AutomationResolver.merge(AutomationResolver.resolveObject("deleteMessages", new Class[]{java.util.ArrayList.class,
+                                    java.util.ArrayList.class,
+                                    loadClass.getTLRPC$EncryptedChatClass(),
+                                    long.class,
+                                    boolean.class,
+                                    int.class,
+                                    boolean.class,
+                                    long.class,
+                                    loadClass.getTLObjectClass(),
+                                    int.class,
+                                    boolean.class,
+                                    int.class}),
+                            new AbstractMethodHook() {
+                                @Override
+                                protected void beforeMethod(MethodHookParam param) {
+                                    isDeleteMessage = true;
                                 }
-                        ));
-            } else {
-                Utils.log("Not found MessagesController, " + Utils.issue);
-            }
+                            }
+                    ));
+        } else {
+            Utils.log("Not found MessagesController, " + Utils.issue);
+        }
 
         if (loadClass.getNotificationCenterClass() != null) {
             XposedHelpers.findAndHookMethod(loadClass.getNotificationCenterClass(), AutomationResolver.resolve("NotificationCenter", "postNotificationName", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("postNotificationName", new Class[]{int.class, Object[].class}), new AbstractMethodHook() {
@@ -578,8 +488,7 @@ public class NEWAntiRecall {
                 protected void beforeMethod(MethodHookParam param) {
                     if (!isDeleteMessage) {
                         int id = (int) param.args[0];
-                        int messagesDeleted = XposedHelpers.getStaticIntField(loadClass.getNotificationCenterClass(), AutomationResolver.resolve("NotificationCenter", "messagesDeleted", AutomationResolver.ResolverType.Field));
-                        if (id == messagesDeleted) {
+                        if (id == NotificationCenter.getMessagesDeleted()) {
                             param.setResult(null);
                         }
                     }
@@ -594,8 +503,8 @@ public class NEWAntiRecall {
             Utils.log("Not found NotificationCenter, " + Utils.issue);
         }
 
-        NEWAntiRecall.init();
-        NEWAntiRecall.initAutoDownload();
+        ShowDeletedMessages.init();
+        ShowDeletedMessages.initAutoDownload();
 
     }
 
@@ -612,6 +521,7 @@ public class NEWAntiRecall {
                     param.setResult(0);
             }
         });
+
     }
 
 }

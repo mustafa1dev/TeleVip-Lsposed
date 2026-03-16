@@ -4,31 +4,40 @@ import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.virtuals.messenger.FileLoadOperation;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class DownloadSpeed {
-    public static void init() {
+
+    public static boolean isEnable = false;
+
+    public static void init(){
+
+        isEnable = true;
+
         try {
 
             if (loadClass.getFileLoadOperationClass() != null) {
                 XposedHelpers.findAndHookMethod(loadClass.getFileLoadOperationClass(), AutomationResolver.resolve("FileLoadOperation", "updateParams", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
-                        int downloadChunkSizeBig;
-                        int maxDownloadRequests = 12;
-                        int maxDownloadRequestsBig = 12;
-                        int maxCdnParts;
-                        downloadChunkSizeBig = 1024 * 1024; // 1MB
-                        long DefaulMaxFileSize = 1024L * 1024L * 2000L;
+                        if (FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED)) {
+                            FileLoadOperation fileLoadOperation = new FileLoadOperation(param.thisObject);
 
-                        maxCdnParts = (int) (DefaulMaxFileSize / downloadChunkSizeBig);
+                            int downloadChunkSizeBig = 1024 * 512;
+                            int maxDownloadRequests = 8;
 
-                        XposedHelpers.setIntField(param.thisObject, AutomationResolver.resolve("FileLoadOperation", "downloadChunkSizeBig", AutomationResolver.ResolverType.Field), downloadChunkSizeBig);
-                        XposedHelpers.setObjectField(param.thisObject, AutomationResolver.resolve("FileLoadOperation", "maxDownloadRequests", AutomationResolver.ResolverType.Field), maxDownloadRequests);
-                        XposedHelpers.setObjectField(param.thisObject, AutomationResolver.resolve("FileLoadOperation", "maxDownloadRequestsBig", AutomationResolver.ResolverType.Field), maxDownloadRequestsBig);
-                        XposedHelpers.setObjectField(param.thisObject, AutomationResolver.resolve("FileLoadOperation", "maxCdnParts", AutomationResolver.ResolverType.Field), maxCdnParts);
+                            long defaultMaxFileSize = 1024L * 1024L * 2000L;
 
+                            int maxCdnParts = (int) (defaultMaxFileSize / downloadChunkSizeBig);
+
+                            fileLoadOperation.setDownloadChunkSizeBig(downloadChunkSizeBig);
+                            fileLoadOperation.setMaxDownloadRequests(maxDownloadRequests);
+                            fileLoadOperation.setMaxDownloadRequestsBig(maxDownloadRequests);
+                            fileLoadOperation.setMaxCdnParts(maxCdnParts);
+                            param.setResult(null);
+                        }
 
                     }
                 });
