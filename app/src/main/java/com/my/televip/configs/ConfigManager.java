@@ -1,17 +1,17 @@
 package com.my.televip.configs;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.my.televip.Utils;
+import com.my.televip.utils.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-import com.my.televip.Utils;
-import com.my.televip.utils.FileUtils;
 
 public class ConfigManager {
     public static File cfgPath = null;
@@ -52,6 +52,6 @@ public class ConfigManager {
         valueJsonObject.add("TeleVip", jsonModule);
         jsonModule.add("AntiRecall", new JsonPrimitive(Configs.isAntiRecall()));
              //jsonModule.add("UnlockedNoPremiumAccountsLimit", new JsonPrimitive(Configs.isUnlockedNoPremiumAccountsLimit()));
-        FileUtils.save(cfgPath, Utils.getBuilderGson().toJson(valueJsonObject), false);
+        FileUtils.save(cfgPath, new GsonBuilder().setPrettyPrinting().create().toJson(valueJsonObject), false);
     }
 }

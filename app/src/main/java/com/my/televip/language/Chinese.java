@@ -15,8 +15,7 @@ public class Chinese extends Language {
         NameDeleted = "名称已删除";
         GhostMode = "幽灵模式 👻";
         byMustafa = "by @m_1_iq";
-        HideSeenUser = "隐藏私人聊天的已读状态";
-        HideSeenGroups = "隐藏群组和频道的已读状态";
+        HideSeen = "隐藏“已查看”状态";
         HideStoryView = "隐藏 '故事观看' 状态";
         HideTyping = "隐藏正在输入...";
         TelegramPremium = "启用 Telegram 本地会员";
@@ -53,5 +52,6 @@ public class Chinese extends Language {
         Connections = "连接数";
         Message = "消息 ";
         Edited = " 编辑于 ";
+        MarkReadAfterSend = "发送后将消息标记为已读";
     }
 }

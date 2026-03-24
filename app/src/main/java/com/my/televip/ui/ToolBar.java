@@ -11,11 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.my.televip.Drawable.ArrowDrawable;
-import com.my.televip.MainHook;
 import com.my.televip.virtuals.Theme;
 
-public class ToolBar extends LinearLayout{
+public class ToolBar extends LinearLayout {
 
     private final Context context;
     private TextView title;
@@ -120,7 +118,7 @@ public class ToolBar extends LinearLayout{
     }
 
     private int dpToPx(int dp) {
-        return (int) (dp * MainHook.launchActivity.getResources().getDisplayMetrics().density);
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
     public void setTextTitle(CharSequence title) {

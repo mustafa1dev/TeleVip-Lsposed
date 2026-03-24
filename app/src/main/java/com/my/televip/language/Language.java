@@ -16,8 +16,8 @@ public class Language {
     public static String NameDeleted;
     public static String GhostMode;
     public static String byMustafa;
-    public static String HideSeenUser;
-    public static String HideSeenGroups;
+    public static String HideSeen;
+    public static String MarkReadAfterSend;
     public static String HideStoryView;
     public static String HideTyping;
     public static String TelegramPremium;

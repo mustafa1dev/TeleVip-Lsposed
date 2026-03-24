@@ -67,6 +67,22 @@ public class TLRPC {
             XposedHelpers.callMethod(message, AutomationResolver.resolve("TLRPC$Message", "readAttachPath", AutomationResolver.ResolverType.Method), stream.nativeByteBuffer, currentUserId);
         }
     }
+    public static class InputPeer {
+        public final Object inputPeer;
+        public InputPeer(Object message) {
+            this.inputPeer = message;
+        }
+        public long getUser_id(){
+            return XposedHelpers.getLongField(inputPeer,"user_id");
+        }
+        public long getChat_id(){
+            return XposedHelpers.getLongField(inputPeer,"chat_id");
+        }
+        public long getChannel_id(){
+            return XposedHelpers.getLongField(inputPeer,"channel_id");
+        }
+
+    }
 
     public static class messages_Messages {
         Object messages_Messages;
@@ -136,5 +152,81 @@ public class TLRPC {
             }
             return null;
         }
+    }
+
+    public static class TL_messages_affectedMessages {
+        final Object instance;
+
+        public TL_messages_affectedMessages()
+        {
+            this.instance = XposedHelpers.newInstance(loadClass.getTL_messages_affectedMessagesClass());
+        }
+        public TL_messages_affectedMessages(Object instance)
+        {
+            this.instance = instance;
+        }
+
+        public int getPts(){
+            return XposedHelpers.getIntField(instance, "pts");
+        }
+
+        public int getPtsCount(){
+            return XposedHelpers.getIntField(instance, "pts_count");
+        }
+        public void setPts(int pts){
+            XposedHelpers.setIntField(instance, "pts", pts);
+        }
+
+        public void setPtsCount(int pts_count){
+            XposedHelpers.setIntField(instance, "pts_count", pts_count);
+        }
+
+        public Object getTL_messages_affectedMessages(){
+            return instance;
+        }
+
+    }
+
+    public static class TL_channels_readHistory {
+        final Object instance;
+
+        public TL_channels_readHistory()
+        {
+            this.instance = XposedHelpers.newInstance(loadClass.getTL_channels_readHistoryClass());
+        }
+
+        public void setChannel(Object channel){
+            XposedHelpers.setObjectField(instance, "channel", channel);
+        }
+
+        public void setMax_id(int max_id){
+            XposedHelpers.setIntField(instance, "max_id", max_id);
+        }
+
+        public Object getTL_channels_readHistory(){
+            return instance;
+        }
+    }
+
+    public static class TL_messages_readHistory {
+        final Object instance;
+
+        public TL_messages_readHistory()
+        {
+            this.instance = XposedHelpers.newInstance(loadClass.getTL_messages_readHistoryClass());
+        }
+
+        public void setPeer(InputPeer peer){
+            XposedHelpers.setObjectField(instance, "peer", peer.inputPeer);
+        }
+
+        public void setMax_id(int max_id){
+            XposedHelpers.setIntField(instance, "max_id", max_id);
+        }
+
+        public Object getTL_messages_readHistory(){
+            return instance;
+        }
+
     }
 }

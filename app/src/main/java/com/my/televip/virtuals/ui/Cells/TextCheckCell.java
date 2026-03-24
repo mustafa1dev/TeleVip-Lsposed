@@ -1,4 +1,4 @@
-package com.my.televip.virtuals.Cells;
+package com.my.televip.virtuals.ui.Cells;
 
 import android.content.Context;
 import android.view.View;
@@ -11,11 +11,15 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class TextCheckCell {
 
-    Object textCell;
+    public Object textCell;
 
     public TextCheckCell(Context context){
         Class<?> textCheckClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextCheckCell"), MainHook.lpparam.classLoader);
         textCell = XposedHelpers.newInstance(textCheckClass, context);
+    }
+
+    public TextCheckCell(Object obj){
+        textCell = obj;
     }
 
     public void setTextAndValueAndCheck(CharSequence text, String value, boolean checked, boolean multiline, boolean divider){

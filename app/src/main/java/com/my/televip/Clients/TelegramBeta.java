@@ -106,7 +106,5 @@ public class TelegramBeta {
         }
     }
 
-    public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
-    }
+    public static void loadParameter() {}
 }

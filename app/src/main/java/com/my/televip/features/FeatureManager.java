@@ -17,8 +17,7 @@ public class FeatureManager {
 
     // ===== Keys =====
     public static final String KEY_TELE_PREMIUM = "TelePremium";
-    public static final String KEY_HIDE_SEEN_PRIVATE = "HideSeenPrivate";
-    public static final String KEY_HIDE_SEEN_GROUP = "HideSeenGroup";
+    public static final String KEY_HIDE_SEEN = "HideSeen";
     public static final String KEY_HIDE_STORY_READ = "HideStoryRead";
     public static final String KEY_HIDE_TYPING = "HideTyping";
     public static final String KEY_HIDE_UPDATE_APP = "HideUpdateApp";
@@ -34,6 +33,7 @@ public class FeatureManager {
     public static final String KEY_FIX_TL_ERROR = "FixTLError";
     public static final String KEY_SHOW_MESSAGE_ID = "ShowMessageID";
     public static final String KEY_DOWNLOAD_SPEED = "DownloadSpeed";
+    public static final String KEY_MARK_READ_AFTER_SEND = "markReadAfterSend";
 
     public static boolean getBoolean(String key) {
         try {
@@ -98,7 +98,6 @@ public class FeatureManager {
 
     public static void init() {
         sharedPreferences = loadClass.getApplicationContext().getSharedPreferences(Language.strTelevip, Activity.MODE_PRIVATE);
-
     }
 
     public static void readFeature() {
@@ -106,23 +105,11 @@ public class FeatureManager {
         if (getBoolean(KEY_TELE_PREMIUM)) {
             TelePremium.init();
         }
-        if (getBoolean(KEY_HIDE_SEEN_PRIVATE) || getBoolean(KEY_HIDE_SEEN_GROUP)) {
-            HideSeen.init();
-        }
-        if (getBoolean(KEY_HIDE_STORY_READ)) {
-            HideStoryRead.init();
-        }
-        if (getBoolean(KEY_HIDE_TYPING)) {
-            HideTyping.init();
-        }
         if (getBoolean(KEY_UNLOCK_CHANNEL)) {
             UnlockChannelFeature.init();
         }
         if (getBoolean(KEY_ALLOW_SAVE_GALLERY)) {
             AllowSaveToGallery.init();
-        }
-        if (getBoolean(KEY_HIDE_ONLINE)) {
-            HideOnline.init();
         }
         if (getBoolean(KEY_PREVENT_MEDIA)) {
             PreventMedia.init();
@@ -154,6 +141,12 @@ public class FeatureManager {
         if (getBoolean(KEY_DOWNLOAD_SPEED)) {
             DownloadSpeed.init();
         }
+        if (getBoolean(KEY_HIDE_ONLINE)) {
+            HideOnline.init();
+        }
+        if (isGhostMode()){
+            GhostMode.init();
+        }
 
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
             OtherFeatures.init();
@@ -167,18 +160,10 @@ public class FeatureManager {
 
         if (key.equals(KEY_TELE_PREMIUM) && getBoolean(key) && !TelePremium.isEnable) {
             TelePremium.init();
-        } else if ((key.equals(KEY_HIDE_SEEN_PRIVATE) && getBoolean(key) || key.equals(KEY_HIDE_SEEN_GROUP) && getBoolean(key)) && !HideSeen.isEnable ) {
-            HideSeen.init();
-        } else if (key.equals(KEY_HIDE_STORY_READ) && getBoolean(key) && !HideStoryRead.isEnable) {
-            HideStoryRead.init();
-        } else if (key.equals(KEY_HIDE_TYPING) && getBoolean(key) && !HideTyping.isEnable) {
-            HideTyping.init();
         } else if (key.equals(KEY_UNLOCK_CHANNEL) && getBoolean(key) && !UnlockChannelFeature.isEnable) {
             UnlockChannelFeature.init();
         } else if (key.equals(KEY_ALLOW_SAVE_GALLERY) && getBoolean(key) && !AllowSaveToGallery.isEnable) {
             AllowSaveToGallery.init();
-        } else if (key.equals(KEY_HIDE_ONLINE) && getBoolean(key) && !HideOnline.isEnable) {
-            HideOnline.init();
         } else if (key.equals(KEY_PREVENT_MEDIA) && getBoolean(key) && !PreventMedia.isEnable) {
             PreventMedia.init();
         } else if ((key.equals(KEY_SHOW_DELETED) && getBoolean(key) || key.equals(KEY_SHOW_MESSAGE_ID) && getBoolean(key))  && !ChatMessageCell.isEnable) {
@@ -199,7 +184,20 @@ public class FeatureManager {
             FixTLError.init();
         } else if (key.equals(KEY_DOWNLOAD_SPEED) && getBoolean(key) && !DownloadSpeed.isEnable) {
             DownloadSpeed.init();
+        } else if (key.equals(KEY_HIDE_ONLINE) && getBoolean(key) && !HideOnline.isEnable) {
+            HideOnline.init();
+        } else if (isGhostMode() && !GhostMode.isEnable) {
+            GhostMode.init();
         }
+    }
+
+    public static boolean isGhostMode(){
+        return getBoolean(KEY_HIDE_SEEN) ||
+                getBoolean(KEY_HIDE_STORY_READ) ||
+                getBoolean(KEY_HIDE_TYPING) ||
+                getBoolean(KEY_HIDE_ONLINE) ||
+                getBoolean(KEY_MARK_READ_AFTER_SEND);
+
     }
 
 }

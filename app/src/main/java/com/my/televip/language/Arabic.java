@@ -15,8 +15,7 @@ public class Arabic extends Language {
         NameDeleted = "تم حذف الاسم";
         GhostMode = "وضع الشبح 👻";
         byMustafa = "تم تطوير من قبل @m_1_iq";
-        HideSeenUser = "اخفاء علامة الاستلام من المحادثة الخاصة";
-        HideSeenGroups = "اخفاء علامة الاستلام من المجموعات والقنوات";
+        HideSeen = "اخفاء علامة الاستلام";
         HideStoryView = "اخفاء مشاهدة قصة";
         HideTyping = "اخفاء مؤشر الكتابة";
         TelegramPremium = "فتح تيليجرام المميز";
@@ -53,6 +52,7 @@ public class Arabic extends Language {
         Connections = "اتصالات";
         Message = "رسالة ";
         Edited = " تم التعديل في ";
+        MarkReadAfterSend = "تعيين الرسائل كمقروءة بعد الإرسال";
     }
 
 }

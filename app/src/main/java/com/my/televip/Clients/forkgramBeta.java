@@ -104,5 +104,6 @@ public class forkgramBeta {
             return has;
         }
     }
+
     public static void loadParameter() {}
 }

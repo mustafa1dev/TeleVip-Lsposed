@@ -1,2 +1,4 @@
 rootProject.name = "TeleVip"
 include ':app'
+include ':settingsadapter'
+include ':TeleVip'

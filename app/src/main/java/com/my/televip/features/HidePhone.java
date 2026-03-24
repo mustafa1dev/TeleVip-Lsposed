@@ -1,14 +1,8 @@
 package com.my.televip.features;
 
 import com.my.televip.Utils;
-import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.loadClass;
-import com.my.televip.obfuscate.AutomationResolver;
 
 import java.lang.reflect.Method;
-
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
 
 public class HidePhone {
 private static Method getUserConfigMethod;
@@ -20,6 +14,7 @@ private static Method getClientUserIdMethod;
         isEnable = true;
 
         try {
+            /*
             if (loadClass.getMessagesControllerClass() != null && loadClass.getBaseControllerClass() != null) {
                 XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getUser", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("getUser", new Class[]{Long.class}), new AbstractMethodHook() {
                     @Override
@@ -47,6 +42,8 @@ private static Method getClientUserIdMethod;
                     }
                 }));
             }
+
+             */
         } catch (Throwable t){
             Utils.log(t);
         }

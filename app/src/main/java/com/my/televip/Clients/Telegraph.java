@@ -3,15 +3,11 @@ package com.my.televip.Clients;
 import static com.my.televip.MainHook.lpparam;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
-import com.my.televip.MainHook;
 import com.my.televip.Utils;
-import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
-import com.my.televip.virtuals.Adapters.DrawerLayoutAdapter;
-import com.my.televip.virtuals.EventType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,56 +116,58 @@ public class Telegraph {
     }
 
     public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.messenger.ApplicationLoader", "org.telegram.messenger.cOM4"));
-        classList.add(new ClassInfo("org.telegram.ui.ActionBar.AlertDialog$OnButtonClickListener", "org.telegram.ui.ActionBar.AlertDialog$COn"));
-        classList.add(new ClassInfo("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item", "org.telegram.messenger.GraphDrawerMenuController$MainMenuItem"));
-        classList.add(new ClassInfo("org.telegram.ui.ActionBar.Theme", "org.telegram.ui.ActionBar.q"));
-        classList.add(new ClassInfo("org.telegram.messenger.LocaleController", "org.telegram.messenger.f9"));
-        classList.add(new ClassInfo("org.telegram.ui.Cells.ChatMessageCell","org.telegram.ui.Cells.Com6"));
-        classList.add(new ClassInfo("org.telegram.messenger.MessagesController","org.telegram.messenger.Iq"));
-        classList.add(new ClassInfo("org.telegram.messenger.MessagesStorage","org.telegram.messenger.bw"));
-        classList.add(new ClassInfo("org.telegram.messenger.NotificationsController","org.telegram.messenger.Ex"));
-        classList.add(new ClassInfo("org.telegram.messenger.NotificationCenter","org.telegram.messenger.vw"));
-        classList.add(new ClassInfo("org.telegram.messenger.MessageObject","org.telegram.messenger.Yg"));
-        classList.add(new ClassInfo("org.telegram.messenger.UserConfig","org.telegram.messenger.uE"));
-        classList.add(new ClassInfo("org.telegram.messenger.MessagesController$ReadTask","org.telegram.messenger.Iq$NUl"));
-        classList.add(new ClassInfo("org.telegram.ui.Stories.StoriesController","org.telegram.ui.Stories.t2"));
-        classList.add(new ClassInfo("org.telegram.ui.Stories.PeerStoriesView$StoryItemHolder","org.telegram.ui.Stories.j$coM2"));
-        classList.add(new ClassInfo("org.telegram.ui.ActionBar.BaseFragment","org.telegram.ui.ActionBar.cOm7"));
-        classList.add(new ClassInfo("org.telegram.ui.PhotoViewer$PhotoViewerProvider","org.telegram.ui.PhotoViewer$COM9"));
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity","org.telegram.ui.Ng"));
-        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate","org.telegram.ui.Ng$LPT6"));
+        classList.add(new ClassInfo("org.telegram.messenger.ApplicationLoader", "org.telegram.messenger.com5"));
+        classList.add(new ClassInfo("org.telegram.ui.ActionBar.AlertDialog$OnButtonClickListener", "org.telegram.ui.ActionBar.AlertDialog$coN"));
+        classList.add(new ClassInfo("org.telegram.ui.ActionBar.Theme", "org.telegram.ui.ActionBar.x"));
+        classList.add(new ClassInfo("org.telegram.messenger.LocaleController", "org.telegram.messenger.h9"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.ChatMessageCell","org.telegram.ui.Cells.COm7"));
+        classList.add(new ClassInfo("org.telegram.messenger.MessagesController","org.telegram.messenger.Zq"));
+        classList.add(new ClassInfo("org.telegram.messenger.MessagesStorage","org.telegram.messenger.uw"));
+        classList.add(new ClassInfo("org.telegram.messenger.NotificationsController","org.telegram.messenger.Yx"));
+        classList.add(new ClassInfo("org.telegram.messenger.NotificationCenter","org.telegram.messenger.Ow"));
+        classList.add(new ClassInfo("org.telegram.messenger.MessageObject","org.telegram.messenger.ih"));
+        classList.add(new ClassInfo("org.telegram.messenger.UserConfig","org.telegram.messenger.OE"));
+        classList.add(new ClassInfo("org.telegram.ui.Stories.StoriesController","org.telegram.ui.Stories.w2"));
+        classList.add(new ClassInfo("org.telegram.ui.Stories.PeerStoriesView$StoryItemHolder","org.telegram.ui.Stories.m$coM2"));
+        classList.add(new ClassInfo("org.telegram.ui.ActionBar.BaseFragment","org.telegram.ui.ActionBar.com8"));
+        classList.add(new ClassInfo("org.telegram.ui.PhotoViewer$PhotoViewerProvider","org.telegram.ui.PhotoViewer$lpt1"));
+        classList.add(new ClassInfo("org.telegram.ui.ChatActivity","org.telegram.ui.Og"));
         classList.add(new ClassInfo("org.telegram.messenger.BaseController","org.telegram.messenger.com7"));
-        classList.add(new ClassInfo("org.telegram.messenger.AndroidUtilities","org.telegram.messenger.cOM3"));
-        classList.add(new ClassInfo("org.telegram.ui.Cells.TextCheckCell","org.telegram.ui.Cells.U0"));
-        classList.add(new ClassInfo("org.telegram.ui.Cells.ShadowSectionCell","org.telegram.ui.Cells.Y"));
-        classList.add(new ClassInfo("org.telegram.ui.Cells.HeaderCell","org.telegram.ui.Cells.lpt8"));
-        classList.add(new ClassInfo("org.telegram.ui.Cells.TextSettingsCell","org.telegram.ui.Cells.v1"));
+        classList.add(new ClassInfo("org.telegram.messenger.AndroidUtilities","org.telegram.messenger.com4"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.TextCheckCell","org.telegram.ui.Cells.N0"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.ShadowSectionCell","org.telegram.ui.Cells.Q"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.HeaderCell","org.telegram.ui.Cells.lPT6"));
+        classList.add(new ClassInfo("org.telegram.ui.Cells.TextSettingsCell","org.telegram.ui.Cells.n1"));
+        classList.add(new ClassInfo("org.telegram.ui.Components.UniversalAdapter","org.telegram.ui.Components.iN"));
+        classList.add(new ClassInfo("org.telegram.messenger.SharedConfig","org.telegram.messenger.DC"));
 
         fieldList.add(new FieldInfo("ApplicationLoader", "applicationContext", "b"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutAdapter", "M"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutContainer", "L"));
-        fieldList.add(new FieldInfo("LocaleController", "currentLocale", "v"));
-        fieldList.add(new FieldInfo("ChatMessageCell","currentMessageObject","T6"));
+        fieldList.add(new FieldInfo("LocaleController", "currentLocale", "y"));
+        fieldList.add(new FieldInfo("ChatMessageCell","currentMessageObject","W6"));
         fieldList.add(new FieldInfo("MessagesController","dialogMessage","C"));
         fieldList.add(new FieldInfo("MessagesController","dialogMessagesByIds","F"));
         fieldList.add(new FieldInfo("NotificationCenter","messagesDeleted","c0"));
         fieldList.add(new FieldInfo("MessagesController$ReadTask","dialogId","a"));
         fieldList.add(new FieldInfo("Theme","chat_timePaint","o3"));
-        fieldList.add(new FieldInfo("ChatMessageCell","currentTimeString","Ya"));
-        fieldList.add(new FieldInfo("ChatMessageCell","timeTextWidth","Va"));
-        fieldList.add(new FieldInfo("ChatMessageCell","timeWidth","Ua"));
-        fieldList.add(new FieldInfo("ProfileActivity","userId","L0"));
-        fieldList.add(new FieldInfo("LaunchActivity","frameLayout","I"));
-        fieldList.add(new FieldInfo("Theme","key_windowBackgroundGray","Z7"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefault","q9"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultTitle","t9"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultIcon","t9"));
-        fieldList.add(new FieldInfo("Theme","key_windowBackgroundWhite","d7"));
-        fieldList.add(new FieldInfo("Theme","key_switchTrackBlueChecked","O7"));
-        fieldList.add(new FieldInfo("ChatActivity","selectedObject","W4"));
+        fieldList.add(new FieldInfo("ChatMessageCell","currentTimeString","fb"));
+        fieldList.add(new FieldInfo("ChatMessageCell","timeTextWidth","cb"));
+        fieldList.add(new FieldInfo("ChatMessageCell","timeWidth","bb"));
+        fieldList.add(new FieldInfo("ProfileActivity","userId","J0"));
+        fieldList.add(new FieldInfo("LaunchActivity","frameLayout","H"));
+        fieldList.add(new FieldInfo("Theme","key_windowBackgroundGray","d8"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefault","u9"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultTitle","C9"));
+        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultIcon","x9"));
+        fieldList.add(new FieldInfo("Theme","key_windowBackgroundWhite","g7"));
+        fieldList.add(new FieldInfo("Theme","key_switchTrackBlueChecked","S7"));
+        fieldList.add(new FieldInfo("ChatActivity","selectedObject","S4"));
         fieldList.add(new FieldInfo("MessagesStorage","database","b"));
         fieldList.add(new FieldInfo("UserConfig","clientUserId","i"));
+        fieldList.add(new FieldInfo("UserConfig","selectedAccount","j0"));
+        fieldList.add(new FieldInfo("UItem","id","d"));
+        fieldList.add(new FieldInfo("SettingsActivity$SettingCell","iconView","c"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
@@ -183,41 +181,45 @@ public class Telegraph {
         methodList.add(new MethodInfo("Theme","isDark", "J"));
         methodList.add(new MethodInfo("Theme","getEventType", "O2"));
         methodList.add(new MethodInfo("DrawerLayoutContainer", "closeDrawer", "e"));
-        methodList.add(new MethodInfo("LocaleController", "getInstance", "w1"));
-        methodList.add(new MethodInfo("ChatMessageCell","measureTime","w6"));
-        methodList.add(new MethodInfo("MessagesController","deleteMessages","H9"));
-        methodList.add(new MethodInfo("MessagesStorage","markMessagesAsDeleted","j7"));
-        methodList.add(new MethodInfo("MessagesStorage","markMessagesAsDeletedInternal","m7"));
-        methodList.add(new MethodInfo("MessagesStorage","updateDialogsWithDeletedMessagesInternal","f9"));
-        methodList.add(new MethodInfo("MessagesStorage","updateDialogsWithDeletedMessages","e9"));
-        methodList.add(new MethodInfo("NotificationsController","removeDeletedMessagesFromNotifications","p1"));
+        methodList.add(new MethodInfo("LocaleController", "getInstance", "E1"));
+        methodList.add(new MethodInfo("ChatMessageCell","measureTime","z6"));
+        methodList.add(new MethodInfo("MessagesController","deleteMessages","M9"));
+        methodList.add(new MethodInfo("MessagesStorage","markMessagesAsDeleted","l7"));
+        methodList.add(new MethodInfo("MessagesStorage","markMessagesAsDeletedInternal","o7"));
+        methodList.add(new MethodInfo("MessagesStorage","updateDialogsWithDeletedMessagesInternal","h9"));
+        methodList.add(new MethodInfo("MessagesStorage","updateDialogsWithDeletedMessages","g9"));
+        methodList.add(new MethodInfo("NotificationsController","removeDeletedMessagesFromNotifications","q1"));
         methodList.add(new MethodInfo("NotificationCenter","postNotificationName","B"));
-        methodList.add(new MethodInfo("UserConfig","isPremium","O"));
+        methodList.add(new MethodInfo("UserConfig","isPremium","N"));
         methodList.add(new MethodInfo("MessagesController","completeReadTask","u9"));
         methodList.add(new MethodInfo("MessagesController","getUser","mc"));
-        methodList.add(new MethodInfo("MessagesStorage","getDatabase","x5"));
-        methodList.add(new MethodInfo("StoriesController","markStoryAsRead","G1"));
-        methodList.add(new MethodInfo("StoriesController","hasStories","g1"));
-        methodList.add(new MethodInfo("StoriesController","hasStories2","h1"));
-        methodList.add(new MethodInfo("MessagesController","storiesEnabled","Dg"));
-        methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed","Cg"));
-        methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed2","Eg"));
-        methodList.add(new MethodInfo("PeerStoriesView$StoryItemHolder","allowScreenshots","d"));
+        methodList.add(new MethodInfo("MessagesStorage","getDatabase","z5"));
+        methodList.add(new MethodInfo("StoriesController","hasStories","f1"));
+        methodList.add(new MethodInfo("StoriesController","hasStories2","g1"));
+        methodList.add(new MethodInfo("MessagesController","storiesEnabled","Og"));
+        methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed","Ng"));
+        methodList.add(new MethodInfo("MessagesController","storyEntitiesAllowed2","Pg"));
+        methodList.add(new MethodInfo("PeerStoriesView$StoryItemHolder","allowScreenshots","r"));
         methodList.add(new MethodInfo("UserConfig","getClientUserId","v"));
-        methodList.add(new MethodInfo("ProfileActivity","updateProfileData","ye"));
-        methodList.add(new MethodInfo("MessagesController","isChatNoForwards","Jc"));
-        methodList.add(new MethodInfo("ChatActivity","sendSecretMessageRead","Ax"));
-        methodList.add(new MethodInfo("ChatActivity","sendSecretMediaDelete","zx"));
+        methodList.add(new MethodInfo("ProfileActivity","updateProfileData","Ie"));
+        methodList.add(new MethodInfo("MessagesController","isChatNoForwards","Qc"));
+        methodList.add(new MethodInfo("ChatActivity","sendSecretMessageRead","Fx"));
+        methodList.add(new MethodInfo("ChatActivity","sendSecretMediaDelete","Ex"));
         methodList.add(new MethodInfo("TextCheckCell","setTextAndValueAndCheck","j"));
         methodList.add(new MethodInfo("TextCheckCell","setTextAndCheck","i"));
         methodList.add(new MethodInfo("TextCheckCell","isChecked","d"));
-        methodList.add(new MethodInfo("AndroidUtilities","isTablet","k4"));
-        methodList.add(new MethodInfo("Theme","getColor","u2"));
+        methodList.add(new MethodInfo("AndroidUtilities","isTablet","z4"));
+        methodList.add(new MethodInfo("Theme","getColor","w2"));
         methodList.add(new MethodInfo("TextSettingsCell","setText","c"));
         methodList.add(new MethodInfo("LocaleController","formatShortNumber","x0"));
-        methodList.add(new MethodInfo("ChatActivity","fillMessageMenu","Tr"));
-        methodList.add(new MethodInfo("ChatActivity","processSelectedOption","Nw"));
-        methodList.add(new MethodInfo("MessagesStorage","putMessages","N7"));
+        methodList.add(new MethodInfo("ChatActivity","fillMessageMenu","Ur"));
+        methodList.add(new MethodInfo("ChatActivity","processSelectedOption","Qw"));
+        methodList.add(new MethodInfo("MessagesStorage","putMessages","P7"));
+        methodList.add(new MethodInfo("SettingsActivity$SettingCell","set","a"));
+        methodList.add(new MethodInfo("SettingsActivity","fillItems","M0"));
+        methodList.add(new MethodInfo("SettingsActivity","onClick","Q0"));
+        methodList.add(new MethodInfo("MessagesStorage","getInstance","N5"));
+        methodList.add(new MethodInfo("MessagesStorage","getStorageQueue","g6"));
 
         Class<?> mainMenuItem = XposedHelpers.findClassIfExists("org.telegram.messenger.GraphDrawerMenuController$MainMenuItem", lpparam.classLoader);
         ParameterResolver.register("item", new Class[]{int.class, String.class, int.class, boolean.class, mainMenuItem, String.class});
@@ -226,46 +228,6 @@ public class Telegraph {
 
         ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
 
-    }
-
-    public static void onBindViewHolderHook() {
-        try {
-            Class<?> viewHolder = XposedHelpers.findClassIfExists("androidx.recyclerview.widget.RecyclerView$ViewHolder", lpparam.classLoader);
-
-            findAndHookMethod(
-                    loadClass.getDrawerLayoutAdapterClass(),
-                    "onBindViewHolder", viewHolder, int.class, new AbstractMethodHook() {
-                        @Override
-                        protected void afterMethod(MethodHookParam param) {
-                            Object holder = param.args[0];
-                            DrawerLayoutAdapter drawerLayoutAdapter = new DrawerLayoutAdapter(param.thisObject);
-
-                            int position = (int) param.args[1];
-                            ArrayList<?> items = drawerLayoutAdapter.getItems();
-
-                            int index = position - 2;
-
-                            if (index < 0 || index >= items.size()) {
-                                return;
-                            }
-
-                            Object mainMenuItem = items.get(index);
-
-                            String str = (String) XposedHelpers.getObjectField(mainMenuItem, "b");
-                            int id = XposedHelpers.getIntField(mainMenuItem, "c");
-
-                            if (id == MainHook.id) {
-                                Object itemView = XposedHelpers.getObjectField(holder, "itemView");
-                                XposedHelpers.callMethod(itemView, "e", 0, str, EventType.getIconSettings());
-                                XposedHelpers.callMethod(itemView, "setInfo", (Object) null);
-                                XposedHelpers.callMethod(itemView, "c", (Object) null, 0);
-                                param.setResult(null);
-                            }
-                        }
-                    });
-        } catch (Throwable t){
-            Utils.log(t);
-        }
     }
 
     public static void removeAd(){

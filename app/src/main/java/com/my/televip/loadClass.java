@@ -4,6 +4,7 @@ import static com.my.televip.MainHook.lpparam;
 
 import android.content.Context;
 
+import com.my.televip.dex.DexInjector;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -56,6 +57,15 @@ public class loadClass {
     private static Class<?> PhotoViewer$PhotoViewerProviderClass;
     private static Class<?> UserConfigClass;
     private static Class<?> TLRPC$messages_MessagesClass;
+    private static Class<?> AlertDialog$OnButtonClickListenerClass;
+    private static Class<?> RecyclerListViewClass;
+    private static Class<?> SettingsAdapter$ListAdapterClass;
+    private static Class<?> SettingsAdapterClass;
+    private static Class<?> UtilitiesClass;
+    private static Class<?> TL_messages_affectedMessagesClass;
+    private static Class<?> TL_channels_readHistoryClass;
+    private static Class<?> TL_messages_readHistoryClass;
+    private static Class<?> IntCallbackClass;
 
     //Context
     private static Context applicationContext;
@@ -392,11 +402,75 @@ public class loadClass {
         }
         return UserConfigClass;
     }
+
     public static Class<?> getTLRPC$messages_MessagesClass() {
         if (TLRPC$messages_MessagesClass == null) {
             TLRPC$messages_MessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$messages_Messages"), lpparam.classLoader);
         }
         return TLRPC$messages_MessagesClass;
+    }
+
+    public static Class<?> getAlertDialog$OnButtonClickListenerClass() {
+        if (AlertDialog$OnButtonClickListenerClass == null) {
+            AlertDialog$OnButtonClickListenerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.AlertDialog$OnButtonClickListener"), lpparam.classLoader);
+        }
+        return AlertDialog$OnButtonClickListenerClass;
+    }
+
+    public static Class<?> getRecyclerListViewClass() {
+        if (RecyclerListViewClass == null) {
+            RecyclerListViewClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("com.televip.SettingsAdapter.SettingsAdapter$RecyclerListView"), DexInjector.classLoader);
+        }
+        return RecyclerListViewClass;
+    }
+
+    public static Class<?> getSettingsAdapterClass() {
+        if (SettingsAdapterClass == null) {
+            SettingsAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("com.televip.SettingsAdapter.SettingsAdapter"), DexInjector.classLoader);
+        }
+        return SettingsAdapterClass;
+    }
+
+    public static Class<?> getSettingsAdapter$ListAdapterClass() {
+        if (SettingsAdapter$ListAdapterClass == null) {
+            SettingsAdapter$ListAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("com.televip.SettingsAdapter.SettingsAdapter$ListAdapter"), DexInjector.classLoader);
+        }
+        return SettingsAdapter$ListAdapterClass;
+    }
+
+    public static Class<?> getUtilitiesClass() {
+        if (UtilitiesClass == null) {
+            UtilitiesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.Utilities"), lpparam.classLoader);
+        }
+        return UtilitiesClass;
+    }
+
+    public static Class<?> getTL_messages_affectedMessagesClass() {
+        if (TL_messages_affectedMessagesClass == null) {
+            TL_messages_affectedMessagesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_messages_affectedMessages"), lpparam.classLoader);
+        }
+        return TL_messages_affectedMessagesClass;
+    }
+
+    public static Class<?> getTL_channels_readHistoryClass() {
+        if (TL_channels_readHistoryClass == null) {
+            TL_channels_readHistoryClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_channels_readHistory"), lpparam.classLoader);
+        }
+        return TL_channels_readHistoryClass;
+    }
+
+    public static Class<?> getTL_messages_readHistoryClass() {
+        if (TL_messages_readHistoryClass == null) {
+            TL_messages_readHistoryClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_messages_readHistory"), lpparam.classLoader);
+        }
+        return TL_messages_readHistoryClass;
+    }
+
+    public static Class<?> getIntCallbackClass() {
+        if (IntCallbackClass == null) {
+            IntCallbackClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.MessagesStorage$IntCallback"), lpparam.classLoader);
+        }
+        return IntCallbackClass;
     }
 
 }

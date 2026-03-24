@@ -4,8 +4,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.my.televip.obfuscate.struct.ResolverRegistry;
 
 import java.io.File;
@@ -16,12 +14,12 @@ import de.robv.android.xposed.XposedBridge;
 public class Utils {
     public static String pkgName = null;
     public static final String issue = "Your telegram may have been modified! You can submit issue to let developer to try support to the telegram client you are using.";
-    private static final Gson BUILDER_GSON = new GsonBuilder().setPrettyPrinting().create();
     //public static File deletedMessagesSavePath = null;
     public static File deletedMessagesDatabasePath = null;
 
     public static void log(String text)
     {
+
         XposedBridge.log("[TeleVip] pkgName: "+ pkgName +" " + text);
     }
 
@@ -68,7 +66,5 @@ public class Utils {
         }
         return result;
     }
-    public static Gson getBuilderGson() {
-        return BUILDER_GSON;
-    }
+
 }

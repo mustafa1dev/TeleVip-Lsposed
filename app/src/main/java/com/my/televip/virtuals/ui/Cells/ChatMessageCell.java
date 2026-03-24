@@ -33,7 +33,7 @@ public class ChatMessageCell {
         isEnable = true;
         try {
             if (loadClass.getChatMessageCellClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.resolve("org.telegram.messenger.MessageObject"), new AbstractMethodHook() {
+                XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{loadClass.getMessageObjectClass()}),  new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
                         if (FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED) || FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID)) {
@@ -66,7 +66,7 @@ public class ChatMessageCell {
                             }
                         }
                     }
-                });
+                }));
             } else {
                 Utils.log("Not found ChatMessageCell, " + Utils.issue);
             }

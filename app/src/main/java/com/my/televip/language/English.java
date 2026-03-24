@@ -15,8 +15,7 @@ public class English extends Language {
         NameDeleted = "Name deleted";
         GhostMode = "Ghost Mode 👻";
         byMustafa = "by @m_1_iq";
-        HideSeenUser = "Hide 'Seen' status for private chats";
-        HideSeenGroups = "Hide 'Seen' status for groups and channels";
+        HideSeen = "Hide 'Seen' status";
         HideStoryView = "Hide 'Story View' status";
         HideTyping = "Hide Typing...";
         TelegramPremium = "Enable Local Premium";
@@ -53,5 +52,6 @@ public class English extends Language {
         Connections = "Connections";
         Message = "Message ";
         Edited = " Edited on ";
+        MarkReadAfterSend = "Mark messages as read after sending";
     }
 }

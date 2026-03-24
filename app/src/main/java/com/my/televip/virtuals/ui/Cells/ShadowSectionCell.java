@@ -1,4 +1,4 @@
-package com.my.televip.virtuals.Cells;
+package com.my.televip.virtuals.ui.Cells;
 
 import android.content.Context;
 import android.view.View;

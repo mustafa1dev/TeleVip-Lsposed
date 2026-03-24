@@ -108,8 +108,9 @@ public class Teegra {
     }
 
     public static void loadParameter() {
-        ParameterResolver.register("item",new Class[]{int.class, String.class,int.class});
+        classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
 
+        ParameterResolver.register("item",new Class[]{int.class, String.class,int.class});
 
         ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{long.class,ArrayList.class, boolean.class, boolean.class});
         ParameterResolver.register("markMessagesAsDeleted",new Class[]{long.class, java.util.ArrayList.class, boolean.class, boolean.class,boolean.class});

@@ -6,13 +6,11 @@ import static com.my.televip.language.Language.GhostMode;
 import static com.my.televip.language.Language.byMustafa;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.my.televip.ClientChecker;
-import com.my.televip.Clients.Telegraph;
 import com.my.televip.Drawable.GhostDrawable;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
@@ -47,7 +45,7 @@ public class addItem {
         }
 
         settings.removeAllViews();
-        SettingsActivity settingsActivity = new SettingsActivity();
+        SettingsActivity settingsActivity = new SettingsActivity(MainHook.launchActivity);
         settings.addView(settingsActivity.createView());
         show(settings);
     }
@@ -87,7 +85,7 @@ public class addItem {
                     if (id_item_add == -1) {
                         for (int i = 0; i < arrayList.size(); i++) {
                             Object obj = arrayList.get(i);
-                            int id_item = XposedHelpers.getIntField(obj, AutomationResolver.resolve("ArrayList","id", AutomationResolver.ResolverType.Field));
+                            int id_item = XposedHelpers.getIntField(obj, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                             if (id_item > 0) {
                                 arrayList.add(i, uitem);
                                 id_item_add = i;
@@ -114,13 +112,13 @@ public class addItem {
             protected void afterMethod(MethodHookParam param) {
                 int id = (int) param.args[2];
                 if (id == MainHook.id) {
-                    ImageView iconView = (ImageView) XposedHelpers.getObjectField(param.thisObject, "iconView") ;
+                    ImageView iconView = (ImageView) XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("SettingsActivity$SettingCell", "iconView", AutomationResolver.ResolverType.Field));
                     iconView.setImageDrawable(ghostDrawable);
                 }
             }
         }));
 
-        Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists("org.telegram.ui.Components.UniversalAdapter", lpparam.classLoader);
+        Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UniversalAdapter"), lpparam.classLoader);
 
         XposedHelpers.findAndHookMethod(SettingsActivityClass, AutomationResolver.resolve("SettingsActivity", "fillItems", AutomationResolver.ResolverType.Method),
                 AutomationResolver.merge(AutomationResolver.resolveObject("fillItems",  new Class[]{java.util.ArrayList.class, UniversalAdapterClass}), fillItemsHook));
@@ -167,12 +165,7 @@ public class addItem {
                             }
 
                             Language.init();
-                            Object newItem;
-                            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, MainHook.id, true, null, "");
-                            } else {
-                                newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.getIconSettings());
-                            }
+                            Object newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.getIconSettings());
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
@@ -198,9 +191,6 @@ public class addItem {
                     Object drawerLayoutAdapter = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
                     if (drawerLayoutAdapter != null) {
                         Object args = param.args[1];
-                        if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                            args = param.args[2];
-                        }
 
                         int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
                         if (id == MainHook.id) {
@@ -218,10 +208,6 @@ public class addItem {
                     }
                 }
             };
-
-            if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                Telegraph.onBindViewHolderHook();
-            }
 
             Method onCreateMethod = null;
             for (Method method : loadClass.getLaunchActivityClass().getDeclaredMethods()) {

@@ -1,4 +1,4 @@
-package com.my.televip.virtuals.Cells;
+package com.my.televip.virtuals.ui.Cells;
 
 import android.content.Context;
 import android.view.View;
@@ -10,11 +10,15 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class HeaderCell {
 
-    Object headerCell;
+    public Object headerCell;
 
     public HeaderCell(Context context){
         Class<?> headerCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.HeaderCell"), MainHook.lpparam.classLoader);
         headerCell = XposedHelpers.newInstance(headerCellClass, context);
+    }
+
+    public HeaderCell(Object obj){
+       headerCell = obj;
     }
 
     public View getView(){

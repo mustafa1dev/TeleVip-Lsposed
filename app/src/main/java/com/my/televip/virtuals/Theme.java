@@ -59,7 +59,7 @@ public class Theme {
     }
 
     public static int getColor(int key){
-        return (int)XposedHelpers.callStaticMethod(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","getColor", AutomationResolver.ResolverType.Method), key);
+        return (int) XposedHelpers.callStaticMethod(loadClass.getThemeClass(), AutomationResolver.resolve("Theme","getColor", AutomationResolver.ResolverType.Method), key);
     }
 
     public static int getKey_windowBackgroundGray(){

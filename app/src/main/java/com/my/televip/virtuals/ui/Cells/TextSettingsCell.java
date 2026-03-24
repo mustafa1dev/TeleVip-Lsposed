@@ -1,4 +1,4 @@
-package com.my.televip.virtuals.Cells;
+package com.my.televip.virtuals.ui.Cells;
 
 import android.content.Context;
 import android.view.View;
@@ -11,10 +11,14 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class TextSettingsCell {
 
-    Object textSettingsCell;
+    public Object textSettingsCell;
 
     public TextSettingsCell(Context context){
         textSettingsCell = XposedHelpers.newInstance(loadClass.getTextSettingsCellClass(), context);
+    }
+
+    public TextSettingsCell(Object obj){
+        textSettingsCell = obj;
     }
 
     public View getView(){

@@ -9,12 +9,14 @@ import android.os.Bundle;
 
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.dex.DexInjector;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.features.SaveEditsHistory;
 import com.my.televip.language.Language;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.ui.SettingsActivity;
 import com.my.televip.ui.addItem;
+import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XposedHelpers;
@@ -34,7 +36,6 @@ public class MainHook implements IXposedHookLoadPackage {
         if (!ClientChecker.ClientType.containsPackage(lpparam.packageName)) {
             return;
         }
-
         MainHook.lpparam = lpparam;
         Utils.pkgName = lpparam.packageName;
 
@@ -51,6 +52,8 @@ public class MainHook implements IXposedHookLoadPackage {
     }
 
     public void startHook() {
+        DexInjector.injectDex();
+        Bridge.init();
         resolverRegistry.loadParameter();
         Language.init();
         FeatureManager.init();
@@ -88,6 +91,5 @@ public class MainHook implements IXposedHookLoadPackage {
         });
 
     }
-
 }
 
