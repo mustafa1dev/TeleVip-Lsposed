@@ -35,7 +35,7 @@ A module for modifying Telegram with the following features:
 There are additional features that are not listed here.
 
 # Support clients
-1. Telegram 12.5.1 (65802)
+1. Telegram 12.5.2 (65972)
 2. Plus 12.5.1.0 (22060)
 3. TG Connect 11.13.1 (11130109)
 4. Nagram 12.5.1 (1232)
@@ -50,9 +50,9 @@ There are additional features that are not listed here.
 13. Nekogram 11.5.3S (55150) TeleVip 1.4.6
 14. ForkGram 12.3.2.0 (638608)
 15. ForkClient Beta 12.5.1.0 (658009)
-16. NagramX 12.5.1-be38886 (1239)
+16. NagramX 12.5.1-4568785 (1241)
 17. Teegra 10.3.2 (41469)
-18. Telegraph 12.3.1.1 (63862)
+18. Telegraph 12.5.1.1 (65822)
 19. Telega 2.4.0 (104)
 
 # Telegram
