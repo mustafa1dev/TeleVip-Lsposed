@@ -159,44 +159,48 @@ public class SettingsActivity {
         LinearLayout fragmentView = new LinearLayout(context);
         fragmentView.setOrientation(LinearLayout.VERTICAL);
         fragmentView.setBackgroundColor(Theme.getColor(Theme.getKey_windowBackgroundGray()));
+        try {
 
+            ToolBar toolbar = new ToolBar(context);
 
-        ToolBar toolbar = new ToolBar(context);
+            toolbar.setColorTitle(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
+            toolbar.setTextTitle(Language.GhostMode);
 
-        toolbar.setColorTitle(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
-        toolbar.setTextTitle(Language.GhostMode);
+            ArrowDrawable arrow = new ArrowDrawable();
+            toolbar.setImageDrawable(arrow);
+            toolbar.getImage().setOnClickListener(v -> hide());
 
-        ArrowDrawable arrow = new ArrowDrawable();
-        toolbar.setImageDrawable(arrow);
-        toolbar.getImage().setOnClickListener(v -> hide());
+            fragmentView.addView(toolbar);
 
-        fragmentView.addView(toolbar);
+            listView = new RecyclerListView(context);
 
-        listView = new RecyclerListView(context);
+            Object adapter = XposedHelpers.newInstance(
+                    loadClass.getSettingsAdapter$ListAdapterClass(),
+                    context);
 
-        Object adapter = XposedHelpers.newInstance(
-                loadClass.getSettingsAdapter$ListAdapterClass(),
-        context);
+            listView.setAdapter(adapter);
 
-        listView.setAdapter(adapter);
+            if (!ActiveTheme.getActiveTheme()) {
+                listView.setBackgroundColor(Color.rgb(29, 39, 51));
+            } else {
+                listView.setBackgroundColor(Color.rgb(255, 255, 255));
+            }
 
-        if (!ActiveTheme.getActiveTheme()) {
-            listView.setBackgroundColor(Color.rgb(29, 39, 51));
-        } else {
-            listView.setBackgroundColor(Color.rgb(255, 255, 255));
+            listView.setVerticalScrollBarEnabled(false);
+            listView.setLayoutManager(Bridge.getLayoutManager(context));
+
+            LinearLayout.LayoutParams recyclerParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    1f
+            );
+            recyclerParams.setMargins(10, 10, 10, 0);
+
+            fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
+
+        } catch (Exception e){
+            Utils.log(e);
         }
-
-        listView.setVerticalScrollBarEnabled(false);
-        listView.setLayoutManager(Bridge.getLayoutManager(context));
-
-        LinearLayout.LayoutParams recyclerParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1f
-        );
-        recyclerParams.setMargins(10,10,10,0);
-
-        fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
 
         return fragmentView;
     }
@@ -231,26 +235,30 @@ public class SettingsActivity {
 
     public static void init(){
         audio.init();
+        try {
 
-        XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onBackPressed", new AbstractMethodHook() {
-            @Override
-            protected void beforeMethod(MethodHookParam param) {
-                if (isSettings) {
-                    hide();
-                    addItem.settings = null;
-                    param.setResult(null);
+            XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onBackPressed", new AbstractMethodHook() {
+                @Override
+                protected void beforeMethod(MethodHookParam param) {
+                    if (isSettings) {
+                        hide();
+                        addItem.settings = null;
+                        param.setResult(null);
+                    }
                 }
-            }
-        });
+            });
 
-        XposedHelpers.findAndHookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities","isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
-            @Override
-            protected void beforeMethod(MethodHookParam param) {
-                if (isSettings) {
-                    param.setResult(true);
+            XposedHelpers.findAndHookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities", "isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                @Override
+                protected void beforeMethod(MethodHookParam param) {
+                    if (isSettings) {
+                        param.setResult(true);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e){
+            Utils.log(e);
+        }
     }
 
 
