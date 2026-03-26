@@ -52,43 +52,47 @@ public class MainHook implements IXposedHookLoadPackage {
     }
 
     public void startHook() {
-        DexInjector.injectDex();
-        Bridge.init();
-        resolverRegistry.loadParameter();
-        Language.init();
-        FeatureManager.init();
-        SettingsActivity.init();
+        try {
+            DexInjector.injectDex();
+            Bridge.init();
+            resolverRegistry.loadParameter();
+            Language.init();
+            FeatureManager.init();
+            SettingsActivity.init();
 
-        ApplicationLoaderHook.init(lpparam.classLoader);
+            ApplicationLoaderHook.init(lpparam.classLoader);
 
 
-        Class<?> SettingsActivityClass = XposedHelpers.findClassIfExists(
-                AutomationResolver.resolve("org.telegram.ui.SettingsActivity"),
-                lpparam.classLoader
-        );
+            Class<?> SettingsActivityClass = XposedHelpers.findClassIfExists(
+                    AutomationResolver.resolve("org.telegram.ui.SettingsActivity"),
+                    lpparam.classLoader
+            );
 
-        Class<?> SettingsActivity$SettingCell$FactoryClass = XposedHelpers.findClassIfExists(
-                AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell$Factory"),
-                lpparam.classLoader
-        );
+            Class<?> SettingsActivity$SettingCell$FactoryClass = XposedHelpers.findClassIfExists(
+                    AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell$Factory"),
+                    lpparam.classLoader
+            );
 
-        addItem theme = new addItem();
-        if (SettingsActivityClass != null && SettingsActivity$SettingCell$FactoryClass != null) {
-            theme.newTheme(SettingsActivityClass, SettingsActivity$SettingCell$FactoryClass);
-        } else {
-            theme.oldTheme();
-        }
-
-        FeatureManager.readFeature();
-
-        XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onDestroy", new AbstractMethodHook() {
-            @Override
-            protected void beforeMethod(MethodHookParam param) {
-                if (SaveEditsHistory.messageDatabase != null) {
-                    SaveEditsHistory.messageDatabase.closeDatabase();
-                }
+            addItem theme = new addItem();
+            if (SettingsActivityClass != null && SettingsActivity$SettingCell$FactoryClass != null) {
+                theme.newTheme(SettingsActivityClass, SettingsActivity$SettingCell$FactoryClass);
+            } else {
+                theme.oldTheme();
             }
-        });
+
+            FeatureManager.readFeature();
+
+            XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onDestroy", new AbstractMethodHook() {
+                @Override
+                protected void beforeMethod(MethodHookParam param) {
+                    if (SaveEditsHistory.messageDatabase != null) {
+                        SaveEditsHistory.messageDatabase.closeDatabase();
+                    }
+                }
+            });
+        } catch (Exception e){
+            Utils.log(e);
+        }
 
     }
 }

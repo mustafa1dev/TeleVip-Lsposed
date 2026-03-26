@@ -27,6 +27,27 @@ public class TLRPC {
         }
     }
 
+    public static class User {
+        Object user;
+
+        public User(Object user) {
+            this.user = user;
+        }
+
+        public String getPhone() {
+            return (String) XposedHelpers.getObjectField(user, AutomationResolver.resolve("User", "phone", AutomationResolver.ResolverType.Field));
+        }
+
+        public void setPhone(String phone){
+            XposedHelpers.setObjectField(user, AutomationResolver.resolve("User", "phone", AutomationResolver.ResolverType.Field), phone);
+        }
+
+        public Object getUser(){
+            return user;
+        }
+
+    }
+
     public static class Message {
         public final Object message;
         private int id;

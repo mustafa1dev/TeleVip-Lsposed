@@ -117,65 +117,70 @@ public class ShowDeletedMessages {
     }
 
     private static void addShouldDeletedMessage(long channelID, Integer messageId) {
-        boolean needInit = true;
-        DeletedMessageInfo info = null;
-        for (DeletedMessageInfo deletedMessagesId : shouldDeletedMessageInfo) {
-            if (deletedMessagesId.getSelectedAccount() == UserConfig.getSelectedAccount() && deletedMessagesId.getChannelID() == channelID)
-            {
-                info = deletedMessagesId;
-                needInit = false;
-                break;
+            try {
+                boolean needInit = true;
+                DeletedMessageInfo info = null;
+                for (DeletedMessageInfo deletedMessagesId : shouldDeletedMessageInfo) {
+                    if (deletedMessagesId.getSelectedAccount() == UserConfig.getSelectedAccount() && deletedMessagesId.getChannelID() == channelID) {
+                        info = deletedMessagesId;
+                        needInit = false;
+                        break;
+                    }
+                }
+                if (needInit)
+                    shouldDeletedMessageInfo.add(new DeletedMessageInfo(UserConfig.getSelectedAccount(), channelID, messageId));
+                else {
+                    if (!info.getMessageIds().contains(messageId)) // No duplication
+                        info.insertMessageId(messageId);
+                }
+            } catch (Exception e){
+                Utils.log(e);
             }
-        }
-        if (needInit)
-            shouldDeletedMessageInfo.add(new DeletedMessageInfo(UserConfig.getSelectedAccount(), channelID, messageId));
-        else
-        {
-            if (!info.getMessageIds().contains(messageId)) // No duplication
-                info.insertMessageId(messageId);
-        }
     }
 
     private static void addShouldDeletedMessage2(long channelID, Integer messageId) {
-        boolean needInit = true;
-        DeletedMessageInfo info = null;
-        for (DeletedMessageInfo deletedMessagesId : shouldDeletedMessageInfo2) {
-            if (deletedMessagesId.getSelectedAccount() == UserConfig.getSelectedAccount() && deletedMessagesId.getChannelID() == channelID)
-            {
-                info = deletedMessagesId;
-                needInit = false;
-                break;
+            try {
+                boolean needInit = true;
+                DeletedMessageInfo info = null;
+                for (DeletedMessageInfo deletedMessagesId : shouldDeletedMessageInfo2) {
+                    if (deletedMessagesId.getSelectedAccount() == UserConfig.getSelectedAccount() && deletedMessagesId.getChannelID() == channelID) {
+                        info = deletedMessagesId;
+                        needInit = false;
+                        break;
+                    }
+                }
+                if (needInit)
+                    shouldDeletedMessageInfo2.add(new DeletedMessageInfo(UserConfig.getSelectedAccount(), channelID, messageId));
+                else {
+                    if (!info.getMessageIds().contains(messageId)) // No duplication
+                        info.insertMessageId(messageId);
+                }
+            } catch (Exception e){
+                Utils.log(e);
             }
-        }
-        if (needInit)
-            shouldDeletedMessageInfo2.add(new DeletedMessageInfo(UserConfig.getSelectedAccount(), channelID, messageId));
-        else
-        {
-            if (!info.getMessageIds().contains(messageId)) // No duplication
-                info.insertMessageId(messageId);
-        }
     }
 
 
     public static void init()
     {
-        if (loadClass.getMessagesControllerClass() != null) {
-            Method[] messagesControllerMethods = loadClass.getMessagesControllerClass().getDeclaredMethods();
-            List<String> methodNames = new ArrayList<>();
+        try {
+            if (loadClass.getMessagesControllerClass() != null) {
+                Method[] messagesControllerMethods = loadClass.getMessagesControllerClass().getDeclaredMethods();
+                List<String> methodNames = new ArrayList<>();
 
-            for (Method method : messagesControllerMethods)
-                if (method.getParameterCount() == 5 && method.getParameterTypes()[0] == ArrayList.class && method.getParameterTypes()[1] == ArrayList.class && method.getParameterTypes()[2] == ArrayList.class && method.getParameterTypes()[3] == boolean.class && method.getParameterTypes()[4] == int.class)
-                    methodNames.add(method.getName());
+                for (Method method : messagesControllerMethods)
+                    if (method.getParameterCount() == 5 && method.getParameterTypes()[0] == ArrayList.class && method.getParameterTypes()[1] == ArrayList.class && method.getParameterTypes()[2] == ArrayList.class && method.getParameterTypes()[3] == boolean.class && method.getParameterTypes()[4] == int.class)
+                        methodNames.add(method.getName());
 
-            if (methodNames.size() != 1)
-                Utils.log("Failed to hook processUpdateArray! Reason: " + (methodNames.isEmpty() ? "No method found" : "Multiple methods found") + ", " + Utils.issue);
-            else {
-                String methodName = methodNames.get(0);
+                if (methodNames.size() != 1)
+                    Utils.log("Failed to hook processUpdateArray! Reason: " + (methodNames.isEmpty() ? "No method found" : "Multiple methods found") + ", " + Utils.issue);
+                else {
+                    String methodName = methodNames.get(0);
 
-                XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), methodName, ArrayList.class, ArrayList.class, ArrayList.class, boolean.class, int.class, new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        try {
+                    XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), methodName, ArrayList.class, ArrayList.class, ArrayList.class, boolean.class, int.class, new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            try {
 
                                 CopyOnWriteArrayList<Object> updates = new CopyOnWriteArrayList<>(Utils.castList(param.args[0], Object.class));
                                 if (!updates.isEmpty()) {
@@ -225,16 +230,18 @@ public class ShowDeletedMessages {
                                     param.args[0] = newUpdates;
                                 }
 
-                        } catch (Throwable throwable) {
-                            Utils.log(throwable);
+                            } catch (Throwable throwable) {
+                                Utils.log(throwable);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            } else {
+                Utils.log("Not found MessagesController, " + Utils.issue);
             }
-        }
-        else
-        {
-            Utils.log("Not found MessagesController, " + Utils.issue);
+
+        } catch (Exception e){
+            Utils.log(e);
         }
     }
 
@@ -355,6 +362,7 @@ public class ShowDeletedMessages {
                 for (Method method : loadClass.getMessagesStorageClass().getDeclaredMethods()) {
                     if (method.getName().equals(AutomationResolver.resolve("MessagesStorage", "updateDialogsWithDeletedMessages", AutomationResolver.ResolverType.Method)) && Objects.equals(method.getParameterTypes()[2], ArrayList.class)) {
                         updateDialogsWithDeletedMessagesMethod = method;
+                        break;
                     }
                 }
 

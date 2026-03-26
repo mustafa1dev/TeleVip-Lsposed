@@ -140,6 +140,7 @@ public class Telegraph {
         classList.add(new ClassInfo("org.telegram.ui.Cells.TextSettingsCell","org.telegram.ui.Cells.n1"));
         classList.add(new ClassInfo("org.telegram.ui.Components.UniversalAdapter","org.telegram.ui.Components.iN"));
         classList.add(new ClassInfo("org.telegram.messenger.SharedConfig","org.telegram.messenger.DC"));
+        classList.add(new ClassInfo("org.telegram.messenger.MessagesStorage$IntCallback","org.telegram.messenger.uw$AUx"));
 
         fieldList.add(new FieldInfo("ApplicationLoader", "applicationContext", "b"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutAdapter", "M"));
@@ -208,7 +209,7 @@ public class Telegraph {
         methodList.add(new MethodInfo("TextCheckCell","setTextAndValueAndCheck","j"));
         methodList.add(new MethodInfo("TextCheckCell","setTextAndCheck","i"));
         methodList.add(new MethodInfo("TextCheckCell","isChecked","d"));
-        methodList.add(new MethodInfo("AndroidUtilities","isTablet","z4"));
+        methodList.add(new MethodInfo("AndroidUtilities","isTablet","u4"));
         methodList.add(new MethodInfo("Theme","getColor","w2"));
         methodList.add(new MethodInfo("TextSettingsCell","setText","c"));
         methodList.add(new MethodInfo("LocaleController","formatShortNumber","x0"));
@@ -220,11 +221,11 @@ public class Telegraph {
         methodList.add(new MethodInfo("SettingsActivity","onClick","Q0"));
         methodList.add(new MethodInfo("MessagesStorage","getInstance","N5"));
         methodList.add(new MethodInfo("MessagesStorage","getStorageQueue","g6"));
-
-        Class<?> mainMenuItem = XposedHelpers.findClassIfExists("org.telegram.messenger.GraphDrawerMenuController$MainMenuItem", lpparam.classLoader);
-        ParameterResolver.register("item", new Class[]{int.class, String.class, int.class, boolean.class, mainMenuItem, String.class});
-
-        ParameterResolver.register("onCreateMethod", new Class[]{loadClass.getLaunchActivityClass(),android.view.View.class,int.class, float.class, float.class});
+        methodList.add(new MethodInfo("MessagesStorage","getDialogMaxMessageId","E5"));
+        methodList.add(new MethodInfo("MessagesController","getInstance","Cb"));
+        methodList.add(new MethodInfo("MessagesController","processNewDifferenceParams","af"));
+        methodList.add(new MethodInfo("MessagesController","getInputChannel","qb"));
+        methodList.add(new MethodInfo("UserConfig","getCurrentUser","w"));
 
         ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
 

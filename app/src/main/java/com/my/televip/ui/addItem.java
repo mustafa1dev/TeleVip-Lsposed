@@ -213,6 +213,7 @@ public class addItem {
             for (Method method : loadClass.getLaunchActivityClass().getDeclaredMethods()) {
                 if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject("onCreateMethod", new Class[]{android.view.View.class,int.class, float.class, float.class}))) {
                     onCreateMethod = method;
+                    break;
                 }
             }
 

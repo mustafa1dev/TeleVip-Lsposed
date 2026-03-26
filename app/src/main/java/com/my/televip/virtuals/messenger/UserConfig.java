@@ -2,12 +2,13 @@ package com.my.televip.virtuals.messenger;
 
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.virtuals.tgnet.TLRPC;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class UserConfig {
 
-    private static Object userConfig;
+    Object userConfig;
 
     public UserConfig(Object obl){
         userConfig = obl;
@@ -21,5 +22,10 @@ public class UserConfig {
     public int getClientUserId(){
         return (int) XposedHelpers.getLongField(userConfig, AutomationResolver.resolve("UserConfig" , "clientUserId", AutomationResolver.ResolverType.Field));
     }
+
+    public TLRPC.User getCurrentUser(){
+        return new TLRPC.User(XposedHelpers.callMethod(userConfig, AutomationResolver.resolve("UserConfig" , "getCurrentUser", AutomationResolver.ResolverType.Method)));
+    }
+
 
 }
