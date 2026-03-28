@@ -2,8 +2,6 @@ package com.my.televip.ui;
 
 
 import static com.my.televip.MainHook.lpparam;
-import static com.my.televip.language.Language.GhostMode;
-import static com.my.televip.language.Language.byMustafa;
 
 import android.annotation.SuppressLint;
 import android.view.View;
@@ -15,7 +13,8 @@ import com.my.televip.Drawable.GhostDrawable;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.language.Language;
+import com.my.televip.language.Keys;
+import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.Adapters.DrawerLayoutAdapter;
@@ -69,31 +68,30 @@ public class addItem {
         AbstractMethodHook fillItemsHook = new AbstractMethodHook() {
             @Override
             protected void afterMethod(final MethodHookParam param) {
-                Language.init();
                 ArrayList<Object> arrayList = (ArrayList<Object>) param.args[0];
                 if (arrayList != null) {
 
                     int color1 = 0xFFF46F6F;
                     int color2 = 0xFFDF5555;
 
-                    Object uitem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), MainHook.id,
+                    Object uItem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), MainHook.id,
                             color1,
                             color2,
                             MainHook.id,
-                            GhostMode,
-                            byMustafa);
+                            Translator.get(Keys.GHOST_MODE),
+                            Translator.get(Keys.BY_MUSTAFA));
                     if (id_item_add == -1) {
                         for (int i = 0; i < arrayList.size(); i++) {
                             Object obj = arrayList.get(i);
                             int id_item = XposedHelpers.getIntField(obj, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                             if (id_item > 0) {
-                                arrayList.add(i, uitem);
+                                arrayList.add(i, uItem);
                                 id_item_add = i;
                                 break;
                             }
                         }
                     } else {
-                        arrayList.add(id_item_add, uitem);
+                        arrayList.add(id_item_add, uItem);
                     }
 
                 }
@@ -126,11 +124,10 @@ public class addItem {
         AbstractMethodHook onClickHook = new AbstractMethodHook() {
             @Override
             protected void afterMethod(final MethodHookParam param) {
-                Object uitem = param.args[0];
-                if (uitem != null){
-                    int id = XposedHelpers.getIntField(uitem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
+                Object uItem = param.args[0];
+                if (uItem != null){
+                    int id = XposedHelpers.getIntField(uItem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                     if (id == MainHook.id) {
-
                         openView();
                     }
                 }
@@ -164,8 +161,7 @@ public class addItem {
                                 itemConstructor.setAccessible(true);
                             }
 
-                            Language.init();
-                            Object newItem = itemConstructor.newInstance(MainHook.id, GhostMode, EventType.getIconSettings());
+                            Object newItem = itemConstructor.newInstance(MainHook.id, Translator.get(Keys.GHOST_MODE), EventType.getIconSettings());
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
@@ -184,9 +180,6 @@ public class addItem {
                 protected void afterMethod(final MethodHookParam param) {
 
                     Object LaunchActivtiy = param.thisObject;
-                    if (ClientChecker.check(ClientChecker.ClientType.Telegraph)){
-                        LaunchActivtiy = param.args[0];
-                    }
 
                     Object drawerLayoutAdapter = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
                     if (drawerLayoutAdapter != null) {

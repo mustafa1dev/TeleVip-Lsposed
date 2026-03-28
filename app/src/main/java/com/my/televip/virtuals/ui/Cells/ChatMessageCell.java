@@ -12,7 +12,8 @@ import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.configs.Configs;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.features.ShowDeletedMessages;
-import com.my.televip.language.Language;
+import com.my.televip.language.Keys;
+import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.OfficialChatMessageCell;
@@ -55,7 +56,7 @@ public class ChatMessageCell {
                                     }
                                 }
                                 if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED)) {
-                                    String text = Configs.getAntiRecallText().isEmpty() ? (Language.deleted) : Configs.getAntiRecallText();
+                                    String text = Configs.getAntiRecallText().isEmpty() ? (Translator.get(Keys.DELETED)) : Configs.getAntiRecallText();
                                     setSpannableStringBuilderText(text, param.thisObject, true);
                                 } else {
                                     TextPaint paint = Theme.getTextPaint(MainHook.lpparam.classLoader);

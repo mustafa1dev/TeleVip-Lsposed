@@ -6,13 +6,13 @@ import static com.my.televip.obfuscate.AutomationResolver.resolverRegistry;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.features.SaveEditsHistory;
-import com.my.televip.language.Language;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.ui.SettingsActivity;
 import com.my.televip.ui.addItem;
@@ -29,6 +29,7 @@ public class MainHook implements IXposedHookLoadPackage {
     public boolean isStart;
     @SuppressLint("StaticFieldLeak")
     public static Activity launchActivity;
+    public static volatile Handler applicationHandler;
     public static int id = 8353847;
 
     @Override
@@ -53,10 +54,10 @@ public class MainHook implements IXposedHookLoadPackage {
 
     public void startHook() {
         try {
+            applicationHandler = new Handler(loadClass.getApplicationContext().getMainLooper());
             DexInjector.injectDex();
             Bridge.init();
             resolverRegistry.loadParameter();
-            Language.init();
             FeatureManager.init();
             SettingsActivity.init();
 

@@ -19,13 +19,12 @@ public class UserConfig {
         return XposedHelpers.getStaticIntField(loadClass.getUserConfigClass(), selectedAccountField);
     }
 
-    public int getClientUserId(){
-        return (int) XposedHelpers.getLongField(userConfig, AutomationResolver.resolve("UserConfig" , "clientUserId", AutomationResolver.ResolverType.Field));
+    public long getClientUserId(){
+        return XposedHelpers.getLongField(userConfig, AutomationResolver.resolve("UserConfig" , "clientUserId", AutomationResolver.ResolverType.Field));
     }
 
     public TLRPC.User getCurrentUser(){
         return new TLRPC.User(XposedHelpers.callMethod(userConfig, AutomationResolver.resolve("UserConfig" , "getCurrentUser", AutomationResolver.ResolverType.Method)));
     }
-
 
 }

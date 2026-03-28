@@ -1,5 +1,6 @@
 package com.my.televip.features;
 
+import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.loadClass;
@@ -16,16 +17,18 @@ public class GhostMode {
         isEnable = true;
 
         try {
-
             if (loadClass.getConnectionsManagerClass() != null && FeatureManager.isGhostMode()) {
                 XposedHelpers.findAndHookMethod(loadClass.getConnectionsManagerClass(), AutomationResolver.resolve("ConnectionsManager", "sendRequestInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendRequestInternal", new Class[]{loadClass.getTLObjectClass(), loadClass.getRequestDelegateClass(), loadClass.getRequestDelegateTimestampClass(), loadClass.getQuickAckDelegateClass(), loadClass.getWriteToSocketDelegateClass(), int.class, int.class, int.class, boolean.class, int.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         try {
-                            if (HideSeen.isReadMessages){
+                            if (HideSeen.isReadMessages) {
                                 HideSeen.isReadMessages = false;
                             } else if (FeatureManager.isGhostMode()) {
                                 Object object = param.args[0];
+                                if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                                    HideSeen.saveReadHistory(object);
+                                }
                                 if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE)) {
                                     if (loadClass.getTL_account$updateStatusClass() != null) {
 
@@ -58,7 +61,6 @@ public class GhostMode {
                         }
                     }
                 }));
-
             }
         } catch (Throwable t) {
             Utils.log(t);

@@ -15,7 +15,6 @@ public class loadClass {
     private static Class<?> ProfileActivityClass;
     private static Class<?> BaseFragmentClass;
     private static Class<?> drawableClass;
-    private static Class<?> UserObjectClass;
     private static Class<?> MessagesControllerClass;
     private static Class<?> MessagesStorageClass;
     private static Class<?> ThemeClass;
@@ -42,11 +41,6 @@ public class loadClass {
     private static Class<?> QuickAckDelegateClass;
     private static Class<?> WriteToSocketDelegateClass;
     private static Class<?> ContextClass;
-    private static Class<?> BaseControllerClass;
-    private static Class<?> MessagesController$ReadTaskClass;
-    private static Class<?> TL_stories$StoryItemClass;
-    private static Class<?> TL_stories$PeerStoriesClass;
-    private static Class<?> ChatActivity$ChatActivityEnterViewDelegateClass;
     private static Class<?> TLRPC$TL_help_appUpdateClass;
     private static Class<?> TLRPC$TL_updateDeleteMessagesClass;
     private static Class<?> TLRPC$TL_updateDeleteChannelMessagesClass;
@@ -65,7 +59,6 @@ public class loadClass {
     private static Class<?> TL_messages_affectedMessagesClass;
     private static Class<?> TL_channels_readHistoryClass;
     private static Class<?> TL_messages_readHistoryClass;
-    private static Class<?> IntCallbackClass;
 
     //Context
     private static Context applicationContext;
@@ -103,13 +96,6 @@ public class loadClass {
             drawableClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.R$drawable"), MainHook.lpparam.classLoader);
         }
         return drawableClass;
-    }
-
-    public static Class<?> getUserObjectClass() {
-        if (UserObjectClass == null){
-            UserObjectClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.UserObject"),lpparam.classLoader);
-        }
-        return UserObjectClass;
     }
 
     public static Class<?> getMessagesControllerClass() {
@@ -305,41 +291,6 @@ public class loadClass {
         return WriteToSocketDelegateClass;
     }
 
-    public static Class<?> getBaseControllerClass() {
-        if (BaseControllerClass == null) {
-            BaseControllerClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.BaseController"), lpparam.classLoader);
-        }
-        return BaseControllerClass;
-    }
-
-    public static Class<?> getMessagesController$ReadTaskClass() {
-        if (MessagesController$ReadTaskClass == null) {
-            MessagesController$ReadTaskClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.MessagesController$ReadTask"), lpparam.classLoader);
-        }
-        return MessagesController$ReadTaskClass;
-    }
-
-    public static Class<?> getTL_stories$StoryItemClass() {
-        if (TL_stories$StoryItemClass == null) {
-            TL_stories$StoryItemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.tl.TL_stories$StoryItem"), lpparam.classLoader);
-        }
-        return TL_stories$StoryItemClass;
-    }
-
-    public static Class<?> getTL_stories$PeerStoriesClass() {
-        if (TL_stories$PeerStoriesClass == null) {
-            TL_stories$PeerStoriesClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.tl.TL_stories$PeerStories"), lpparam.classLoader);
-        }
-        return TL_stories$PeerStoriesClass;
-    }
-
-    public static Class<?> getChatActivity$ChatActivityEnterViewDelegateClass() {
-        if (ChatActivity$ChatActivityEnterViewDelegateClass == null) {
-            ChatActivity$ChatActivityEnterViewDelegateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ChatActivity$ChatActivityEnterViewDelegate"), lpparam.classLoader);
-        }
-        return ChatActivity$ChatActivityEnterViewDelegateClass;
-    }
-
     public static Class<?> getTLRPC$TL_help_appUpdateClass() {
         if (TLRPC$TL_help_appUpdateClass == null) {
             TLRPC$TL_help_appUpdateClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_help_appUpdate"), lpparam.classLoader);
@@ -464,13 +415,6 @@ public class loadClass {
             TL_messages_readHistoryClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.tgnet.TLRPC$TL_messages_readHistory"), lpparam.classLoader);
         }
         return TL_messages_readHistoryClass;
-    }
-
-    public static Class<?> getIntCallbackClass() {
-        if (IntCallbackClass == null) {
-            IntCallbackClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.MessagesStorage$IntCallback"), lpparam.classLoader);
-        }
-        return IntCallbackClass;
     }
 
 }

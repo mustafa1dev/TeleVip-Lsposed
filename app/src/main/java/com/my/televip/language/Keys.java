@@ -1,0 +1,54 @@
+package com.my.televip.language;
+
+public class Keys {
+
+    public static final String TO_THE_BEGINNING = "ToTheBeginning";
+    public static final String TO_THE_MESSAGE = "ToTheMessage";
+    public static final String INPUT_MESSAGE_ID = "InputMessageId";
+    public static final String DONE = "Done";
+    public static final String NEW_NAME = "NewName";
+    public static final String CHANGE = "Change";
+    public static final String CANCEL = "Cancel";
+    public static final String CHANGE_TO = "ChangeTo";
+    public static final String NAME_DELETED = "NameDeleted";
+    public static final String GHOST_MODE = "GhostMode";
+    public static final String BY_MUSTAFA = "byMustafa";
+    public static final String HIDE_SEEN = "HideSeen";
+    public static final String HIDE_STORY_VIEW = "HideStoryView";
+    public static final String HIDE_TYPING = "HideTyping";
+    public static final String TELEGRAM_PREMIUM = "TelegramPremium";
+    public static final String UNLOCK_ALL_RESTRICTED = "UnlockAllRestricted";
+    public static final String ALLOW_SAVING_VIDEOS = "AllowSavingVideos";
+    public static final String GHOST_MODE_SETTINGS = "GhostModeSettings";
+    public static final String SAVE = "Save";
+    public static final String DEVELOPER_CHANNEL = "DeveloperChannel";
+    public static final String HIDE_ONLINE = "HideOnline";
+    public static final String PREVENT_MEDIA = "PreventMedia";
+    public static final String HIDE_PHONE = "HidePhone";
+    public static final String SHOW_DELETED_MESSAGES = "ShowDeletedMessages";
+    public static final String DELETED = "deleted";
+    public static final String COPIED = "Copied";
+    public static final String TO_THE_CLIPBOARD = "ToTheClipboard";
+    public static final String USER_OFFLINE = "UserOffline";
+    public static final String DISABLE_STORIES = "DisableStories";
+    public static final String HIDE_UPDATE_APP = "HideUpdateApp";
+    public static final String JOIN_TELEVIP = "JoinTeleVip";
+    public static final String JOIN = "Join";
+    public static final String DONT_SHOW_AGAIN = "DontShowAgain";
+    public static final String RESTART_APP = "RestartApp";
+    public static final String RESTART_REQUIRED = "Restartrequired";
+    public static final String DISABLE_NUMBER_ROUNDING = "DisableNumberRounding";
+    public static final String EDITS_HISTORY = "EditsHistory";
+    public static final String SAVE_EDITS_HISTORY = "SaveEditsHistory";
+    public static final String STORIES_SETTINGS = "StoriesSettings";
+    public static final String MESSAGES_SETTINGS = "MessagesSettings";
+    public static final String MEDIA_SETTINGS = "MediaSettings";
+    public static final String OTHER_FEATURES_SETTINGS = "OtherFeaturesSettings";
+    public static final String FIX_TL_ERROR = "FixTLError";
+    public static final String SHOW_MESSAGE_ID = "ShowMessageID";
+    public static final String DOWNLOAD_SPEED = "DownloadSpeed";
+    public static final String CONNECTIONS_SETTINGS = "ConnectionsSettings";
+    public static final String MESSAGE = "Message";
+    public static final String EDITED = "Edited";
+    public static final String MARK_READ_AFTER_SEND = "MarkReadAfterSend";
+}

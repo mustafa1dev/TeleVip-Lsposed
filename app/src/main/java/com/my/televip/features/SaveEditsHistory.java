@@ -9,7 +9,8 @@ import com.my.televip.Database.MessageDatabase;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.language.Language;
+import com.my.televip.language.Keys;
+import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
@@ -86,7 +87,7 @@ public class SaveEditsHistory {
                                                     options = (ArrayList<Integer>) param.args[3];
                                                 }
 
-                                                items.add(Language.EditsHistory);
+                                                items.add(Translator.get(Keys.EDITS_HISTORY));
                                                 options.add(MainHook.id);
                                                 icons.add(EventType.getIconSettings());
                                             }
@@ -131,7 +132,7 @@ public class SaveEditsHistory {
                                                 if (dialogId != 0 & messageDatabase.searchMessage(dialogId, message.getID())) {
 
                                                     AlertDialog alertDialog = new AlertDialog(MainHook.launchActivity);
-                                                    alertDialog.setTitle(Language.EditsHistory);
+                                                    alertDialog.setTitle(Translator.get(Keys.EDITS_HISTORY));
 
                                                     TextView textView = new TextView(MainHook.launchActivity);
 
@@ -147,7 +148,7 @@ public class SaveEditsHistory {
                                                             String messageEdited = messageDatabase.getMessageEdited(dialogId, message.getID(), i);
 
                                                             if (msg != null && messageEdited != null) {
-                                                                builder.append(Language.Message).append(i).append(Language.Edited).append(messageEdited).append("\n");
+                                                                builder.append(Translator.get(Keys.MESSAGE)).append(i).append(Translator.get(Keys.EDITED)).append(messageEdited).append("\n");
                                                                 builder.append(msg).append("\n");
                                                             }
                                                         }
@@ -165,7 +166,7 @@ public class SaveEditsHistory {
                                                     ScrollView scrollView = new ScrollView(MainHook.launchActivity);
                                                     scrollView.addView(textView);
                                                     alertDialog.setView(scrollView);
-                                                    alertDialog.setPositiveButton(Language.Done, null);
+                                                    alertDialog.setPositiveButton(Translator.get(Keys.DONE), null);
                                                     alertDialog.show();
                                                 }
                                             }

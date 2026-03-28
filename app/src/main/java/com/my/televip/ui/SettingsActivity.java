@@ -14,7 +14,8 @@ import com.my.televip.Utils;
 import com.my.televip.audio;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.FeatureManager;
-import com.my.televip.language.Language;
+import com.my.televip.language.Keys;
+import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
@@ -164,7 +165,7 @@ public class SettingsActivity {
             ToolBar toolbar = new ToolBar(context);
 
             toolbar.setColorTitle(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
-            toolbar.setTextTitle(Language.GhostMode);
+            toolbar.setTextTitle(Translator.get(Keys.GHOST_MODE));
 
             ArrowDrawable arrow = new ArrowDrawable();
             toolbar.setImageDrawable(arrow);
@@ -210,21 +211,20 @@ public class SettingsActivity {
         this.context = context;
         try {
             isSettings = true;
-            Language.init();
 
             if (!FeatureManager.getBoolean("DontShowAgain")) {
                 AlertDialog alertDialog = new AlertDialog(context);
 
-                alertDialog.setTitle(Language.GhostMode);
-                alertDialog.setMessage(Language.JoinTeleVip);
+                alertDialog.setTitle(Translator.get(Keys.GHOST_MODE));
+                alertDialog.setMessage(Translator.get(Keys.JOIN_TELEVIP));
 
-                alertDialog.setPositiveButton(Language.Join, AlertDialog.click(() -> {
+                alertDialog.setPositiveButton(Translator.get(Keys.JOIN), AlertDialog.click(() -> {
                     Browser.openUrl("https://t.me/t_l0_e");
                     hide();
                 }));
 
-                alertDialog.setNegativeButton(Language.Cancel, null);
-                alertDialog.setNeutralButton(Language.DontShowAgain, AlertDialog.click(() -> FeatureManager.putBoolean("DontShowAgain", true)));
+                alertDialog.setNegativeButton(Translator.get(Keys.CANCEL), null);
+                alertDialog.setNeutralButton(Translator.get(Keys.DONT_SHOW_AGAIN), AlertDialog.click(() -> FeatureManager.putBoolean("DontShowAgain", true)));
                 alertDialog.show();
             }
         } catch (Exception e){
@@ -300,57 +300,57 @@ public class SettingsActivity {
             case 0:
                 HeaderCellHolder headerCell = new HeaderCellHolder(holder);
                 if (position == ghostModeRow) {
-                    headerCell.cell.setText(Language.GhostModeSettings);
+                    headerCell.cell.setText(Translator.get(Keys.GHOST_MODE_SETTINGS));
                 } else if (position == storiesRow) {
-                    headerCell.cell.setText(Language.StoriesSettings);
+                    headerCell.cell.setText(Translator.get(Keys.STORIES_SETTINGS));
                 } else if (position == messagesRow) {
-                    headerCell.cell.setText(Language.MessagesSettings);
+                    headerCell.cell.setText(Translator.get(Keys.MESSAGES_SETTINGS));
                 } else if (position == mediaRow) {
-                    headerCell.cell.setText(Language.MediaSettings);
+                    headerCell.cell.setText(Translator.get(Keys.MEDIA_SETTINGS));
                 } else if (position == otherFeaturesRow) {
-                    headerCell.cell.setText(Language.OtherFeaturesSettings);
+                    headerCell.cell.setText(Translator.get(Keys.OTHER_FEATURES_SETTINGS));
                 } else if (position == ConnectionsRow) {
-                    headerCell.cell.setText(Language.Connections);
+                    headerCell.cell.setText(Translator.get(Keys.CONNECTIONS_SETTINGS));
                 }
                 break;
             case 1:
                 TextCheckCellHolder ch = new TextCheckCellHolder(holder);
                 if (position == hideSeenRow) {
-                    ch.cell.setTextAndCheck(Language.HideSeen, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_SEEN), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN), false);
                 } else if (position == hideStoryViewRow) {
-                    ch.cell.setTextAndCheck(Language.HideStoryView, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_STORY_VIEW), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ), false);
                 } else if (position == hideOnlineRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.HideOnline, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_ONLINE), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE), true, false);
                 } else if (position == hidePhoneRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.HidePhone, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_PHONE), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE), true, false);
                 } else if (position == hideTypingRow) {
-                    ch.cell.setTextAndCheck(Language.HideTyping, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_TYPING), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING), false);
                 } else if (position == HideUpdateAppRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.HideUpdateApp, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_UPDATE_APP), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP), true, false);
                 } else if (position == disableStoriesRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.DisableStories, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DISABLE_STORIES), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES), true, false);
                 } else if (position == disableNumberRoundingRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.DisableNumberRounding, "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DISABLE_NUMBER_ROUNDING), "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING), true, false);
                 } else if (position == showMessageIDRow) {
-                    ch.cell.setTextAndCheck(Language.ShowMessageID, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.SHOW_MESSAGE_ID), FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID), false);
                 } else if (position == showDeletedMessagesRow) {
-                    ch.cell.setTextAndCheck(Language.ShowDeletedMessages, FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.SHOW_DELETED_MESSAGES), FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
                 } else if (position == SaveEditsHistoryRow) {
-                    ch.cell.setTextAndCheck(Language.SaveEditsHistory, FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.SAVE_EDITS_HISTORY), FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY), false);
                 } else if (position == preventMediaRow) {
-                    ch.cell.setTextAndCheck(Language.PreventMedia, FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.PREVENT_MEDIA), FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA), false);
                 } else if (position == unlockAllRestrictedRow) {
-                    ch.cell.setTextAndCheck(Language.UnlockAllRestricted, FeatureManager.getBoolean(FeatureManager.KEY_UNLOCK_CHANNEL), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.UNLOCK_ALL_RESTRICTED), FeatureManager.getBoolean(FeatureManager.KEY_UNLOCK_CHANNEL), false);
                 } else if (position == allowSavingvideosRow) {
-                    ch.cell.setTextAndCheck(Language.AllowSavingVideos, FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.ALLOW_SAVING_VIDEOS), FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
                 } else if (position == telegramPremiumRow) {
-                    ch.cell.setTextAndValueAndCheck(Language.TelegramPremium, Language.Restartrequired, FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM), true, false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.TELEGRAM_PREMIUM), FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM), false);
                 } else if (position == fixTLErrorRow) {
-                    ch.cell.setTextAndCheck(Language.FixTLError, FeatureManager.getBoolean(FeatureManager.KEY_FIX_TL_ERROR), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.FIX_TL_ERROR), FeatureManager.getBoolean(FeatureManager.KEY_FIX_TL_ERROR), false);
                 } else if (position == DownloadSpeedRow) {
-                    ch.cell.setTextAndCheck(Language.DownloadSpeed, FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.DOWNLOAD_SPEED), FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED), false);
                 } else if (position == markReadAfterSendRow) {
-                    ch.cell.setTextAndCheck(Language.MarkReadAfterSend, FeatureManager.getBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.MARK_READ_AFTER_SEND), FeatureManager.getBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND), false);
                 }
                 ch.cell.getTextView().setLines(0);
                 ch.cell.getTextView().setMaxLines(0);
@@ -361,9 +361,9 @@ public class SettingsActivity {
             case 2:
                 TextSettingsCellHolder settingsCell = new TextSettingsCellHolder(holder);
                 if (position == btnChannelRow) {
-                    settingsCell.cell.setText(Language.DeveloperChannel, false);
+                    settingsCell.cell.setText(Translator.get(Keys.DEVELOPER_CHANNEL), false);
                 } else if (position == btnRestartAppRow) {
-                    settingsCell.cell.setText(Language.RestartApp, false);
+                    settingsCell.cell.setText(Translator.get(Keys.RESTART_APP), false);
                 }
                 settingsCell.cell.getTextView().setTextColor(Theme.getColor(Theme.getKey_switchTrackBlueChecked()));
                 break;

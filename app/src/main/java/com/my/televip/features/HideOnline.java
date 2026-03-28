@@ -1,22 +1,18 @@
 package com.my.televip.features;
 
-import static com.my.televip.language.Language.UserOffline;
 
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.language.Keys;
+import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.my.televip.virtuals.ActionBar.SimpleTextView;
+import com.my.televip.virtuals.ui.ProfileActivity;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class HideOnline {
-    private static Method getUserConfigMethod;
-    private static Method getClientUserIdMethod;
-    private static  Field userIdField;
-
     public static boolean isEnable = false;
 
     public static void init() {
@@ -30,38 +26,19 @@ public class HideOnline {
                         AutomationResolver.merge(AutomationResolver.resolveObject("updateProfileData", new Class[]{boolean.class}),
                                 new AbstractMethodHook() {
                                     @Override
-                                    protected void afterMethod(MethodHookParam param) throws Throwable {
+                                    protected void afterMethod(MethodHookParam param) {
                                         if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE)) {
-                                            final Object profileActivityInstance = param.thisObject;
-                                            if (getUserConfigMethod == null) {
-                                                getUserConfigMethod = loadClass.getBaseFragmentClass().getDeclaredMethod(AutomationResolver.resolve("BaseFragment", "getUserConfig", AutomationResolver.ResolverType.Method));
-                                                getUserConfigMethod.setAccessible(true);
-                                            }
-                                            Object userConfig = getUserConfigMethod.invoke(profileActivityInstance);
+                                            final ProfileActivity profileActivity = new ProfileActivity(param.thisObject);
 
-                                            if (userConfig != null) {
-                                                if (getClientUserIdMethod == null) {
-                                                    getClientUserIdMethod = userConfig.getClass().getDeclaredMethod(AutomationResolver.resolve("UserConfig", "getClientUserId", AutomationResolver.ResolverType.Method));
-                                                    getClientUserIdMethod.setAccessible(true);
-                                                }
-                                                //noinspection DataFlowIssue
-                                                long clientUserId = (long) getClientUserIdMethod.invoke(userConfig);
-                                                if (userIdField == null) {
-                                                    userIdField = loadClass.getProfileActivityClass().getDeclaredField(AutomationResolver.resolve("ProfileActivity", "userId", AutomationResolver.ResolverType.Field));
-                                                    userIdField.setAccessible(true);
-                                                }
-                                                final long userId = userIdField.getLong(profileActivityInstance);
-                                                if (userId != 0 && userId == clientUserId) {
-                                                    Object[] onlineTextViewArray = (Object[]) XposedHelpers.getObjectField(profileActivityInstance, AutomationResolver.resolve("ProfileActivity", "onlineTextView", AutomationResolver.ResolverType.Field));
+                                                if (profileActivity.getUserId() != 0 && profileActivity.getUserId() == profileActivity.getBaseFragment().getUserConfig().getClientUserId()) {
+                                                    Object[] onlineTextViewArray = profileActivity.getOnlineTextView();
 
                                                     if (onlineTextViewArray != null && onlineTextViewArray.length > 1) {
 
-                                                        Object simpleTextView1 = onlineTextViewArray[1];
+                                                        SimpleTextView simpleTextView = new SimpleTextView(onlineTextViewArray[1]);
 
-                                                        if (simpleTextView1 != null) {
-
-                                                            XposedHelpers.callMethod(simpleTextView1, AutomationResolver.resolve("SimpleTextView", "setText", AutomationResolver.ResolverType.Method), UserOffline);
-                                                        }
+                                                        if (simpleTextView.getSimpleTextView() != null) {
+                                                            simpleTextView.setText(Translator.get(Keys.USER_OFFLINE));
                                                     }
                                                 }
                                             }

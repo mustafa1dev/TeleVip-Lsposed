@@ -18,6 +18,11 @@ public class MessagesController {
         XposedHelpers.callMethod(messagesController, AutomationResolver.resolve("MessagesController", "processNewDifferenceParams", AutomationResolver.ResolverType.Method), seq, pts, date, pts_count);
     }
 
+    public void processNewDifferenceParams(int pts, int date, int pts_count) {
+        //Nagram
+        XposedHelpers.callMethod(messagesController, "processNewDifferenceParams", pts, date, pts_count);
+    }
+
     public static Object getInputChannel(TLRPC.InputPeer peer) {
         return XposedHelpers.callStaticMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getInputChannel", AutomationResolver.ResolverType.Method), peer.inputPeer);
     }

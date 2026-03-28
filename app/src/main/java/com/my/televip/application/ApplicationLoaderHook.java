@@ -4,18 +4,17 @@ import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.my.televip.Utils;
+import com.my.televip.configs.ConfigManager;
+import com.my.televip.obfuscate.AutomationResolver;
+
 import java.io.File;
 import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import com.my.televip.Utils;
-import com.my.televip.configs.ConfigManager;
-import com.my.televip.language.Language;
-import com.my.televip.obfuscate.AutomationResolver;
 
-public class ApplicationLoaderHook extends Language {
+public class ApplicationLoaderHook {
     private static boolean initialized = false;
 
     public static void init(ClassLoader loader) {
@@ -44,7 +43,7 @@ public class ApplicationLoaderHook extends Language {
                     return;
                 }
 
-                File dir = new File(app.getFilesDir().getParentFile(), strTelevip);
+                File dir = new File(app.getFilesDir().getParentFile(), "TeleVip");
                 if (!dir.exists())
                     if (!dir.mkdir())
                     {

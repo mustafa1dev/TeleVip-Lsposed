@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.my.televip.Utils;
-import com.my.televip.language.Language;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -44,7 +43,7 @@ public class MessageDatabase extends SQLiteOpenHelper {
     }
 
     public static String getDataBasePath(Context context) {
-        File appDir = new File(context.getDataDir(), Language.strTelevip);
+        File appDir = new File(context.getDataDir(), "TeleVip");
         if (!appDir.exists()) {
             appDir.mkdirs();
         }

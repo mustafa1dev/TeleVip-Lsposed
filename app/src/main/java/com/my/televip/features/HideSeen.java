@@ -1,7 +1,11 @@
 package com.my.televip.features;
 
+import com.my.televip.Callback.IntCallback;
+import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
+import com.my.televip.application.AndroidUtilities;
 import com.my.televip.loadClass;
+import com.my.televip.virtuals.SQLite.SQLiteCursor;
 import com.my.televip.virtuals.messenger.MessagesController;
 import com.my.televip.virtuals.messenger.MessagesStorage;
 import com.my.televip.virtuals.messenger.UserConfig;
@@ -13,6 +17,10 @@ import com.my.televip.virtuals.tgnet.TLRPC;
 import de.robv.android.xposed.XposedHelpers;
 
 public class HideSeen {
+
+
+    public static Object TLChannels_readHistory;
+    public static Object TLMessages_readHistory;
 
     public static void sendFakeReadResponse(Object onCompleteOrig) {
         try {
@@ -29,9 +37,17 @@ public class HideSeen {
                     Utils.log(e);
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             Utils.log(e);
         }
+    }
+
+    public static boolean isTLMessagesReadHistoryRequest(Object object) {
+        return object.getClass().getName().contains("TL_messages_readHistory");
+    }
+
+    public static boolean isTLChannelsReadHistoryRequest(Object object) {
+        return object.getClass().getName().contains("TL_channels_readHistory");
     }
 
     public static boolean isReadMessageRequest(Object object) {
@@ -43,6 +59,14 @@ public class HideSeen {
                 object.getClass().getName().contains("TL_channels_readHistory");
     }
 
+    public static void saveReadHistory(Object object) {
+        if (HideSeen.TLChannels_readHistory == null && HideSeen.isTLChannelsReadHistoryRequest(object)) {
+            HideSeen.TLChannels_readHistory = object;
+        } else if (HideSeen.TLMessages_readHistory == null && HideSeen.isTLMessagesReadHistoryRequest(object)) {
+            HideSeen.TLMessages_readHistory = object;
+        }
+    }
+
     public static void handleReadAfterSend(Object object) {
         try {
             if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN) && FeatureManager.getBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND)) {
@@ -50,27 +74,59 @@ public class HideSeen {
 
                 if (peer != null && peer.inputPeer != null) {
                     Long dialogId = getDialogId(peer);
-                    getMessagesStorage().getStorageQueue().postRunnable(() ->
-                            getMessagesStorage().getDialogMaxMessageId(dialogId, MessagesStorage.run((param -> markReadOnServer(param, peer))))
-                    );
+                    MessagesStorage messagesStorage = getMessagesStorage();
+                    messagesStorage.getStorageQueue().postRunnable(() ->
+                            getDialogMaxMessageId(messagesStorage, dialogId, (param -> markReadOnServer(param, peer))));
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Utils.log(e);
         }
     }
+
+    public static void getDialogMaxMessageId(MessagesStorage messagesStorage, long dialog_id, IntCallback callback) {
+        messagesStorage.getStorageQueue().postRunnable(() -> {
+            SQLiteCursor cursor = null;
+            int[] max = new int[1];
+            try {
+                cursor = messagesStorage.getDatabase().queryFinalized("SELECT MAX(mid) FROM messages_v2 WHERE uid = " + dialog_id);
+                if (cursor.next()) {
+                    max[0] = cursor.intValue(0);
+                }
+            } catch (Exception e) {
+                Utils.log(e);
+            } finally {
+                if (cursor != null) {
+                    cursor.dispose();
+                }
+            }
+            AndroidUtilities.runOnUIThread(() -> callback.run(max[0]));
+        });
+    }
+
     public static boolean isReadMessages = false;
 
     public static void markReadOnServer(int messageId, TLRPC.InputPeer peer) {
         try {
             Object req;
+
             if (peer.inputPeer.getClass().getName().contains("TL_inputPeerChannel")) {
-                TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
+                TLRPC.TL_channels_readHistory request;
+                if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                    request = new TLRPC.TL_channels_readHistory();
+                } else {
+                    request = new TLRPC.TL_channels_readHistory(TLChannels_readHistory);
+                }
                 request.setChannel(MessagesController.getInputChannel(peer));
                 request.setMax_id(messageId);
                 req = request.getTL_channels_readHistory();
             } else {
-                TLRPC.TL_messages_readHistory request = new TLRPC.TL_messages_readHistory();
+                TLRPC.TL_messages_readHistory request;
+                if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                    request = new TLRPC.TL_messages_readHistory();
+                } else {
+                    request = new TLRPC.TL_messages_readHistory(TLMessages_readHistory);
+                }
                 request.setPeer(peer);
                 request.setMax_id(messageId);
                 req = request.getTL_messages_readHistory();
@@ -81,12 +137,16 @@ public class HideSeen {
                 if (error == null) {
                     if (loadClass.getTL_messages_affectedMessagesClass().isInstance(response)) {
                         TLRPC.TL_messages_affectedMessages res = new TLRPC.TL_messages_affectedMessages(response);
-                        getMessagesController().processNewDifferenceParams(-1, res.getPts(), -1, res.getPtsCount());
+                        if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                            getMessagesController().processNewDifferenceParams(-1, res.getPts(), -1, res.getPtsCount());
+                        } else {
+                            getMessagesController().processNewDifferenceParams(res.getPts(), -1, res.getPtsCount());
+                        }
                     }
 
                 }
             }));
-        } catch (Exception e){
+        } catch (Exception e) {
             Utils.log(e);
         }
     }
@@ -94,13 +154,15 @@ public class HideSeen {
     private static TLRPC.InputPeer extractPeerFromSendObject(Object object) {
         if (object.getClass().getName().contains("TL_messages_sendMessage") ||
                 object.getClass().getName().contains("TL_messages_sendMedia") ||
+                object.getClass().getName().contains("TL_messages_sendReaction") ||
+                object.getClass().getName().contains("TL_messages_sendPaidReaction") ||
                 object.getClass().getName().contains("TL_messages_sendMultiMedia")) {
             return new TLRPC.InputPeer(getPeer(object));
         }
         return null;
     }
 
-    private static Object getPeer(Object msg){
+    private static Object getPeer(Object msg) {
         return XposedHelpers.getObjectField(msg, "peer");
     }
 

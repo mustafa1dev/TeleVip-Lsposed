@@ -215,6 +215,10 @@ public class TLRPC {
         {
             this.instance = XposedHelpers.newInstance(loadClass.getTL_channels_readHistoryClass());
         }
+        public TL_channels_readHistory(Object instance)
+        {
+            this.instance = instance;
+        }
 
         public void setChannel(Object channel){
             XposedHelpers.setObjectField(instance, "channel", channel);
@@ -235,6 +239,11 @@ public class TLRPC {
         public TL_messages_readHistory()
         {
             this.instance = XposedHelpers.newInstance(loadClass.getTL_messages_readHistoryClass());
+        }
+
+        public TL_messages_readHistory(Object instance)
+        {
+            this.instance = instance;
         }
 
         public void setPeer(InputPeer peer){

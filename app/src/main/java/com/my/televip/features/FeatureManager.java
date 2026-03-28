@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.my.televip.ClientChecker;
 import com.my.televip.Clients.Telegraph;
 import com.my.televip.Utils;
-import com.my.televip.language.Language;
 import com.my.televip.loadClass;
 import com.my.televip.virtuals.ui.Cells.ChatMessageCell;
 
@@ -97,7 +96,7 @@ public class FeatureManager {
     }
 
     public static void init() {
-        sharedPreferences = loadClass.getApplicationContext().getSharedPreferences(Language.strTelevip, Activity.MODE_PRIVATE);
+        sharedPreferences = loadClass.getApplicationContext().getSharedPreferences("TeleVip", Activity.MODE_PRIVATE);
     }
 
     public static void readFeature() {

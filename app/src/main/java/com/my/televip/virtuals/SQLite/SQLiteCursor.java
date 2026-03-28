@@ -17,6 +17,13 @@ public class SQLiteCursor {
         return (boolean) XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "next", AutomationResolver.ResolverType.Method));
     }
 
+    public int intValue(int columnIndex) {
+        return (int) XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "intValue", AutomationResolver.ResolverType.Method), columnIndex);
+    }
+    public void dispose() {
+        XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "dispose", AutomationResolver.ResolverType.Method));
+    }
+
     public NativeByteBuffer byteBufferValue(int columnIndex){
         return new NativeByteBuffer(XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "byteBufferValue", AutomationResolver.ResolverType.Method), columnIndex));
     }
