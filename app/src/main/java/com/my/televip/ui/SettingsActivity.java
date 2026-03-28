@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.my.televip.ClientChecker;
 import com.my.televip.Drawable.ArrowDrawable;
 import com.my.televip.MainHook;
@@ -20,13 +22,13 @@ import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.ActiveTheme;
-import com.my.televip.virtuals.ui.Cells.HeaderCell;
-import com.my.televip.virtuals.ui.Cells.TextCheckCell;
-import com.my.televip.virtuals.ui.Cells.TextSettingsCell;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.androidx.ViewHolder;
 import com.my.televip.virtuals.messenger.browser.Browser;
+import com.my.televip.virtuals.ui.Cells.HeaderCell;
+import com.my.televip.virtuals.ui.Cells.TextCheckCell;
+import com.my.televip.virtuals.ui.Cells.TextSettingsCell;
 import com.my.televip.virtuals.ui.Components.RecyclerListView;
 import com.my.televip.virtuals.ui.LaunchActivity;
 
@@ -198,6 +200,9 @@ public class SettingsActivity {
             recyclerParams.setMargins(10, 10, 10, 0);
 
             fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
+            if (!FeatureManager.getBoolean(Keys.OFFLINE_VISIBILITY_INFO)) {
+                listView.post(() -> showTargetForItem(hideOnlineRow));
+            }
 
         } catch (Exception e){
             Utils.log(e);
@@ -206,6 +211,73 @@ public class SettingsActivity {
         return fragmentView;
     }
 
+    private void showTargetForItem(int position) {
+        try {
+        listView.scrollToPosition(position);
+
+        listView.post(() -> {
+            ViewHolder holder =
+                    listView.findViewHolderForAdapterPosition(position);
+
+            if (holder == null) return;
+
+            View target = holder.getItemView();
+
+            if (target != null) {
+                showTap(target);
+            }
+        });
+        } catch (Exception e){
+            Utils.log(e);
+        }
+    }
+
+    private void showTap(View view) {
+        try {
+            int outerColor;
+            int textColor;
+            int descColor;
+            int dimColor;
+
+
+            if (ActiveTheme.getActiveTheme()) {
+                // ☀️ Light Mode
+                outerColor = 0xFFF2F2F2;
+                textColor = 0xFF111111;
+                descColor = 0xFF444455;
+                dimColor = 0x66000000;
+            } else {
+                // 🌙 Dark Mode
+                outerColor = 0xFF1F2A38;
+                textColor = 0xFFFFFFFF;
+                descColor = 0xFFB0C4DE;
+                dimColor = 0xAA000000;
+            }
+            TapTargetView.showFor(
+                    MainHook.launchActivity,
+                    TapTarget.forView(view, Translator.get(Keys.HIDE_ONLINE), Translator.get(Keys.OFFLINE_VISIBILITY_INFO))
+                            .outerCircleColorInt(outerColor)
+                            .targetCircleColorInt(0xFFFFFFFF)
+                            .titleTextColorInt(textColor)
+                            .descriptionTextColorInt(descColor)
+                            .dimColorInt(dimColor)
+                            .drawShadow(true)
+                            .cancelable(false)
+                            .titleTextSize(16)
+                            .descriptionTextSize(14)
+                            .transparentTarget(true),
+                    new TapTargetView.Listener() {
+                        @Override
+                        public void onTargetClick(TapTargetView view) {
+                            FeatureManager.putBoolean(Keys.OFFLINE_VISIBILITY_INFO, true);
+                            super.onTargetClick(view);
+                        }
+                    }
+            );
+        } catch (Exception e){
+            Utils.log(e);
+        }
+    }
 
     public SettingsActivity(Context context) {
         this.context = context;

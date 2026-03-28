@@ -58,7 +58,8 @@ public class Chinese {
         zh.add(new TranslatorInfo(Keys.CONNECTIONS_SETTINGS, "连接数"));
         zh.add(new TranslatorInfo(Keys.MESSAGE, "消息 "));
         zh.add(new TranslatorInfo(Keys.EDITED, " 编辑于 "));
-        zh.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "发送后将消息标记为已读"));
+        zh.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "发送消息后或点击反应后，将消息标记为已读"));
+        zh.add(new TranslatorInfo(Keys.OFFLINE_VISIBILITY_INFO, "启用此选项后，除非你进行交互（如发送消息、对消息作出反应或阅读消息），否则不会显示为在线。大约30–60秒后会恢复为离线状态。建议启用所有“幽灵模式”选项。"));
 
     }
 

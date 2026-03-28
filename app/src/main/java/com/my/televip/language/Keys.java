@@ -51,4 +51,5 @@ public class Keys {
     public static final String MESSAGE = "Message";
     public static final String EDITED = "Edited";
     public static final String MARK_READ_AFTER_SEND = "MarkReadAfterSend";
+    public static final String OFFLINE_VISIBILITY_INFO = "OfflineVisibilityInfo";
 }

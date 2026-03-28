@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.virtuals.androidx.ViewHolder;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -30,6 +31,18 @@ public class RecyclerListView {
 
     public void setLayoutManager(Object layout) {
         XposedHelpers.callMethod(recyclerListView, AutomationResolver.resolve("RecyclerListView", "setLayoutManager", AutomationResolver.ResolverType.Method), layout);
+    }
+
+    public void post(Runnable runnable) {
+        XposedHelpers.callMethod(recyclerListView, AutomationResolver.resolve("RecyclerListView", "post", AutomationResolver.ResolverType.Method), runnable);
+    }
+
+    public void scrollToPosition(int position) {
+        XposedHelpers.callMethod(recyclerListView, AutomationResolver.resolve("RecyclerListView", "scrollToPosition", AutomationResolver.ResolverType.Method), position);
+    }
+
+    public ViewHolder findViewHolderForAdapterPosition(int position) {
+        return new ViewHolder(XposedHelpers.callMethod(recyclerListView, AutomationResolver.resolve("RecyclerListView", "findViewHolderForAdapterPosition", AutomationResolver.ResolverType.Method), position));
     }
 
     public View getRecyclerListView() {

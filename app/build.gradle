@@ -30,6 +30,7 @@ android {
 
 dependencies {
     compileOnly libs.api
+    implementation 'com.github.KeepSafe:TapTargetView:1.13.2'
     implementation(libs.gson)
 }
 tasks.register("copyLargestDexAsJava") {

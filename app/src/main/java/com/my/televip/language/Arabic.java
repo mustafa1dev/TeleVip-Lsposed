@@ -59,6 +59,7 @@ public class Arabic {
         ar.add(new TranslatorInfo(Keys.MESSAGE, "رسالة "));
         ar.add(new TranslatorInfo(Keys.EDITED, " تم التعديل في "));
         ar.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "تعيين الرسائل كمقروءة بعد الإرسال أو عند النقر على تفاعل"));
+        ar.add(new TranslatorInfo(Keys.OFFLINE_VISIBILITY_INFO, "عند تفعيل هذا الخيار، لن تظهر متصلاً إلا عند التفاعل، مثل إرسال الرسائل أو التفاعل معها أو قراءة الرسائل، إلخ. وستعود إلى حالة عدم الاتصال بعد حوالي 30 إلى 60 ثانية. يُنصح بتفعيل جميع خيارات وضع الشبح."));
     }
 
 

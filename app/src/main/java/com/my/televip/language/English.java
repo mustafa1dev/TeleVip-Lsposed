@@ -59,6 +59,7 @@ public class English {
         en.add(new TranslatorInfo(Keys.MESSAGE, "Message "));
         en.add(new TranslatorInfo(Keys.EDITED, " Edited on "));
         en.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "Mark messages as read after sending or tap a reaction"));
+        en.add(new TranslatorInfo(Keys.OFFLINE_VISIBILITY_INFO, "When this option is enabled, you will not appear online unless you interact, such as sending messages, reacting to messages, or reading messages. You will return to being offline after about 30–60 seconds. It is recommended to enable all Ghost Mode options."));
 
     }
 
