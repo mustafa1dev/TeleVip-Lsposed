@@ -58,7 +58,7 @@ public class Arabic {
         ar.add(new TranslatorInfo(Keys.CONNECTIONS_SETTINGS, "اتصالات"));
         ar.add(new TranslatorInfo(Keys.MESSAGE, "رسالة "));
         ar.add(new TranslatorInfo(Keys.EDITED, " تم التعديل في "));
-        ar.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "تعيين الرسائل كمقروءة بعد الإرسال"));
+        ar.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "تعيين الرسائل كمقروءة بعد الإرسال أو عند النقر على تفاعل"));
     }
 
 

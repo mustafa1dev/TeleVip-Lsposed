@@ -54,10 +54,10 @@ public class MainHook implements IXposedHookLoadPackage {
 
     public void startHook() {
         try {
+            resolverRegistry.loadParameter();
             applicationHandler = new Handler(loadClass.getApplicationContext().getMainLooper());
             DexInjector.injectDex();
             Bridge.init();
-            resolverRegistry.loadParameter();
             FeatureManager.init();
             SettingsActivity.init();
 

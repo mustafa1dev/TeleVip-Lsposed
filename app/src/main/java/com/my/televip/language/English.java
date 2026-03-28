@@ -58,7 +58,7 @@ public class English {
         en.add(new TranslatorInfo(Keys.CONNECTIONS_SETTINGS, "Connections"));
         en.add(new TranslatorInfo(Keys.MESSAGE, "Message "));
         en.add(new TranslatorInfo(Keys.EDITED, " Edited on "));
-        en.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "Mark messages as read after sending"));
+        en.add(new TranslatorInfo(Keys.MARK_READ_AFTER_SEND, "Mark messages as read after sending or tap a reaction"));
 
     }
 
