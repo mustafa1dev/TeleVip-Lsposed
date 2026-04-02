@@ -2,12 +2,11 @@ package com.my.televip.features;
 
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.messenger.UserConfig;
 import com.my.televip.virtuals.tgnet.TLRPC;
-
-import de.robv.android.xposed.XposedHelpers;
 
 public class HidePhone {
 
@@ -18,10 +17,10 @@ public class HidePhone {
 
         try {
             if (loadClass.getUserConfigClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getUserConfigClass(), AutomationResolver.resolve("UserConfig", "getClientUserId", AutomationResolver.ResolverType.Method),  new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getUserConfigClass(), AutomationResolver.resolve("UserConfig", "getClientUserId", AutomationResolver.ResolverType.Method),  new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE)) {
+                        if (FeatureManager.isHidePhone()) {
                             UserConfig userConfig = new UserConfig(param.thisObject);
                             if (userConfig.getCurrentUser().getUser() != null) {
                                 TLRPC.User user = userConfig.getCurrentUser();

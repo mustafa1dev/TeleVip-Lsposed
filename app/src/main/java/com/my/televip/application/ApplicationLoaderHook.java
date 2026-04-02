@@ -2,14 +2,12 @@ package com.my.televip.application;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.my.televip.Utils;
-import com.my.televip.configs.ConfigManager;
+import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import java.io.File;
-import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -22,20 +20,19 @@ public class ApplicationLoaderHook {
         if (initialized)
             return;
 
-        Class<?> applicationClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.messenger.ApplicationLoader"), loader);
-        if (applicationClass == null) {
+
+        if (loadClass.getApplicationLoaderClass() == null) {
             Utils.log("Not found ApplicationLoader, " + Utils.issue);
             return;
         }
-        XposedHelpers.findAndHookMethod(applicationClass, AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
+        XposedHelpers.findAndHookMethod(loadClass.getApplicationLoaderClass(), AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 Context app = (Application) param.thisObject;
 
                 try {
                     app = app.getApplicationContext();
-                } catch (Throwable ignored) {
-                }
+                } catch (Throwable ignored) {}
 
                 if (app == null)
                 {
@@ -47,30 +44,12 @@ public class ApplicationLoaderHook {
                 if (!dir.exists())
                     if (!dir.mkdir())
                     {
-                        Toast.makeText(app, "Cannot create " + dir.getAbsolutePath() + " dir, please create by yourself!", Toast.LENGTH_LONG).show();
                         Utils.log("Cannot create " + dir.getAbsolutePath() + " dir, please create by yourself!");
                         return;
                     }
-                //Utils.deletedMessagesSavePath = new File(dir.getAbsolutePath() + "/deletedMessages.list");
-                Utils.deletedMessagesDatabasePath = new File(dir.getAbsolutePath() + "/deletedMessages.db");
-                ConfigManager.cfgPath = new File(dir.getAbsolutePath() + "/AntiRecall.cfg");
-                try
-                {
-                    if (!ConfigManager.cfgPath.exists())
-                    {
-                        ConfigManager.cfgPath.createNewFile();
-                        ConfigManager.save();
-                    }
 
-                    //Utils.readDeletedMessages();
-                    ConfigManager.read();
-                    ConfigManager.save();
-                    HostApplicationInfo.setApplication(app);
-                }
-                catch (IOException e)
-                {
-                    Utils.log(e);
-                }
+                Utils.deletedMessagesDatabasePath = new File(dir.getAbsolutePath() + "/deletedMessages.db");
+
             }
         });
         initialized = true;

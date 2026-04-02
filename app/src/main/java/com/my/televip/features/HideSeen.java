@@ -69,7 +69,7 @@ public class HideSeen {
 
     public static void handleReadAfterSend(Object object) {
         try {
-            if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN) && FeatureManager.getBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND)) {
+            if (FeatureManager.isHideSeen() && FeatureManager.isMarkReadAfterSend()) {
                 TLRPC.InputPeer peer = extractPeerFromSendObject(object);
 
                 if (peer != null && peer.inputPeer != null) {

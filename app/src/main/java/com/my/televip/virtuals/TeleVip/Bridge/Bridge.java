@@ -11,11 +11,12 @@ import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.loadClass;
 import com.my.televip.ui.SettingsActivity;
+import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.ShadowSectionCell;
 import com.my.televip.virtuals.ui.Cells.TextCheckCell;
+import com.my.televip.virtuals.ui.Cells.TextInfoCell;
 import com.my.televip.virtuals.ui.Cells.TextSettingsCell;
-import com.my.televip.virtuals.Theme;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -33,6 +34,7 @@ public class Bridge {
             Class<?> textSettingsCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextSettingsCellHolder", DexInjector.classLoader);
             Class<?> headerCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$HeaderCellHolder", DexInjector.classLoader);
             Class<?> shadowSectionCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$ShadowSectionCellHolder", DexInjector.classLoader);
+            Class<?> textInfoCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextInfoCellHolder", DexInjector.classLoader);
 
             XposedHelpers.findAndHookMethod(bridgeClass, "getRow", int.class, new AbstractMethodHook() {
                 @Override
@@ -74,7 +76,7 @@ public class Bridge {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     TextCheckCell textCheckCell = new TextCheckCell(MainHook.launchActivity);
-                    textCheckCell.getView().setBackgroundColor(Theme.getKey_windowBackgroundWhite());
+                    textCheckCell.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
 
                     textCheckCell.getView().setBackgroundResource(outValue.resourceId);
                     textCheckCell.getView().setClickable(true);
@@ -88,7 +90,7 @@ public class Bridge {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     TextSettingsCell textSettingsCell = new TextSettingsCell(MainHook.launchActivity);
-                    textSettingsCell.getView().setBackgroundColor(Theme.getKey_windowBackgroundWhite());
+                    textSettingsCell.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
                     textSettingsCell.getView().setBackgroundResource(outValue.resourceId);
                     textSettingsCell.getView().setClickable(true);
                     textSettingsCell.getView().setFocusable(true);
@@ -101,7 +103,7 @@ public class Bridge {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     HeaderCell header = new HeaderCell(MainHook.launchActivity);
-                    header.getView().setBackgroundColor(Theme.getKey_windowBackgroundWhite());
+                    header.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
                     param.args[0] = header.getView();
                     param.args[1] = header.headerCell;
                 }
@@ -111,6 +113,15 @@ public class Bridge {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     param.args[0] = new ShadowSectionCell(MainHook.launchActivity).getView();
+                }
+            });
+
+            XposedHelpers.findAndHookConstructor(textInfoCellClass, View.class, new AbstractMethodHook() {
+                @Override
+                protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
+                    TextInfoCell textInfoCell = new TextInfoCell(MainHook.launchActivity);
+                    textInfoCell.setBackgroundColor(Theme.getBackgroundGrayColor());
+                    param.args[0] = textInfoCell;
                 }
             });
 

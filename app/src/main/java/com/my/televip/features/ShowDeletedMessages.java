@@ -9,7 +9,7 @@ import android.util.SparseArray;
 
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.configs.Configs;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.structs.DeletedMessageInfo;
@@ -177,7 +177,7 @@ public class ShowDeletedMessages {
                 else {
                     String methodName = methodNames.get(0);
 
-                    XposedHelpers.findAndHookMethod(loadClass.getMessagesControllerClass(), methodName, ArrayList.class, ArrayList.class, ArrayList.class, boolean.class, int.class, new AbstractMethodHook() {
+                    HMethod.hookMethod(loadClass.getMessagesControllerClass(), methodName, ArrayList.class, ArrayList.class, ArrayList.class, boolean.class, int.class, new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
                             try {
@@ -252,7 +252,7 @@ public class ShowDeletedMessages {
 
             if (loadClass.getMessagesStorageClass() != null) {
 
-                XposedHelpers.findAndHookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "markMessagesAsDeletedInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("markMessagesAsDeletedInternal", new Class[]{long.class, ArrayList.class, boolean.class, int.class, int.class}), new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "markMessagesAsDeletedInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("markMessagesAsDeletedInternal", new Class[]{long.class, ArrayList.class, boolean.class, int.class, int.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         long dialogId = (long) param.args[0];
@@ -301,10 +301,10 @@ public class ShowDeletedMessages {
                     }
                 }));
 
-                XposedHelpers.findAndHookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "updateDialogsWithDeletedMessagesInternal", AutomationResolver.ResolverType.Method), long.class, long.class, ArrayList.class, ArrayList.class, new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "updateDialogsWithDeletedMessagesInternal", AutomationResolver.ResolverType.Method), long.class, long.class, ArrayList.class, ArrayList.class, new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        if (Configs.isAntiRecall()) {
+                        if (FeatureManager.isShowDeleted()) {
                             long dialogId = (long) param.args[0];
                             if (ChatMessageCell.currentMessageObject != null && (System.currentTimeMillis() - ChatMessageCell.lastVisibleTime) < 4000) {
                                 long objectId = ChatMessageCell.currentMessageObject.getDialogId();
@@ -374,7 +374,7 @@ public class ShowDeletedMessages {
                 XposedBridge.hookMethod(updateDialogsWithDeletedMessagesMethod, new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        if (Configs.isAntiRecall()) {
+                        if (FeatureManager.isShowDeleted()) {
                             long dialogId = (long) param.args[0];
                             if (ChatMessageCell.currentMessageObject != null && (System.currentTimeMillis() - ChatMessageCell.lastVisibleTime) < 4000) {
                                 long objectId = ChatMessageCell.currentMessageObject.getDialogId();
@@ -429,7 +429,7 @@ public class ShowDeletedMessages {
                     }
                 });
 
-                XposedHelpers.findAndHookMethod(
+                HMethod.hookMethod(
                         loadClass.getMessagesStorageClass(),
                         AutomationResolver.resolve("MessagesStorage", "markMessagesAsDeleted", AutomationResolver.ResolverType.Method),
                         AutomationResolver.merge(AutomationResolver.resolveObject("markMessagesAsDeleted", new Class[]{long.class, java.util.ArrayList.class, boolean.class, boolean.class, int.class, int.class}),
@@ -458,7 +458,7 @@ public class ShowDeletedMessages {
                     XposedBridge.hookMethod(removeDeletedMessagesFromNotifications, new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
-                            if (Configs.isAntiRecall())
+                            if (FeatureManager.isShowDeleted())
                                 param.setResult(null);
                         }
                     });
@@ -469,7 +469,7 @@ public class ShowDeletedMessages {
             if (loadClass.getMessagesControllerClass() != null) {
 
 
-                XposedHelpers.findAndHookMethod(
+                HMethod.hookMethod(
                         loadClass.getMessagesControllerClass(),
                         AutomationResolver.resolve("MessagesController", "deleteMessages", AutomationResolver.ResolverType.Method),
                         AutomationResolver.merge(AutomationResolver.resolveObject("deleteMessages", new Class[]{java.util.ArrayList.class,
@@ -496,7 +496,7 @@ public class ShowDeletedMessages {
             }
 
             if (loadClass.getNotificationCenterClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getNotificationCenterClass(), AutomationResolver.resolve("NotificationCenter", "postNotificationName", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("postNotificationName", new Class[]{int.class, Object[].class}), new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getNotificationCenterClass(), AutomationResolver.resolve("NotificationCenter", "postNotificationName", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("postNotificationName", new Class[]{int.class, Object[].class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         if (!isDeleteMessage) {
@@ -529,7 +529,7 @@ public class ShowDeletedMessages {
         if (loadClass.getDownloadControllerClass() == null)
             return;
 
-        XposedHelpers.findAndHookMethod(loadClass.getDownloadControllerClass(), AutomationResolver.resolve("DownloadController", "canDownloadMedia", AutomationResolver.ResolverType.Method), loadClass.getTLRPC$MessageClass(), new AbstractMethodHook() {
+        HMethod.hookMethod(loadClass.getDownloadControllerClass(), AutomationResolver.resolve("DownloadController", "canDownloadMedia", AutomationResolver.ResolverType.Method), loadClass.getTLRPC$MessageClass(), new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 TLRPC.Message message = new TLRPC.Message(param.args[0]);

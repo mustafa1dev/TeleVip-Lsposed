@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.my.televip.Utils;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XposedHelpers;
 
 public class HideUpdateApp {
 
@@ -25,7 +25,7 @@ public class HideUpdateApp {
 
             if (loadClass.getSharedConfigClass() != null) {
 
-                XposedHelpers.findAndHookMethod(
+                HMethod.hookMethod(
                         loadClass.getSharedConfigClass(),
                         AutomationResolver.resolve("SharedConfig", "setNewAppVersionAvailable", AutomationResolver.ResolverType.Method),
                         AutomationResolver.merge(AutomationResolver.resolveObject("setNewAppVersionAvailable", new Class[]{loadClass.getTLRPC$TL_help_appUpdateClass()}), new XC_MethodReplacement() {
@@ -35,7 +35,7 @@ public class HideUpdateApp {
                             }
                         }));
 
-                XposedHelpers.findAndHookMethod(
+                HMethod.hookMethod(
                         loadClass.getSharedConfigClass(),
                         AutomationResolver.resolve("SharedConfig", "isAppUpdateAvailable", AutomationResolver.ResolverType.Method), new XC_MethodReplacement() {
                             @Override

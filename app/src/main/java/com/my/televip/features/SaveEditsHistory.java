@@ -9,6 +9,7 @@ import com.my.televip.Database.MessageDatabase;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
@@ -29,8 +30,6 @@ import com.my.televip.virtuals.ui.ChatActivity;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import de.robv.android.xposed.XposedHelpers;
-
 public class SaveEditsHistory {
 
     public static MessageDatabase messageDatabase;
@@ -43,11 +42,11 @@ public class SaveEditsHistory {
         try {
             messageDatabase = new MessageDatabase(MainHook.launchActivity);
 
-            XposedHelpers.findAndHookMethod(
+            HMethod.hookMethod(
                     loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
+                            if (FeatureManager.isSaveEditsHistory()) {
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
                                 if (chatActivity.getSelectedObject() != null) {
@@ -87,7 +86,7 @@ public class SaveEditsHistory {
                                                     options = (ArrayList<Integer>) param.args[3];
                                                 }
 
-                                                items.add(Translator.get(Keys.EDITS_HISTORY));
+                                                items.add(Translator.get(Keys.EditsHistory));
                                                 options.add(MainHook.id);
                                                 icons.add(EventType.getIconSettings());
                                             }
@@ -98,11 +97,11 @@ public class SaveEditsHistory {
                         }
                     }));
 
-            XposedHelpers.findAndHookMethod(
+            HMethod.hookMethod(
                     loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
+                            if (FeatureManager.isSaveEditsHistory()) {
                                 int option = (int) param.args[0];
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
@@ -132,7 +131,7 @@ public class SaveEditsHistory {
                                                 if (dialogId != 0 & messageDatabase.searchMessage(dialogId, message.getID())) {
 
                                                     AlertDialog alertDialog = new AlertDialog(MainHook.launchActivity);
-                                                    alertDialog.setTitle(Translator.get(Keys.EDITS_HISTORY));
+                                                    alertDialog.setTitle(Translator.get(Keys.EditsHistory));
 
                                                     TextView textView = new TextView(MainHook.launchActivity);
 
@@ -148,7 +147,7 @@ public class SaveEditsHistory {
                                                             String messageEdited = messageDatabase.getMessageEdited(dialogId, message.getID(), i);
 
                                                             if (msg != null && messageEdited != null) {
-                                                                builder.append(Translator.get(Keys.MESSAGE)).append(i).append(Translator.get(Keys.EDITED)).append(messageEdited).append("\n");
+                                                                builder.append(Translator.get(Keys.Message)).append(i).append(Translator.get(Keys.Edited)).append(messageEdited).append("\n");
                                                                 builder.append(msg).append("\n");
                                                             }
                                                         }
@@ -159,14 +158,14 @@ public class SaveEditsHistory {
                                                     textView.setText(builder.toString());
                                                     textView.setPadding(32, 32, 32, 32);
                                                     textView.setTextSize(16);
-                                                    textView.setTextColor(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
+                                                    textView.setTextColor(Theme.getTextColor());
                                                     textView.setMovementMethod(new ScrollingMovementMethod());
                                                     textView.setTextIsSelectable(true);
 
                                                     ScrollView scrollView = new ScrollView(MainHook.launchActivity);
                                                     scrollView.addView(textView);
                                                     alertDialog.setView(scrollView);
-                                                    alertDialog.setPositiveButton(Translator.get(Keys.DONE), null);
+                                                    alertDialog.setPositiveButton(Translator.get(Keys.Done), null);
                                                     alertDialog.show();
                                                 }
                                             }
@@ -177,11 +176,11 @@ public class SaveEditsHistory {
                         }
                     }));
 
-            XposedHelpers.findAndHookMethod(
+            HMethod.hookMethod(
                     loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage","putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{loadClass.getTLRPC$messages_MessagesClass(), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {
-                            if (FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY)) {
+                            if (FeatureManager.isSaveEditsHistory()) {
                                 int load_type = (int) param.args[2];
                                 if (ClientChecker.check(ClientChecker.ClientType.Nagram)){
                                     load_type = (int) param.args[0];

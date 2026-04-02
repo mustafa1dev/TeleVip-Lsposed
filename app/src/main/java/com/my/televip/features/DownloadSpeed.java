@@ -2,11 +2,10 @@ package com.my.televip.features;
 
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.messenger.FileLoadOperation;
-
-import de.robv.android.xposed.XposedHelpers;
 
 public class DownloadSpeed {
 
@@ -19,10 +18,10 @@ public class DownloadSpeed {
         try {
 
             if (loadClass.getFileLoadOperationClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getFileLoadOperationClass(), AutomationResolver.resolve("FileLoadOperation", "updateParams", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getFileLoadOperationClass(), AutomationResolver.resolve("FileLoadOperation", "updateParams", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
-                        if (FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED)) {
+                        if (FeatureManager.isDownloadSpeed()) {
                             FileLoadOperation fileLoadOperation = new FileLoadOperation(param.thisObject);
 
                             int downloadChunkSizeBig = 1024 * 512;

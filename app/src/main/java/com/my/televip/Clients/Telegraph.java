@@ -157,18 +157,13 @@ public class Telegraph {
         fieldList.add(new FieldInfo("ChatMessageCell","timeWidth","bb"));
         fieldList.add(new FieldInfo("ProfileActivity","userId","J0"));
         fieldList.add(new FieldInfo("LaunchActivity","frameLayout","H"));
-        fieldList.add(new FieldInfo("Theme","key_windowBackgroundGray","d8"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefault","u9"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultTitle","C9"));
-        fieldList.add(new FieldInfo("Theme","key_actionBarDefaultIcon","x9"));
-        fieldList.add(new FieldInfo("Theme","key_windowBackgroundWhite","g7"));
-        fieldList.add(new FieldInfo("Theme","key_switchTrackBlueChecked","S7"));
         fieldList.add(new FieldInfo("ChatActivity","selectedObject","S4"));
         fieldList.add(new FieldInfo("MessagesStorage","database","b"));
         fieldList.add(new FieldInfo("UserConfig","clientUserId","i"));
         fieldList.add(new FieldInfo("UserConfig","selectedAccount","j0"));
         fieldList.add(new FieldInfo("UItem","id","d"));
         fieldList.add(new FieldInfo("SettingsActivity$SettingCell","iconView","c"));
+        fieldList.add(new FieldInfo("ChatActivity","pinnedMessageView","l2"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
@@ -210,7 +205,6 @@ public class Telegraph {
         methodList.add(new MethodInfo("TextCheckCell","setTextAndCheck","i"));
         methodList.add(new MethodInfo("TextCheckCell","isChecked","d"));
         methodList.add(new MethodInfo("AndroidUtilities","isTablet","u4"));
-        methodList.add(new MethodInfo("Theme","getColor","w2"));
         methodList.add(new MethodInfo("TextSettingsCell","setText","c"));
         methodList.add(new MethodInfo("LocaleController","formatShortNumber","x0"));
         methodList.add(new MethodInfo("ChatActivity","fillMessageMenu","Ur"));
@@ -226,6 +220,9 @@ public class Telegraph {
         methodList.add(new MethodInfo("MessagesController","processNewDifferenceParams","af"));
         methodList.add(new MethodInfo("MessagesController","getInputChannel","qb"));
         methodList.add(new MethodInfo("UserConfig","getCurrentUser","w"));
+        methodList.add(new MethodInfo("ChatActivity","createPinnedMessageView","mr"));
+        methodList.add(new MethodInfo("ChatActivity","updatePinnedMessageView","Uz"));
+        methodList.add(new MethodInfo("Theme","isCurrentThemeDark","U3"));
 
         ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
 

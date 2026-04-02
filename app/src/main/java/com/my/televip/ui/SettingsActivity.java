@@ -3,12 +3,11 @@ package com.my.televip.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.my.televip.ClientChecker;
 import com.my.televip.Drawable.ArrowDrawable;
 import com.my.televip.MainHook;
@@ -16,18 +15,19 @@ import com.my.televip.Utils;
 import com.my.televip.audio;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.FeatureManager;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
-import com.my.televip.virtuals.ActiveTheme;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.androidx.ViewHolder;
 import com.my.televip.virtuals.messenger.browser.Browser;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.TextCheckCell;
+import com.my.televip.virtuals.ui.Cells.TextInfoCell;
 import com.my.televip.virtuals.ui.Cells.TextSettingsCell;
 import com.my.televip.virtuals.ui.Components.RecyclerListView;
 import com.my.televip.virtuals.ui.LaunchActivity;
@@ -40,6 +40,8 @@ import de.robv.android.xposed.XposedHelpers;
 public class SettingsActivity {
 
     private static boolean isSettings;
+
+    private static boolean isLongText = false;
 
     private static int rowCount;
     private final Context context;
@@ -66,7 +68,7 @@ public class SettingsActivity {
     private static int SaveEditsHistoryRow;
 
     private static int preventMediaRow;
-    private static int unlockAllRestrictedRow;
+    private static int removesContentSavingRow;
     private static int allowSavingvideosRow;
 
     private static int telegramPremiumRow;
@@ -75,10 +77,18 @@ public class SettingsActivity {
     private static int ConnectionsRow;
     private static int DownloadSpeedRow;
 
+    private static int UiRow;
+    private static int hidePinnedMessagesRow;
+    private static int disableChannelSwipeBackRow;
+    private static int disableProfileSwipeBackRow;
+
     private static final List<Integer> shadowRows = new ArrayList<>();
 
     private static int btnChannelRow;
     private static int btnRestartAppRow;
+
+
+    private static int onlineInfoRow;
 
     public RecyclerListView listView;
 
@@ -90,10 +100,12 @@ public class SettingsActivity {
 
         hideSeenRow = rowCount++;
         markReadAfterSendRow = rowCount++;
-        hideOnlineRow = rowCount++;
         hideTypingRow = rowCount++;
         hideStoryViewRow = rowCount++;
         hidePhoneRow = rowCount++;
+        hideOnlineRow = rowCount++;
+
+        onlineInfoRow = rowCount++;
 
 
         shadowRows.add(rowCount++);
@@ -134,10 +146,18 @@ public class SettingsActivity {
 
         shadowRows.add(rowCount++);
 
+        //UI
+        UiRow = rowCount++;
+        hidePinnedMessagesRow = rowCount++;
+        disableChannelSwipeBackRow = rowCount++;
+        disableProfileSwipeBackRow = rowCount++;
+
+        shadowRows.add(rowCount++);
+
         // Other Features
         otherFeaturesRow = rowCount++;
 
-        unlockAllRestrictedRow = rowCount++;
+        removesContentSavingRow = rowCount++;
         telegramPremiumRow = rowCount++;
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
             disableNumberRoundingRow = rowCount++;
@@ -161,13 +181,13 @@ public class SettingsActivity {
 
         LinearLayout fragmentView = new LinearLayout(context);
         fragmentView.setOrientation(LinearLayout.VERTICAL);
-        fragmentView.setBackgroundColor(Theme.getColor(Theme.getKey_windowBackgroundGray()));
+        fragmentView.setBackgroundColor(Theme.getBackgroundGrayColor());
         try {
 
             ToolBar toolbar = new ToolBar(context);
 
-            toolbar.setColorTitle(Theme.getColor(Theme.getKey_actionBarDefaultTitle()));
-            toolbar.setTextTitle(Translator.get(Keys.GHOST_MODE));
+            toolbar.setColorTitle(Theme.getTextToolBarColor());
+            toolbar.setTextTitle(Translator.get(Keys.GhostMode));
 
             ArrowDrawable arrow = new ArrowDrawable();
             toolbar.setImageDrawable(arrow);
@@ -183,11 +203,7 @@ public class SettingsActivity {
 
             listView.setAdapter(adapter);
 
-            if (!ActiveTheme.getActiveTheme()) {
-                listView.setBackgroundColor(Color.rgb(29, 39, 51));
-            } else {
-                listView.setBackgroundColor(Color.rgb(255, 255, 255));
-            }
+            listView.setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
 
             listView.setVerticalScrollBarEnabled(false);
             listView.setLayoutManager(Bridge.getLayoutManager(context));
@@ -200,9 +216,6 @@ public class SettingsActivity {
             recyclerParams.setMargins(10, 10, 10, 0);
 
             fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
-            if (!FeatureManager.getBoolean(Keys.OFFLINE_VISIBILITY_INFO)) {
-                listView.post(() -> showTargetForItem(hideOnlineRow));
-            }
 
         } catch (Exception e){
             Utils.log(e);
@@ -211,92 +224,24 @@ public class SettingsActivity {
         return fragmentView;
     }
 
-    private void showTargetForItem(int position) {
-        try {
-        listView.scrollToPosition(position);
-
-        listView.post(() -> {
-            ViewHolder holder =
-                    listView.findViewHolderForAdapterPosition(position);
-
-            if (holder == null) return;
-
-            View target = holder.getItemView();
-
-            if (target != null) {
-                showTap(target);
-            }
-        });
-        } catch (Exception e){
-            Utils.log(e);
-        }
-    }
-
-    private void showTap(View view) {
-        try {
-            int outerColor;
-            int textColor;
-            int descColor;
-            int dimColor;
-
-
-            if (ActiveTheme.getActiveTheme()) {
-                // ☀️ Light Mode
-                outerColor = 0xFFF2F2F2;
-                textColor = 0xFF111111;
-                descColor = 0xFF444455;
-                dimColor = 0x66000000;
-            } else {
-                // 🌙 Dark Mode
-                outerColor = 0xFF1F2A38;
-                textColor = 0xFFFFFFFF;
-                descColor = 0xFFB0C4DE;
-                dimColor = 0xAA000000;
-            }
-            TapTargetView.showFor(
-                    MainHook.launchActivity,
-                    TapTarget.forView(view, Translator.get(Keys.HIDE_ONLINE), Translator.get(Keys.OFFLINE_VISIBILITY_INFO))
-                            .outerCircleColorInt(outerColor)
-                            .targetCircleColorInt(0xFFFFFFFF)
-                            .titleTextColorInt(textColor)
-                            .descriptionTextColorInt(descColor)
-                            .dimColorInt(dimColor)
-                            .drawShadow(true)
-                            .cancelable(false)
-                            .titleTextSize(16)
-                            .descriptionTextSize(14)
-                            .transparentTarget(true),
-                    new TapTargetView.Listener() {
-                        @Override
-                        public void onTargetClick(TapTargetView view) {
-                            FeatureManager.putBoolean(Keys.OFFLINE_VISIBILITY_INFO, true);
-                            super.onTargetClick(view);
-                        }
-                    }
-            );
-        } catch (Exception e){
-            Utils.log(e);
-        }
-    }
-
     public SettingsActivity(Context context) {
         this.context = context;
         try {
             isSettings = true;
 
-            if (!FeatureManager.getBoolean("DontShowAgain")) {
+            if (!FeatureManager.getBoolean("DSA")) {
                 AlertDialog alertDialog = new AlertDialog(context);
 
-                alertDialog.setTitle(Translator.get(Keys.GHOST_MODE));
-                alertDialog.setMessage(Translator.get(Keys.JOIN_TELEVIP));
+                alertDialog.setTitle(Translator.get(Keys.GhostMode));
+                alertDialog.setMessage(Translator.get(Keys.JoinTeleVip));
 
-                alertDialog.setPositiveButton(Translator.get(Keys.JOIN), AlertDialog.click(() -> {
+                alertDialog.setPositiveButton(Translator.get(Keys.Join), AlertDialog.click(() -> {
                     Browser.openUrl("https://t.me/t_l0_e");
                     hide();
                 }));
 
-                alertDialog.setNegativeButton(Translator.get(Keys.CANCEL), null);
-                alertDialog.setNeutralButton(Translator.get(Keys.DONT_SHOW_AGAIN), AlertDialog.click(() -> FeatureManager.putBoolean("DontShowAgain", true)));
+                alertDialog.setNegativeButton(Translator.get(Keys.Cancel), null);
+                alertDialog.setNeutralButton(Translator.get(Keys.DontShowAgain), AlertDialog.click(() -> FeatureManager.putBoolean("DSA", true)));
                 alertDialog.show();
             }
         } catch (Exception e){
@@ -309,7 +254,7 @@ public class SettingsActivity {
         audio.init();
         try {
 
-            XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onBackPressed", new AbstractMethodHook() {
+            HMethod.hookMethod(loadClass.getLaunchActivityClass(), "onBackPressed", new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(MethodHookParam param) {
                     if (isSettings) {
@@ -320,7 +265,7 @@ public class SettingsActivity {
                 }
             });
 
-            XposedHelpers.findAndHookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities", "isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+            HMethod.hookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities", "isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(MethodHookParam param) {
                     if (isSettings) {
@@ -352,17 +297,19 @@ public class SettingsActivity {
     }
 
     public static int getRow(int position){
-        if (position == ghostModeRow || position == storiesRow || position == messagesRow || position == mediaRow || position == otherFeaturesRow || position == ConnectionsRow) {
+        if (position == ghostModeRow || position == storiesRow || position == messagesRow || position == mediaRow || position == otherFeaturesRow || position == ConnectionsRow || position == UiRow) {
             return 0;
         } else if (position == hideSeenRow || position == hideStoryViewRow || position == hideOnlineRow ||
                 position == hidePhoneRow || position == hideTypingRow || position == disableStoriesRow || disableNumberRoundingRow == position || position == showDeletedMessagesRow || position == preventMediaRow ||
-                position == unlockAllRestrictedRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow ||
-                position == SaveEditsHistoryRow || position == fixTLErrorRow || position == showMessageIDRow || position == DownloadSpeedRow || position == markReadAfterSendRow) {
+                position == removesContentSavingRow || position == allowSavingvideosRow || position == telegramPremiumRow || position == HideUpdateAppRow ||
+                position == SaveEditsHistoryRow || position == fixTLErrorRow || position == showMessageIDRow || position == DownloadSpeedRow || position == markReadAfterSendRow || position == hidePinnedMessagesRow || position == disableChannelSwipeBackRow|| position == disableProfileSwipeBackRow) {
             return 1;
         } else if (position == btnChannelRow || position == btnRestartAppRow) {
             return 2;
         } else if (shadowRows.contains(position)) {
             return 3;
+        } else if (position == onlineInfoRow) {
+            return 4;
         }
         return 0;
     }
@@ -372,58 +319,67 @@ public class SettingsActivity {
             case 0:
                 HeaderCellHolder headerCell = new HeaderCellHolder(holder);
                 if (position == ghostModeRow) {
-                    headerCell.cell.setText(Translator.get(Keys.GHOST_MODE_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.GhostModeSettings));
                 } else if (position == storiesRow) {
-                    headerCell.cell.setText(Translator.get(Keys.STORIES_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.StoriesSettings));
                 } else if (position == messagesRow) {
-                    headerCell.cell.setText(Translator.get(Keys.MESSAGES_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.MessagesSettings));
                 } else if (position == mediaRow) {
-                    headerCell.cell.setText(Translator.get(Keys.MEDIA_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.MediaSettings));
                 } else if (position == otherFeaturesRow) {
-                    headerCell.cell.setText(Translator.get(Keys.OTHER_FEATURES_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.OtherFeaturesSettings));
                 } else if (position == ConnectionsRow) {
-                    headerCell.cell.setText(Translator.get(Keys.CONNECTIONS_SETTINGS));
+                    headerCell.cell.setText(Translator.get(Keys.ConnectionsSettings));
+                } else if (position == UiRow) {
+                    headerCell.cell.setText(Translator.get(Keys.UiSettings));
                 }
                 break;
             case 1:
                 TextCheckCellHolder ch = new TextCheckCellHolder(holder);
                 if (position == hideSeenRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_SEEN), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HideSeen), FeatureManager.isHideSeen(), false);
                 } else if (position == hideStoryViewRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_STORY_VIEW), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HideStoryView), FeatureManager.isHideStoryRead(), false);
                 } else if (position == hideOnlineRow) {
-                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_ONLINE), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HideOnline), Translator.get(Keys.RestartRequired), FeatureManager.isHideOnline(), true, false);
                 } else if (position == hidePhoneRow) {
-                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_PHONE), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_PHONE), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HidePhone), Translator.get(Keys.RestartRequired), FeatureManager.isHidePhone(), true, false);
                 } else if (position == hideTypingRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.HIDE_TYPING), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HideTyping), FeatureManager.isHideTyping(), false);
                 } else if (position == HideUpdateAppRow) {
-                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HIDE_UPDATE_APP), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_HIDE_UPDATE_APP), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.HideUpdateApp), Translator.get(Keys.RestartRequired), FeatureManager.isHideUpdateApp(), true, false);
                 } else if (position == disableStoriesRow) {
-                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DISABLE_STORIES), Translator.get(Keys.RESTART_REQUIRED), FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_STORIES), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DisableStories), Translator.get(Keys.RestartRequired), FeatureManager.isDisableStories(), true, false);
                 } else if (position == disableNumberRoundingRow) {
-                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DISABLE_NUMBER_ROUNDING), "5.3K -> 5300", FeatureManager.getBoolean(FeatureManager.KEY_DISABLE_NUMBER_ROUNDING), true, false);
+                    ch.cell.setTextAndValueAndCheck(Translator.get(Keys.DisableNumberRounding), "5.3K -> 5300", FeatureManager.isDisableNumberRounding(), true, false);
                 } else if (position == showMessageIDRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.SHOW_MESSAGE_ID), FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.ShowMessageID), FeatureManager.isShowMessageID(), false);
                 } else if (position == showDeletedMessagesRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.SHOW_DELETED_MESSAGES), FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.ShowDeletedMessages), FeatureManager.isShowDeleted(), false);
                 } else if (position == SaveEditsHistoryRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.SAVE_EDITS_HISTORY), FeatureManager.getBoolean(FeatureManager.KEY_SAVE_EDITS_HISTORY), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.SaveEditsHistory), FeatureManager.isSaveEditsHistory(), false);
                 } else if (position == preventMediaRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.PREVENT_MEDIA), FeatureManager.getBoolean(FeatureManager.KEY_PREVENT_MEDIA), false);
-                } else if (position == unlockAllRestrictedRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.UNLOCK_ALL_RESTRICTED), FeatureManager.getBoolean(FeatureManager.KEY_UNLOCK_CHANNEL), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.PreventMedia), FeatureManager.isPreventMedia(), false);
+                } else if (position == removesContentSavingRow) {
+                    ch.cell.setTextAndCheck(Translator.get(Keys.RemovesContentSaving), FeatureManager.isRemovesContentSaving(), false);
                 } else if (position == allowSavingvideosRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.ALLOW_SAVING_VIDEOS), FeatureManager.getBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.AllowSavingVideos), FeatureManager.isAllowSaveGallery(), false);
                 } else if (position == telegramPremiumRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.TELEGRAM_PREMIUM), FeatureManager.getBoolean(FeatureManager.KEY_TELE_PREMIUM), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.TelegramPremium), FeatureManager.isTelePremium(), false);
                 } else if (position == fixTLErrorRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.FIX_TL_ERROR), FeatureManager.getBoolean(FeatureManager.KEY_FIX_TL_ERROR), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.FixTLError), FeatureManager.isFixTLError(), false);
                 } else if (position == DownloadSpeedRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.DOWNLOAD_SPEED), FeatureManager.getBoolean(FeatureManager.KEY_DOWNLOAD_SPEED), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.DownloadSpeed), FeatureManager.isDownloadSpeed(), false);
                 } else if (position == markReadAfterSendRow) {
-                    ch.cell.setTextAndCheck(Translator.get(Keys.MARK_READ_AFTER_SEND), FeatureManager.getBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND), false);
+                    ch.cell.setTextAndCheck(Translator.get(Keys.MarkReadAfterSend), FeatureManager.isMarkReadAfterSend(), false);
+                } else if (position == hidePinnedMessagesRow) {
+                    ch.cell.setTextAndCheck(Translator.get(Keys.HidePinnedMessages), FeatureManager.isHidePinnedMessages(), false);
+                } else if (position == disableChannelSwipeBackRow) {
+                    ch.cell.setTextAndCheck(Translator.get(Keys.DisableChannelSwipeBack), FeatureManager.isDisableChannelSwipeBack(), false);
+                } else if (position == disableProfileSwipeBackRow) {
+                    ch.cell.setTextAndCheck(Translator.get(Keys.DisableProfileSwipeBack), FeatureManager.isDisableProfileSwipeBack(), false);
                 }
+
                 ch.cell.getTextView().setLines(0);
                 ch.cell.getTextView().setMaxLines(0);
                 ch.cell.getTextView().setSingleLine(false);
@@ -433,15 +389,39 @@ public class SettingsActivity {
             case 2:
                 TextSettingsCellHolder settingsCell = new TextSettingsCellHolder(holder);
                 if (position == btnChannelRow) {
-                    settingsCell.cell.setText(Translator.get(Keys.DEVELOPER_CHANNEL), false);
+                    settingsCell.cell.setText(Translator.get(Keys.DeveloperChannel), false);
                 } else if (position == btnRestartAppRow) {
-                    settingsCell.cell.setText(Translator.get(Keys.RESTART_APP), false);
+                    settingsCell.cell.setText(Translator.get(Keys.RestartApp), false);
                 }
-                settingsCell.cell.getTextView().setTextColor(Theme.getColor(Theme.getKey_switchTrackBlueChecked()));
+                settingsCell.cell.getTextView().setTextColor(Theme.getTextBlueColor());
                 break;
             case 3:
                 ShadowSectionCellHolder shadowSectionCell = new ShadowSectionCellHolder(holder);
-                shadowSectionCell.cell.setBackgroundColor(Theme.getColor(Theme.getKey_windowBackgroundGray()));
+                shadowSectionCell.cell.setBackgroundColor((Theme.getBackgroundGrayColor()));
+                break;
+            case 4:
+                TextInfoCellHolder textInfoCell = new TextInfoCellHolder(holder);
+                TextView textView = textInfoCell.text.getTextView();
+                if (position == onlineInfoRow) {
+                    textView.setMaxLines(2);
+                    textView.setEllipsize(TextUtils.TruncateAt.END);
+                    textView.setText(Translator.get(Keys.OfflineVisibilityInfo));
+                    if (textView.getMaxLines() == 2){
+                        isLongText = false;
+                    }
+                    textView.setOnClickListener(v -> {
+                        if (!isLongText) {
+                            textView.setMaxLines(Integer.MAX_VALUE);
+                            textView.setEllipsize(null);
+                            isLongText = true;
+                        } else {
+                            textView.setMaxLines(2);
+                            textView.setEllipsize(TextUtils.TruncateAt.END);
+                            textView.setText(Translator.get(Keys.OfflineVisibilityInfo));
+                            isLongText = false;
+                        }
+                    });
+                }
                 break;
         }
 
@@ -497,9 +477,9 @@ public class SettingsActivity {
                 } else if (pos == preventMediaRow) {
                     FeatureManager.putBoolean(FeatureManager.KEY_PREVENT_MEDIA, checked);
                     FeatureManager.readFeature(FeatureManager.KEY_PREVENT_MEDIA);
-                } else if (pos == unlockAllRestrictedRow) {
-                    FeatureManager.putBoolean(FeatureManager.KEY_UNLOCK_CHANNEL, checked);
-                    FeatureManager.readFeature(FeatureManager.KEY_UNLOCK_CHANNEL);
+                } else if (pos == removesContentSavingRow) {
+                    FeatureManager.putBoolean(FeatureManager.KEY_REMOVES_CONTENT_SAVING, checked);
+                    FeatureManager.readFeature(FeatureManager.KEY_REMOVES_CONTENT_SAVING);
                 } else if (pos == allowSavingvideosRow) {
                     FeatureManager.putBoolean(FeatureManager.KEY_ALLOW_SAVE_GALLERY, checked);
                     FeatureManager.readFeature(FeatureManager.KEY_ALLOW_SAVE_GALLERY);
@@ -521,6 +501,15 @@ public class SettingsActivity {
                 } else if (pos == markReadAfterSendRow) {
                     FeatureManager.putBoolean(FeatureManager.KEY_MARK_READ_AFTER_SEND, checked);
                     FeatureManager.readFeature(FeatureManager.KEY_MARK_READ_AFTER_SEND);
+                } else if (pos == hidePinnedMessagesRow) {
+                    FeatureManager.putBoolean(FeatureManager.KEY_HIDE_PINNED_MESSAGES, checked);
+                    FeatureManager.readFeature(FeatureManager.KEY_HIDE_PINNED_MESSAGES);
+                } else if (pos == disableChannelSwipeBackRow) {
+                    FeatureManager.putBoolean(FeatureManager.KEY_DISABLE_CHANNEL_SWIPE_BACK, checked);
+                    FeatureManager.readFeature(FeatureManager.KEY_DISABLE_CHANNEL_SWIPE_BACK);
+                } else if (pos == disableProfileSwipeBackRow) {
+                    FeatureManager.putBoolean(FeatureManager.KEY_DISABLE_PROFILE_SWIPE_BACK, checked);
+                    FeatureManager.readFeature(FeatureManager.KEY_DISABLE_PROFILE_SWIPE_BACK);
                 }
 
             } else if (viewType == 2) {
@@ -576,6 +565,13 @@ public class SettingsActivity {
 
         public ShadowSectionCellHolder(Object obj){
             cell = (View) XposedHelpers.getObjectField(obj, "view");
+        }
+    }
+    public static class TextInfoCellHolder {
+        TextInfoCell text;
+
+        public TextInfoCellHolder(Object obj){
+            text = (TextInfoCell) XposedHelpers.getObjectField(obj, "view");
         }
     }
 

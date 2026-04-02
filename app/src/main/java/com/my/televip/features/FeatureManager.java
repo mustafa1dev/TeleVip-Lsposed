@@ -20,7 +20,7 @@ public class FeatureManager {
     public static final String KEY_HIDE_STORY_READ = "HideStoryRead";
     public static final String KEY_HIDE_TYPING = "HideTyping";
     public static final String KEY_HIDE_UPDATE_APP = "HideUpdateApp";
-    public static final String KEY_UNLOCK_CHANNEL = "UnlockChannel";
+    public static final String KEY_REMOVES_CONTENT_SAVING = "RemovesContentSaving";
     public static final String KEY_ALLOW_SAVE_GALLERY = "AllowSaveGallery";
     public static final String KEY_HIDE_ONLINE = "HideOnline";
     public static final String KEY_PREVENT_MEDIA = "PreventMedia";
@@ -33,6 +33,9 @@ public class FeatureManager {
     public static final String KEY_SHOW_MESSAGE_ID = "ShowMessageID";
     public static final String KEY_DOWNLOAD_SPEED = "DownloadSpeed";
     public static final String KEY_MARK_READ_AFTER_SEND = "markReadAfterSend";
+    public static final String KEY_HIDE_PINNED_MESSAGES = "HidePinnedMessages";
+    public static final String KEY_DISABLE_CHANNEL_SWIPE_BACK = "DisableChannelSwipeBack";
+    public static final String KEY_DISABLE_PROFILE_SWIPE_BACK = "DisableProfileSwipeBack";
 
     public static boolean getBoolean(String key) {
         try {
@@ -101,50 +104,59 @@ public class FeatureManager {
 
     public static void readFeature() {
 
-        if (getBoolean(KEY_TELE_PREMIUM)) {
+        if (isTelePremium()) {
             TelePremium.init();
         }
-        if (getBoolean(KEY_UNLOCK_CHANNEL)) {
-            UnlockChannelFeature.init();
+        if (isRemovesContentSaving()) {
+            RemovesContentSaving.init();
         }
-        if (getBoolean(KEY_ALLOW_SAVE_GALLERY)) {
+        if (isAllowSaveGallery()) {
             AllowSaveToGallery.init();
         }
-        if (getBoolean(KEY_PREVENT_MEDIA)) {
+        if (isPreventMedia()) {
             PreventMedia.init();
         }
-        if (getBoolean(KEY_SHOW_DELETED) || getBoolean(KEY_SHOW_MESSAGE_ID)) {
+        if (isShowDeleted() || isShowMessageID()) {
             ChatMessageCell.init();
         }
-        if (getBoolean(KEY_SHOW_DELETED)) {
+        if (isShowDeleted()) {
             ShowDeletedMessages.initProcessing();
         }
-        if (getBoolean(KEY_DISABLE_STORIES)) {
+        if (isDisableStories()) {
             DisableStories.init();
         }
-        if (getBoolean(KEY_HIDE_PHONE)) {
+        if (isHidePhone()) {
             HidePhone.init();
         }
-        if (getBoolean(KEY_HIDE_UPDATE_APP)) {
+        if (isHideUpdateApp()) {
             HideUpdateApp.init();
         }
-        if (getBoolean(KEY_DISABLE_NUMBER_ROUNDING)) {
+        if (isDisableNumberRounding()) {
             DisableNumberRounding.init();
         }
-        if (getBoolean(KEY_SAVE_EDITS_HISTORY)) {
+        if (isSaveEditsHistory()) {
             SaveEditsHistory.init();
         }
-        if (getBoolean(KEY_FIX_TL_ERROR)) {
+        if (isFixTLError()) {
             FixTLError.init();
         }
-        if (getBoolean(KEY_DOWNLOAD_SPEED)) {
+        if (isDownloadSpeed()) {
             DownloadSpeed.init();
         }
-        if (getBoolean(KEY_HIDE_ONLINE)) {
+        if (isHideOnline()) {
             HideOnline.init();
         }
-        if (isGhostMode()){
+        if (isGhostMode()) {
             GhostMode.init();
+        }
+        if (isHidePinnedMessages()) {
+            HidePinnedMessages.init();
+        }
+        if (isDisableChannelSwipeBack()) {
+            DisableChannelSwipeBack.init();
+        }
+        if (isDisableProfileSwipeBack()) {
+            DisableProfileSwipeBack.init();
         }
 
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
@@ -153,14 +165,15 @@ public class FeatureManager {
         } else {
             Telegraph.removeAd();
         }
+
     }
 
     public static void readFeature(String key) {
 
         if (key.equals(KEY_TELE_PREMIUM) && getBoolean(key) && !TelePremium.isEnable) {
             TelePremium.init();
-        } else if (key.equals(KEY_UNLOCK_CHANNEL) && getBoolean(key) && !UnlockChannelFeature.isEnable) {
-            UnlockChannelFeature.init();
+        } else if (key.equals(KEY_REMOVES_CONTENT_SAVING) && getBoolean(key) && !RemovesContentSaving.isEnable) {
+            RemovesContentSaving.init();
         } else if (key.equals(KEY_ALLOW_SAVE_GALLERY) && getBoolean(key) && !AllowSaveToGallery.isEnable) {
             AllowSaveToGallery.init();
         } else if (key.equals(KEY_PREVENT_MEDIA) && getBoolean(key) && !PreventMedia.isEnable) {
@@ -187,7 +200,97 @@ public class FeatureManager {
             HideOnline.init();
         } else if (isGhostMode() && !GhostMode.isEnable) {
             GhostMode.init();
+        } else if (key.equals(KEY_HIDE_PINNED_MESSAGES) && getBoolean(key) && !HidePinnedMessages.isEnable) {
+            HidePinnedMessages.init();
+        } else if (key.equals(KEY_DISABLE_CHANNEL_SWIPE_BACK) && getBoolean(key) && !DisableChannelSwipeBack.isEnable) {
+            DisableChannelSwipeBack.init();
+        } else if (key.equals(KEY_DISABLE_PROFILE_SWIPE_BACK) && getBoolean(key) && !DisableProfileSwipeBack.isEnable) {
+            DisableProfileSwipeBack.init();
         }
+    }
+
+    public static boolean isTelePremium() {
+        return getBoolean(KEY_TELE_PREMIUM);
+    }
+
+    public static boolean isHideSeen() {
+        return getBoolean(KEY_HIDE_SEEN);
+    }
+
+    public static boolean isHideStoryRead() {
+        return getBoolean(KEY_HIDE_STORY_READ);
+    }
+
+    public static boolean isHideTyping() {
+        return getBoolean(KEY_HIDE_TYPING);
+    }
+
+    public static boolean isHideUpdateApp() {
+        return getBoolean(KEY_HIDE_UPDATE_APP);
+    }
+
+    public static boolean isRemovesContentSaving() {
+        return getBoolean(KEY_REMOVES_CONTENT_SAVING);
+    }
+
+    public static boolean isAllowSaveGallery() {
+        return getBoolean(KEY_ALLOW_SAVE_GALLERY);
+    }
+
+    public static boolean isHideOnline() {
+        return getBoolean(KEY_HIDE_ONLINE);
+    }
+
+    public static boolean isPreventMedia() {
+        return getBoolean(KEY_PREVENT_MEDIA);
+    }
+
+    public static boolean isHidePhone() {
+        return getBoolean(KEY_HIDE_PHONE);
+    }
+
+    public static boolean isShowDeleted() {
+        return getBoolean(KEY_SHOW_DELETED);
+    }
+
+    public static boolean isSaveEditsHistory() {
+        return getBoolean(KEY_SAVE_EDITS_HISTORY);
+    }
+
+    public static boolean isDisableStories() {
+        return getBoolean(KEY_DISABLE_STORIES);
+    }
+
+    public static boolean isDisableNumberRounding() {
+        return getBoolean(KEY_DISABLE_NUMBER_ROUNDING);
+    }
+
+    public static boolean isFixTLError() {
+        return getBoolean(KEY_FIX_TL_ERROR);
+    }
+
+    public static boolean isShowMessageID() {
+        return getBoolean(KEY_SHOW_MESSAGE_ID);
+    }
+
+    public static boolean isDownloadSpeed() {
+        return getBoolean(KEY_DOWNLOAD_SPEED);
+    }
+
+    public static boolean isMarkReadAfterSend() {
+        return getBoolean(KEY_MARK_READ_AFTER_SEND);
+    }
+
+    public static boolean isHidePinnedMessages() {
+        return getBoolean(KEY_HIDE_PINNED_MESSAGES);
+    }
+
+    public static boolean isDisableChannelSwipeBack() {
+        return getBoolean(KEY_DISABLE_CHANNEL_SWIPE_BACK);
+    }
+
+    public static boolean isDisableProfileSwipeBack() {
+        return getBoolean(KEY_DISABLE_PROFILE_SWIPE_BACK);
     }
 
     public static boolean isGhostMode(){

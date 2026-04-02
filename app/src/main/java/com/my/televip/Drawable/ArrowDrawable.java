@@ -18,7 +18,7 @@ public class ArrowDrawable extends Drawable {
     public ArrowDrawable() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Theme.getColor(Theme.getKey_actionBarDefaultIcon()));
+        paint.setColor(Theme.getArrowDrawableColor());
 
         path = new Path();
         path.moveTo(20f, 11f);

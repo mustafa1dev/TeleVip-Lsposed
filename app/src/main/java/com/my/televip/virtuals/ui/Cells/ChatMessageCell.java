@@ -9,7 +9,6 @@ import android.text.style.ForegroundColorSpan;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.configs.Configs;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.language.Keys;
@@ -37,7 +36,7 @@ public class ChatMessageCell {
                 XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{loadClass.getMessageObjectClass()}),  new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
-                        if (FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED) || FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID)) {
+                        if (FeatureManager.isShowDeleted() || FeatureManager.isShowMessageID()) {
                             try {
                                 currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
                                 lastVisibleTime = System.currentTimeMillis();
@@ -49,15 +48,14 @@ public class ChatMessageCell {
                                 if (owner == null)
                                     return;
                                 int flags = owner.getFlags();
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_SHOW_MESSAGE_ID)) {
+                                if (FeatureManager.isShowMessageID()) {
                                     if (owner.getID() != 0) {
                                         String textId = "ID " + owner.getID();
                                         setSpannableStringBuilderText(textId, param.thisObject, false);
                                     }
                                 }
-                                if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & FeatureManager.getBoolean(FeatureManager.KEY_SHOW_DELETED)) {
-                                    String text = Configs.getAntiRecallText().isEmpty() ? (Translator.get(Keys.DELETED)) : Configs.getAntiRecallText();
-                                    setSpannableStringBuilderText(text, param.thisObject, true);
+                                if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & FeatureManager.isShowDeleted()) {
+                                    setSpannableStringBuilderText(Translator.get(Keys.Deleted), param.thisObject, true);
                                 } else {
                                     TextPaint paint = Theme.getTextPaint(MainHook.lpparam.classLoader);
                                     paint.setShadowLayer(0, 0, 0, Color.WHITE);
@@ -90,8 +88,8 @@ public class ChatMessageCell {
         if (time == null)
             return;
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
-        if (Configs.isAntiRecallTextColorful() & color)
-            spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.rgb(Configs.getAntiRecallTextRed(), Configs.getAntiRecallTextGreen(), Configs.getAntiRecallTextBlue())), 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (color)
+            spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.rgb(255, 0, 0)), 0, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableStringBuilder.append(" ");
         time.insert(0, spannableStringBuilder);
         cell.setCurrentTimeString(time);

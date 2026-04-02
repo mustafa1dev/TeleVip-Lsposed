@@ -63,6 +63,8 @@ public class SettingsAdapter {
                     return new TextSettingsCellHolder(new FrameLayout(MContext), null);
                 case 3:
                     return new ShadowSectionCellHolder(new FrameLayout(MContext));
+                case 4:
+                    return new TextInfoCellHolder(new FrameLayout(MContext));
                 case 0:
                 default:
                     return new HeaderCellHolder(new FrameLayout(MContext), null);
@@ -106,6 +108,15 @@ public class SettingsAdapter {
         public View view;
 
         public ShadowSectionCellHolder(View view) {
+            super(view);
+            this.view = view;
+        }
+    }
+    static class TextInfoCellHolder extends RecyclerView.ViewHolder {
+
+        public View view;
+
+        public TextInfoCellHolder(View view) {
             super(view);
             this.view = view;
         }

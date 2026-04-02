@@ -14,13 +14,14 @@ import com.my.televip.ClientChecker;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
-import com.my.televip.virtuals.ActiveTheme;
+import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.ChatActivity;
 import com.my.televip.virtuals.ui.ProfileActivity;
 
@@ -43,7 +44,7 @@ public class OtherFeatures {
                 Class<?> actionBarClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar"), lpparam.classLoader);
                 Class<?> actionBar$ActionBarMenuOnItemClickClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar$ActionBarMenuOnItemClick"), lpparam.classLoader);
 
-                XposedHelpers.findAndHookMethod(
+                HMethod.hookMethod(
                         actionBarClass,
                         AutomationResolver.resolve("ActionBar", "setActionBarMenuOnItemClick", AutomationResolver.ResolverType.Method),
                         AutomationResolver.merge(AutomationResolver.resolveObject("setActionBarMenuOnItemClick", new Class[]{actionBar$ActionBarMenuOnItemClickClass}), new AbstractMethodHook() {
@@ -85,7 +86,7 @@ public class OtherFeatures {
 
                     if (loadClass.getChatActivityClass() != null && loadClass.getDrawableClass() != null && isChat && !isEnableChat) {
                         isEnableChat = true;
-                        XposedHelpers.findAndHookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
+                        HMethod.hookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
                             @Override
                             protected void afterMethod(MethodHookParam param) {
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
@@ -96,18 +97,18 @@ public class OtherFeatures {
                                     int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_go_up");
 
                                     if (!ClientChecker.check(ClientChecker.ClientType.Cherrygram) && !ClientChecker.check(ClientChecker.ClientType.iMe) && !ClientChecker.check(ClientChecker.ClientType.iMeWeb) && !ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.XPlus) && !ClientChecker.check(ClientChecker.ClientType.forkgram) && !ClientChecker.check(ClientChecker.ClientType.forkgramBeta)) {
-                                        headerItem.lazilyAddSubItem(MainHook.id, drawableResource, Translator.get(Keys.TO_THE_BEGINNING));
+                                        headerItem.lazilyAddSubItem(MainHook.id, drawableResource, Translator.get(Keys.ToTheBeginning));
                                     }
                                     drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "player_new_order");
 
-                                    headerItem.lazilyAddSubItem(8353848, drawableResource, Translator.get(Keys.TO_THE_MESSAGE));
+                                    headerItem.lazilyAddSubItem(8353848, drawableResource, Translator.get(Keys.ToTheMessage));
 
                                 }
 
                             }
                         }));
 
-                        XposedHelpers.findAndHookMethod(
+                        HMethod.hookMethod(
                                 clazz,
                                 "onItemClick",
                                 int.class,
@@ -123,11 +124,11 @@ public class OtherFeatures {
 
                                         } else if (id == 8353848) {
                                             AlertDialog alertDialog = new AlertDialog(MainHook.launchActivity);
-                                            alertDialog.setTitle(Translator.get(Keys.INPUT_MESSAGE_ID));
+                                            alertDialog.setTitle(Translator.get(Keys.InputMessageId));
 
                                             final EditText editText = new EditText(MainHook.launchActivity);
                                             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                            if (ActiveTheme.getActiveTheme()) {
+                                            if (Theme.isLight()) {
                                                 editText.setTextColor(0xFF000000);
                                                 editText.setHintTextColor(0xFF424242);
                                             } else {
@@ -151,7 +152,7 @@ public class OtherFeatures {
 
                                             alertDialog.setView(layout);
 
-                                            alertDialog.setPositiveButton(Translator.get(Keys.DONE), AlertDialog.click(() -> {
+                                            alertDialog.setPositiveButton(Translator.get(Keys.Done), AlertDialog.click(() -> {
                                                 String inputText = editText.getText().toString().trim();
 
                                                 if (!inputText.isEmpty()) {
@@ -160,7 +161,7 @@ public class OtherFeatures {
                                                 }
                                             }));
 
-                                            alertDialog.setNegativeButton(Translator.get(Keys.CANCEL), null);
+                                            alertDialog.setNegativeButton(Translator.get(Keys.Cancel), null);
 
                                             alertDialog.show();
                                         }
@@ -171,7 +172,7 @@ public class OtherFeatures {
 
                         isEnableProfile = true;
 
-                        XposedHelpers.findAndHookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createActionBarMenu", new Class[]{boolean.class}), new AbstractMethodHook() {
+                        HMethod.hookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createActionBarMenu", new Class[]{boolean.class}), new AbstractMethodHook() {
                             @Override
                             protected void afterMethod(MethodHookParam param) {
                                 ProfileActivity profileActivity = new ProfileActivity(param.thisObject);
@@ -199,7 +200,7 @@ public class OtherFeatures {
                             }
                         }));
 
-                        XposedHelpers.findAndHookMethod(
+                        HMethod.hookMethod(
                                 clazz,
                                 AutomationResolver.resolve("ProfileActivity", "onItemClick", AutomationResolver.ResolverType.Method),
                                 AutomationResolver.merge(AutomationResolver.resolveObject("onItemClick", new Class[]{int.class}), new AbstractMethodHook() {

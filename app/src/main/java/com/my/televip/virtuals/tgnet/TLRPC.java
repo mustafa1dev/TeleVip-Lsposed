@@ -80,6 +80,10 @@ public class TLRPC {
             XposedHelpers.setIntField(message, "flags", flags);
         }
 
+        public void setTtl(Object ttl){
+            XposedHelpers.setObjectField(message, "ttl", ttl);
+        }
+
         public static Message TLdeserialize(NativeByteBuffer stream, int constructor, boolean exception){
             return new Message(XposedHelpers.callStaticMethod(loadClass.getTLRPC$MessageClass(), AutomationResolver.resolve("TLRPC$Message", "TLdeserialize", AutomationResolver.ResolverType.Method), stream.nativeByteBuffer, constructor, exception));
         }

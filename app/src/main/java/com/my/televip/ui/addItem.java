@@ -78,8 +78,8 @@ public class addItem {
                             color1,
                             color2,
                             MainHook.id,
-                            Translator.get(Keys.GHOST_MODE),
-                            Translator.get(Keys.BY_MUSTAFA));
+                            Translator.get(Keys.GhostMode),
+                            Translator.get(Keys.ByMustafa));
                     if (id_item_add == -1) {
                         for (int i = 0; i < arrayList.size(); i++) {
                             Object obj = arrayList.get(i);
@@ -161,7 +161,7 @@ public class addItem {
                                 itemConstructor.setAccessible(true);
                             }
 
-                            Object newItem = itemConstructor.newInstance(MainHook.id, Translator.get(Keys.GHOST_MODE), EventType.getIconSettings());
+                            Object newItem = itemConstructor.newInstance(MainHook.id, Translator.get(Keys.GhostMode), EventType.getIconSettings());
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;

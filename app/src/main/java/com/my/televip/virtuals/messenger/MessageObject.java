@@ -26,4 +26,8 @@ public class MessageObject {
         return (long) XposedHelpers.callStaticMethod(loadClass.getMessageObjectClass(), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
     }
 
+    public Object getMessageObject(){
+        return messageObject;
+    }
+
 }

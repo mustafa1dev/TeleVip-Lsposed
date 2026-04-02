@@ -6,31 +6,36 @@ import static com.my.televip.obfuscate.AutomationResolver.resolverRegistry;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 
+import com.my.televip.application.AndroidUtilities;
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.features.FeatureManager;
 import com.my.televip.features.SaveEditsHistory;
+import com.my.televip.language.Translator;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.ui.SettingsActivity;
 import com.my.televip.ui.addItem;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 
-public class MainHook implements IXposedHookLoadPackage {
+public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
     public static XC_LoadPackage.LoadPackageParam lpparam;
 
     public boolean isStart;
     @SuppressLint("StaticFieldLeak")
     public static Activity launchActivity;
-    public static volatile Handler applicationHandler;
     public static int id = 8353847;
+    public static String modulePath;
+
+    @Override
+    public void initZygote(StartupParam startupParam){ modulePath = startupParam.modulePath; }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
@@ -55,7 +60,8 @@ public class MainHook implements IXposedHookLoadPackage {
     public void startHook() {
         try {
             resolverRegistry.loadParameter();
-            applicationHandler = new Handler(loadClass.getApplicationContext().getMainLooper());
+            Translator.init();
+            AndroidUtilities.init();
             DexInjector.injectDex();
             Bridge.init();
             FeatureManager.init();
@@ -96,5 +102,6 @@ public class MainHook implements IXposedHookLoadPackage {
         }
 
     }
+
 }
 

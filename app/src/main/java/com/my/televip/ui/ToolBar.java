@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.my.televip.application.AndroidUtilities;
 import com.my.televip.virtuals.Theme;
 
 public class ToolBar extends LinearLayout {
@@ -41,21 +42,18 @@ public class ToolBar extends LinearLayout {
         this.setOrientation(LinearLayout.HORIZONTAL);
         this.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dpToPx(56) + statusBar   // ارتفاع أكبر تلقائي
-        ));
+                AndroidUtilities.dp(56) + statusBar));
 
-        this.setBackgroundColor(
-                Theme.getColor(Theme.getKey_actionBarDefault())
-        );
+        this.setBackgroundColor(Theme.getToolBarColor());
 
         this.setFitsSystemWindows(false);
         this.setGravity(Gravity.BOTTOM | Gravity.CENTER_VERTICAL);
 
         /* padding مثل تيليجرام */
         this.setPadding(
-                dpToPx(8),
+                AndroidUtilities.dp(8),
                 statusBar,   // أهم سطر
-                dpToPx(16),
+                AndroidUtilities.dp(16),
                 0
         );
 
@@ -64,8 +62,8 @@ public class ToolBar extends LinearLayout {
 
         LinearLayout.LayoutParams iconParams =
                 new LinearLayout.LayoutParams(
-                        dpToPx(40),
-                        dpToPx(40)
+                        AndroidUtilities.dp(40),
+                        AndroidUtilities.dp(40)
                 );
 
         iconParams.gravity = Gravity.CENTER_VERTICAL;
@@ -73,10 +71,10 @@ public class ToolBar extends LinearLayout {
 
         /* Padding داخلي مثل تيليجرام */
         image.setPadding(
-                dpToPx(8),
-                dpToPx(8),
-                dpToPx(8),
-                dpToPx(8)
+                AndroidUtilities.dp(8),
+                AndroidUtilities.dp(8),
+                AndroidUtilities.dp(8),
+                AndroidUtilities.dp(8)
         );
 
         /* مهم */
@@ -97,10 +95,6 @@ public class ToolBar extends LinearLayout {
         title.setSingleLine(true);
         title.setEllipsize(TextUtils.TruncateAt.END);
 
-        title.setTextColor(
-                Theme.getColor(Theme.getKey_actionBarDefaultTitle())
-        );
-
         LinearLayout.LayoutParams titleParams =
                 new LinearLayout.LayoutParams(
                         0,
@@ -109,16 +103,12 @@ public class ToolBar extends LinearLayout {
                 );
 
         titleParams.gravity = Gravity.CENTER_VERTICAL;
-        titleParams.setMargins(dpToPx(8), 0, 0, 0);
+        titleParams.setMargins(AndroidUtilities.dp(8), 0, 0, 0);
         title.setLayoutParams(titleParams);
 
         /* ================= Add ================= */
         this.addView(image);
         this.addView(title);
-    }
-
-    private int dpToPx(int dp) {
-        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
     public void setTextTitle(CharSequence title) {
@@ -129,9 +119,6 @@ public class ToolBar extends LinearLayout {
         this.title.setTextColor(colorTitle);
     }
 
-    public void setTextSizeTitle(float sizeTitle) {
-        this.title.setTextSize(sizeTitle);
-    }
     public void setImageDrawable(Drawable drawable){
         this.image.setImageDrawable(drawable);
     }

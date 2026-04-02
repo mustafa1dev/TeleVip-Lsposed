@@ -3,6 +3,7 @@ package com.my.televip.features;
 import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
@@ -18,7 +19,7 @@ public class GhostMode {
 
         try {
             if (loadClass.getConnectionsManagerClass() != null && FeatureManager.isGhostMode()) {
-                XposedHelpers.findAndHookMethod(loadClass.getConnectionsManagerClass(), AutomationResolver.resolve("ConnectionsManager", "sendRequestInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendRequestInternal", new Class[]{loadClass.getTLObjectClass(), loadClass.getRequestDelegateClass(), loadClass.getRequestDelegateTimestampClass(), loadClass.getQuickAckDelegateClass(), loadClass.getWriteToSocketDelegateClass(), int.class, int.class, int.class, boolean.class, int.class}), new AbstractMethodHook() {
+                HMethod.hookMethod(loadClass.getConnectionsManagerClass(), AutomationResolver.resolve("ConnectionsManager", "sendRequestInternal", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("sendRequestInternal", new Class[]{loadClass.getTLObjectClass(), loadClass.getRequestDelegateClass(), loadClass.getRequestDelegateTimestampClass(), loadClass.getQuickAckDelegateClass(), loadClass.getWriteToSocketDelegateClass(), int.class, int.class, int.class, boolean.class, int.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         try {
@@ -29,7 +30,7 @@ public class GhostMode {
                                 if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
                                     HideSeen.saveReadHistory(object);
                                 }
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_ONLINE)) {
+                                if (FeatureManager.isHideOnline()) {
                                     if (loadClass.getTL_account$updateStatusClass() != null) {
 
                                         if (loadClass.getTL_account$updateStatusClass().isInstance(object)) {
@@ -40,17 +41,17 @@ public class GhostMode {
                                     }
                                 }
 
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_SEEN) && HideSeen.isReadMessageRequest(object)) {
+                                if (FeatureManager.isHideSeen() && HideSeen.isReadMessageRequest(object)) {
                                     HideSeen.sendFakeReadResponse(param.args[1]);
                                     param.setResult(null);
                                     return;
                                 }
 
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_TYPING) && HideTyping.isTypingRequest(object)) {
+                                if (FeatureManager.isHideTyping() && HideTyping.isTypingRequest(object)) {
                                     param.setResult(null);
                                     return;
                                 }
-                                if (FeatureManager.getBoolean(FeatureManager.KEY_HIDE_STORY_READ) && HideStoryRead.isReadStoriesRequest(object)) {
+                                if (FeatureManager.isHideStoryRead() && HideStoryRead.isReadStoriesRequest(object)) {
                                     param.setResult(null);
                                     return;
                                 }
