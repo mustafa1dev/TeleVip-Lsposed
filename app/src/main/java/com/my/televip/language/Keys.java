@@ -14,7 +14,7 @@ public class Keys {
     public static final String HideTyping = "HideTyping";
     public static final String TelegramPremium = "TelegramPremium";
     public static final String RemovesContentSaving = "RemovesContentSaving";
-    public static final String AllowSavingVideos = "AllowSavingVideos";
+    public static final String EnableSavingStories = "EnableSavingStories";
     public static final String GhostModeSettings = "GhostModeSettings";
     public static final String DeveloperChannel = "DeveloperChannel";
     public static final String HideOnline = "HideOnline";
@@ -50,4 +50,6 @@ public class Keys {
     public static final String DisableChannelSwipeBack = "DisableChannelSwipeBack";
     public static final String DisableProfileSwipeBack = "DisableProfileSwipeBack";
     public static final String UiSettings = "UiSettings";
+    public static final String SecretMediaSave = "SecretMediaSave";
+    public static final String HideProxySponsor = "HideProxySponsor";
 }

@@ -3,7 +3,7 @@ package com.my.televip.virtuals.tgnet;
 import com.my.televip.Utils;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.FieldUtils;
+import com.my.televip.utils.Logger;
 
 import java.util.ArrayList;
 
@@ -65,10 +65,6 @@ public class TLRPC {
             return (String) XposedHelpers.getObjectField(message, "message");
         }
 
-        public Object getMessages(){
-            return XposedHelpers.getObjectField(message, "messages");
-        }
-
         public Peer getFrom_id(){
             return new TLRPC.Peer(XposedHelpers.getObjectField(message, "from_id"));
         }
@@ -80,6 +76,9 @@ public class TLRPC {
             XposedHelpers.setIntField(message, "flags", flags);
         }
 
+        public int getTtl(){
+            return XposedHelpers.getIntField(message,"ttl");
+        }
         public void setTtl(Object ttl){
             XposedHelpers.setObjectField(message, "ttl", ttl);
         }
@@ -132,11 +131,11 @@ public class TLRPC {
         {
             try
             {
-                return FieldUtils.getFieldLongOfClass(this.instance, "channel_id");
+                return XposedHelpers.getLongField(this.instance, "channel_id");
             }
             catch (Throwable e)
             {
-                Utils.log(e);
+                Logger.e(e);
             }
             return Long.MIN_VALUE;
         }
@@ -146,11 +145,11 @@ public class TLRPC {
             try
             {
 
-                return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
+                return Utils.castList(XposedHelpers.getObjectField(this.instance, "messages"), Integer.class);
             }
             catch (Throwable e)
             {
-                Utils.log(e);
+                Logger.e(e);
             }
             return null;
         }
@@ -169,11 +168,11 @@ public class TLRPC {
             try
             {
 
-                return Utils.castList(FieldUtils.getFieldClassOfClass(this.instance, "messages"), Integer.class);
+                return Utils.castList(XposedHelpers.getObjectField(this.instance, "messages"), Integer.class);
             }
             catch (Throwable e)
             {
-                Utils.log(e);
+                Logger.e(e);
             }
             return null;
         }

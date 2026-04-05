@@ -1,6 +1,6 @@
 package com.my.televip.hooks;
 
-import com.my.televip.Utils;
+import com.my.televip.utils.Logger;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -10,7 +10,7 @@ public class HMethod {
         try {
             XposedHelpers.findAndHookMethod(classLoader, name, args);
         } catch (Exception e){
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 
@@ -20,7 +20,7 @@ public class HMethod {
                 XposedHelpers.findAndHookMethod(classLoader, name, args);
             }
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 

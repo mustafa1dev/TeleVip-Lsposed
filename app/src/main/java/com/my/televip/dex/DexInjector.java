@@ -1,7 +1,7 @@
 package com.my.televip.dex;
 
-import com.my.televip.MainHook;
 import com.my.televip.Utils;
+import com.my.televip.utils.Logger;
 
 import java.nio.ByteBuffer;
 
@@ -19,10 +19,10 @@ public class DexInjector {
 
             classLoader = new InMemoryDexClassLoader(
                     buffer,
-                    MainHook.lpparam.classLoader
+                    Utils.classLoader
             );
         } catch (Exception e){
-            Utils.log(e);
+            Logger.e(e);
         }
 
     }

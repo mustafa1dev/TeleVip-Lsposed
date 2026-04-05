@@ -6,15 +6,15 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 
-import com.my.televip.MainHook;
+import com.my.televip.Configs.ConfigsManager;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.features.FeatureManager;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.OfficialChatMessageCell;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.messenger.MessageObject;
@@ -36,7 +36,7 @@ public class ChatMessageCell {
                 XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{loadClass.getMessageObjectClass()}),  new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
-                        if (FeatureManager.isShowDeleted() || FeatureManager.isShowMessageID()) {
+                        if (ConfigsManager.showDeletedMessages.isEnable() || ConfigsManager.showMessageId.isEnable()) {
                             try {
                                 currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
                                 lastVisibleTime = System.currentTimeMillis();
@@ -48,29 +48,30 @@ public class ChatMessageCell {
                                 if (owner == null)
                                     return;
                                 int flags = owner.getFlags();
-                                if (FeatureManager.isShowMessageID()) {
+                                if (ConfigsManager.showMessageId.isEnable()) {
                                     if (owner.getID() != 0) {
                                         String textId = "ID " + owner.getID();
                                         setSpannableStringBuilderText(textId, param.thisObject, false);
                                     }
                                 }
-                                if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & FeatureManager.isShowDeleted()) {
+
+                                if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & ConfigsManager.showDeletedMessages.isEnable()) {
                                     setSpannableStringBuilderText(Translator.get(Keys.Deleted), param.thisObject, true);
                                 } else {
-                                    TextPaint paint = Theme.getTextPaint(MainHook.lpparam.classLoader);
+                                    TextPaint paint = Theme.getTextPaint(Utils.classLoader);
                                     paint.setShadowLayer(0, 0, 0, Color.WHITE);
                                 }
                             } catch (Throwable throwable) {
-                                Utils.log(throwable);
+                                Logger.e(throwable);
                             }
                         }
                     }
                 }));
             } else {
-                Utils.log("Not found ChatMessageCell, " + Utils.issue);
+                Logger.w("Not found ChatMessageCell, " + Utils.issue);
             }
         } catch (Throwable t){
-            Utils.log(t);
+            Logger.e(t);
         }
     }
 
@@ -93,12 +94,24 @@ public class ChatMessageCell {
         spannableStringBuilder.append(" ");
         time.insert(0, spannableStringBuilder);
         cell.setCurrentTimeString(time);
-        TextPaint paint = Theme.getTextPaint(MainHook.lpparam.classLoader);
+        TextPaint paint = Theme.getTextPaint(Utils.classLoader);
         if (paint != null) {
             int ceil = (int) Math.ceil(paint.measureText(spannableStringBuilder, 0, spannableStringBuilder.length()));
             cell.setTimeTextWidth(ceil + cell.getTimeTextWidth());
             cell.setTimeWidth(ceil + cell.getTimeWidth());
         }
+    }
+
+    Object chatMessageCell;
+
+    public ChatMessageCell(Object cell){ chatMessageCell = cell; }
+
+    public MessageObject getMessageObject() {
+        return new MessageObject(XposedHelpers.callMethod(chatMessageCell, AutomationResolver.resolve("ChatMessageCell", "getMessageObject", AutomationResolver.ResolverType.Method)));
+    }
+
+    public Object getChatMessageCell(){
+        return chatMessageCell;
     }
 
 }

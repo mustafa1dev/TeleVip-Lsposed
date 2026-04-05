@@ -1,7 +1,6 @@
 package com.my.televip.virtuals.tgnet;
 
-import static com.my.televip.MainHook.lpparam;
-
+import com.my.televip.Utils;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
@@ -31,7 +30,7 @@ public class RequestDelegate {
         Class<?> requestDelegateClass = loadClass.getRequestDelegateClass();
         if (requestDelegateClass != null) {
             return Proxy.newProxyInstance(
-                    lpparam.classLoader,
+                    Utils.classLoader,
                     new Class[]{requestDelegateClass},
                     (proxy, method, args) -> {
                         if (method.getParameterCount() == 2 && method.getParameterTypes()[0] == loadClass.getTLObjectClass()) {

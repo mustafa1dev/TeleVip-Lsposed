@@ -1,7 +1,7 @@
 package com.my.televip.language;
 
-import com.my.televip.MainHook;
 import com.my.televip.Utils;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.messenger.LocaleController;
 
 import org.json.JSONObject;
@@ -27,12 +27,12 @@ public class Translator {
 
             localeController = new LocaleController();
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 
     private static String loadLangFromModule(String assetPath) {
-        try (ZipFile zipFile = new ZipFile(MainHook.modulePath)) {
+        try (ZipFile zipFile = new ZipFile(Utils.modulePath)) {
 
             ZipEntry entry = zipFile.getEntry("assets/" + assetPath);
 
@@ -44,7 +44,7 @@ public class Translator {
             return json;
 
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
         return "{}";
     }
@@ -75,7 +75,7 @@ public class Translator {
             return text;
 
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
 
         return key;
@@ -102,7 +102,7 @@ public class Translator {
             return text;
 
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
 
         return key;

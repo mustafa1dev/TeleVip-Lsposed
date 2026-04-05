@@ -1,6 +1,5 @@
 package com.my.televip.Clients;
 
-import static com.my.televip.MainHook.lpparam;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import com.my.televip.Utils;
@@ -8,6 +7,7 @@ import com.my.televip.loadClass;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
+import com.my.televip.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,6 +222,7 @@ public class Telegraph {
         methodList.add(new MethodInfo("UserConfig","getCurrentUser","w"));
         methodList.add(new MethodInfo("ChatActivity","createPinnedMessageView","mr"));
         methodList.add(new MethodInfo("ChatActivity","updatePinnedMessageView","Uz"));
+        methodList.add(new MethodInfo("ChatActivity","hasSelectedNoforwardsMessage","yt"));
         methodList.add(new MethodInfo("Theme","isCurrentThemeDark","U3"));
 
         ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
@@ -230,7 +231,7 @@ public class Telegraph {
 
     public static void removeAd(){
         try {
-            Class<?> connectionsManager = XposedHelpers.findClassIfExists("org.telegram.tgnet.ConnectionsManager", lpparam.classLoader);
+            Class<?> connectionsManager = XposedHelpers.findClassIfExists("org.telegram.tgnet.ConnectionsManager", Utils.classLoader);
             if (connectionsManager != null) {
                 findAndHookMethod(connectionsManager, "native_expireFile", long.class, new XC_MethodReplacement() {
                     @Override
@@ -258,7 +259,7 @@ public class Telegraph {
                 });
             }
         } catch (Throwable t){
-            Utils.log(t);
+            Logger.e(t);
         }
     }
 

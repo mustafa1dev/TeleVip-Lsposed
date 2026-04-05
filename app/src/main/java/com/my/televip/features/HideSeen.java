@@ -2,9 +2,10 @@ package com.my.televip.features;
 
 import com.my.televip.Callback.IntCallback;
 import com.my.televip.ClientChecker;
-import com.my.televip.Utils;
+import com.my.televip.Configs.ConfigsManager;
 import com.my.televip.application.AndroidUtilities;
 import com.my.televip.loadClass;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.SQLite.SQLiteCursor;
 import com.my.televip.virtuals.messenger.MessagesController;
 import com.my.televip.virtuals.messenger.MessagesStorage;
@@ -34,11 +35,11 @@ public class HideSeen {
                         onComplete.run(fakeRes.getTL_messages_affectedMessages(), null);
                     }
                 } catch (Exception e) {
-                    Utils.log(e);
+                    Logger.e(e);
                 }
             });
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 
@@ -69,7 +70,7 @@ public class HideSeen {
 
     public static void handleReadAfterSend(Object object) {
         try {
-            if (FeatureManager.isHideSeen() && FeatureManager.isMarkReadAfterSend()) {
+            if (ConfigsManager.hideSeen.isEnable() && ConfigsManager.markReadAfterSend.isEnable()) {
                 TLRPC.InputPeer peer = extractPeerFromSendObject(object);
 
                 if (peer != null && peer.inputPeer != null) {
@@ -80,7 +81,7 @@ public class HideSeen {
                 }
             }
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 
@@ -94,7 +95,7 @@ public class HideSeen {
                     max[0] = cursor.intValue(0);
                 }
             } catch (Exception e) {
-                Utils.log(e);
+                Logger.e(e);
             } finally {
                 if (cursor != null) {
                     cursor.dispose();
@@ -114,10 +115,11 @@ public class HideSeen {
                 TLRPC.TL_channels_readHistory request;
                 if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
                     request = new TLRPC.TL_channels_readHistory();
+                    request.setChannel(MessagesController.getInputChannel(peer));
                 } else {
                     request = new TLRPC.TL_channels_readHistory(TLChannels_readHistory);
+                    request.setChannel(MessagesController.getInputChannel(getDialogId(peer)));
                 }
-                request.setChannel(MessagesController.getInputChannel(peer));
                 request.setMax_id(messageId);
                 req = request.getTL_channels_readHistory();
             } else {
@@ -147,7 +149,7 @@ public class HideSeen {
                 }
             }));
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 

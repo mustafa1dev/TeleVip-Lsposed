@@ -12,11 +12,6 @@ public class ClientChecker {
     {
         return check(client, Utils.pkgName);
     }
-    public static String getClientType(ClientType client){
-        String pkg = String.valueOf(Arrays.asList(client.getPackageNames()));
-        pkg = pkg.replace("[","").replace("]","").trim();
-        return pkg;
-    }
 
     public enum ClientType {
         Telegram("org.telegram.messenger", com.my.televip.Clients.Telegram.class),

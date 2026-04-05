@@ -6,6 +6,7 @@ import android.content.Context;
 import com.my.televip.Utils;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 
 import java.io.File;
 
@@ -15,14 +16,14 @@ import de.robv.android.xposed.XposedHelpers;
 public class ApplicationLoaderHook {
     private static boolean initialized = false;
 
-    public static void init(ClassLoader loader) {
+    public static void init() {
         // our minSdk is 21 so there is no need to wait for MultiDex to initialize
         if (initialized)
             return;
 
 
         if (loadClass.getApplicationLoaderClass() == null) {
-            Utils.log("Not found ApplicationLoader, " + Utils.issue);
+            Logger.w("Not found ApplicationLoader, " + Utils.issue);
             return;
         }
         XposedHelpers.findAndHookMethod(loadClass.getApplicationLoaderClass(), AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
@@ -36,7 +37,7 @@ public class ApplicationLoaderHook {
 
                 if (app == null)
                 {
-                    Utils.log("ApplicationLoader is wrong, " + Utils.issue);
+                    Logger.w("ApplicationLoader is wrong, " + Utils.issue);
                     return;
                 }
 
@@ -44,11 +45,8 @@ public class ApplicationLoaderHook {
                 if (!dir.exists())
                     if (!dir.mkdir())
                     {
-                        Utils.log("Cannot create " + dir.getAbsolutePath() + " dir, please create by yourself!");
-                        return;
+                        Logger.w("Cannot create " + dir.getAbsolutePath() + " dir, please create by yourself!");
                     }
-
-                Utils.deletedMessagesDatabasePath = new File(dir.getAbsolutePath() + "/deletedMessages.db");
 
             }
         });

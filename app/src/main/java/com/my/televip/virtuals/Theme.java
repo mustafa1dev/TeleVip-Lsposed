@@ -6,6 +6,7 @@ import android.text.TextPaint;
 import com.my.televip.Utils;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,16 +46,16 @@ public class Theme {
                     if (textPaintField != null)
                         return (TextPaint) textPaintField.get(null);
                     else
-                        Utils.log("Not found chat_timePaint field in Theme, " + Utils.issue);
+                        Logger.w("Not found chat_timePaint field in Theme, " + Utils.issue);
                 }
             }
             catch (IllegalAccessException e)
             {
-                Utils.log(e);
+                Logger.e(e);
             }
         }
         else
-            Utils.log("Not found chat_timePaint field in Theme, " + Utils.issue);
+            Logger.w("Not found chat_timePaint field in Theme, " + Utils.issue);
 
         return null;
     }

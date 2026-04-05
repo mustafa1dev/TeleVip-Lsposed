@@ -3,6 +3,7 @@ package com.my.televip.virtuals;
 
 import com.my.televip.Utils;
 import com.my.televip.loadClass;
+import com.my.televip.utils.Logger;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -11,7 +12,7 @@ public class EventType {
 
     public static int getIconSettings() {
         if (loadClass.getDrawableClass() == null) {
-            Utils.log("Not found org.telegram.messenger.R$drawable, " + Utils.issue);
+            Logger.w("Not found org.telegram.messenger.R$drawable, " + Utils.issue);
             return 0;
         }
 

@@ -1,10 +1,10 @@
 package com.my.televip.application;
 
+import android.content.Context;
 import android.os.Handler;
 
-import com.my.televip.MainHook;
-import com.my.televip.Utils;
 import com.my.televip.loadClass;
+import com.my.televip.utils.Logger;
 
 public class AndroidUtilities {
 
@@ -20,12 +20,12 @@ public class AndroidUtilities {
 
     }
 
-    public static void init() {
+    public static void init(Context context) {
         try {
             applicationHandler = new Handler(loadClass.getApplicationContext().getMainLooper());
-            density = MainHook.launchActivity.getResources().getDisplayMetrics().density;
+            density = context.getResources().getDisplayMetrics().density;
         } catch (Exception e) {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 

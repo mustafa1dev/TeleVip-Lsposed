@@ -1,6 +1,5 @@
 package com.my.televip.features;
 
-import static com.my.televip.MainHook.lpparam;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.my.televip.ClientChecker;
+import com.my.televip.Configs.ConfigPreferences;
 import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
@@ -19,6 +19,7 @@ import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.Theme;
@@ -38,11 +39,11 @@ public class OtherFeatures {
     public static boolean isEnableChat = false;
     public static boolean isEnableProfile = false;
 
-    public static void init() {
+    public static void init(Context context) {
         try {
-            if (!FeatureManager.getBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean) || FeatureManager.getString(KEY_CHAT_ON_ITEM_CLICK) == null || !FeatureManager.getBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean) || FeatureManager.getString(KEY_PROFILE_ON_ITEM_CLICK) == null ) {
-                Class<?> actionBarClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar"), lpparam.classLoader);
-                Class<?> actionBar$ActionBarMenuOnItemClickClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar$ActionBarMenuOnItemClick"), lpparam.classLoader);
+            if (!ConfigPreferences.getBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean) || ConfigPreferences.getString(KEY_CHAT_ON_ITEM_CLICK) == null || !ConfigPreferences.getBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean) || ConfigPreferences.getString(KEY_PROFILE_ON_ITEM_CLICK) == null ) {
+                Class<?> actionBarClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar"), Utils.classLoader);
+                Class<?> actionBar$ActionBarMenuOnItemClickClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar$ActionBarMenuOnItemClick"), Utils.classLoader);
 
                 HMethod.hookMethod(
                         actionBarClass,
@@ -50,37 +51,37 @@ public class OtherFeatures {
                         AutomationResolver.merge(AutomationResolver.resolveObject("setActionBarMenuOnItemClick", new Class[]{actionBar$ActionBarMenuOnItemClickClass}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                if (!FeatureManager.getBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean) || FeatureManager.getString(KEY_CHAT_ON_ITEM_CLICK) == null || !FeatureManager.getBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean) || FeatureManager.getString(KEY_PROFILE_ON_ITEM_CLICK) == null ) {
+                                if (!ConfigPreferences.getBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean) || ConfigPreferences.getString(KEY_CHAT_ON_ITEM_CLICK) == null || !ConfigPreferences.getBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean) || ConfigPreferences.getString(KEY_PROFILE_ON_ITEM_CLICK) == null ) {
                                     Object clazz = param.args[0];
                                     if (clazz != null && clazz.getClass() != null) {
                                         if (clazz.getClass().getName().contains(AutomationResolver.resolve("ChatActivity"))) {
-                                            FeatureManager.putBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean, true);
-                                            FeatureManager.putString(KEY_CHAT_ON_ITEM_CLICK, clazz.getClass().getName());
-                                            startHook(clazz.getClass().getName(), true);
+                                            ConfigPreferences.putBoolean(KEY_CHAT_ON_ITEM_CLICK_boolean, true);
+                                            ConfigPreferences.putString(KEY_CHAT_ON_ITEM_CLICK, clazz.getClass().getName());
+                                            startHook(context, clazz.getClass().getName(), true);
                                         } else if (clazz.getClass().getName().contains(AutomationResolver.resolve("ProfileActivity"))) {
-                                            FeatureManager.putBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean, true);
-                                            FeatureManager.putString(KEY_PROFILE_ON_ITEM_CLICK, clazz.getClass().getName());
-                                            startHook(clazz.getClass().getName(), false);
+                                            ConfigPreferences.putBoolean(KEY_PROFILE_ON_ITEM_CLICK_boolean, true);
+                                            ConfigPreferences.putString(KEY_PROFILE_ON_ITEM_CLICK, clazz.getClass().getName());
+                                            startHook(context, clazz.getClass().getName(), false);
                                         }
                                     }
                                 }
                             }
                         }));
             } else {
-                startHook(FeatureManager.getString(KEY_CHAT_ON_ITEM_CLICK), true);
-                startHook(FeatureManager.getString(KEY_PROFILE_ON_ITEM_CLICK), false);
+                startHook(context, ConfigPreferences.getString(KEY_CHAT_ON_ITEM_CLICK), true);
+                startHook(context, ConfigPreferences.getString(KEY_PROFILE_ON_ITEM_CLICK), false);
             }
 
         } catch (Throwable t){
-            Utils.log(t);
+            Logger.e(t);
         }
     }
 
-    public static void startHook(String className, boolean isChat){
+    public static void startHook(Context context, String className, boolean isChat){
         try {
             if (className != null) {
 
-                Class<?> clazz = XposedHelpers.findClassIfExists(className, lpparam.classLoader);
+                Class<?> clazz = XposedHelpers.findClassIfExists(className, Utils.classLoader);
 
                 if (clazz != null) {
 
@@ -123,10 +124,10 @@ public class OtherFeatures {
                                             chatActivity.scrollToMessageId(1, 0, true, 0, true, 0);
 
                                         } else if (id == 8353848) {
-                                            AlertDialog alertDialog = new AlertDialog(MainHook.launchActivity);
+                                            AlertDialog alertDialog = new AlertDialog(context);
                                             alertDialog.setTitle(Translator.get(Keys.InputMessageId));
 
-                                            final EditText editText = new EditText(MainHook.launchActivity);
+                                            final EditText editText = new EditText(context);
                                             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                                             if (Theme.isLight()) {
                                                 editText.setTextColor(0xFF000000);
@@ -145,7 +146,7 @@ public class OtherFeatures {
                                             params.setMargins(20, 20, 20, 20);
                                             editText.setLayoutParams(params);
 
-                                            LinearLayout layout = new LinearLayout(MainHook.launchActivity);
+                                            LinearLayout layout = new LinearLayout(context);
                                             layout.setOrientation(LinearLayout.VERTICAL);
                                             layout.setPadding(30, 30, 30, 30);
                                             layout.addView(editText);
@@ -193,7 +194,7 @@ public class OtherFeatures {
                                     }
 
                                     if (id > 1) {
-                                        FeatureManager.putLong("id", id);
+                                        ConfigPreferences.putLong("id", id);
                                         otherItem.addSubItem(MainHook.id, drawableResource, String.valueOf(id));
                                     }
                                 }
@@ -210,35 +211,35 @@ public class OtherFeatures {
 
                                         if (id == MainHook.id) {
 
-                                            long ID = FeatureManager.getLong("id");
+                                            long ID = ConfigPreferences.getLong("id");
 
-                                            ((ClipboardManager) MainHook.launchActivity.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", String.valueOf(ID)));
-                                            Toast.makeText(MainHook.launchActivity, String.valueOf(ID), Toast.LENGTH_LONG).show();
+                                            ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", String.valueOf(ID)));
+                                            Toast.makeText(context, String.valueOf(ID), Toast.LENGTH_LONG).show();
                                         }
 
                                     }
                                 }));
                     }
                 } else {
-                    reset();
+                    reset(context);
                 }
             }
         } catch (Throwable t){
-            reset();
-            Utils.log(t);
+            reset(context);
+            Logger.e(t);
         }
     }
 
-    private static void reset(){
-        FeatureManager.remove(KEY_CHAT_ON_ITEM_CLICK);
-        FeatureManager.remove(KEY_CHAT_ON_ITEM_CLICK_boolean);
+    private static void reset(Context context){
+        ConfigPreferences.remove(KEY_CHAT_ON_ITEM_CLICK);
+        ConfigPreferences.remove(KEY_CHAT_ON_ITEM_CLICK_boolean);
 
-        FeatureManager.remove(KEY_PROFILE_ON_ITEM_CLICK);
-        FeatureManager.remove(KEY_PROFILE_ON_ITEM_CLICK_boolean);
+        ConfigPreferences.remove(KEY_PROFILE_ON_ITEM_CLICK);
+        ConfigPreferences.remove(KEY_PROFILE_ON_ITEM_CLICK_boolean);
 
         isEnableChat = false;
         isEnableProfile = false;
-        init();
+        init(context);
     }
 
 }

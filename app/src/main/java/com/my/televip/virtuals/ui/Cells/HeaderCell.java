@@ -3,7 +3,7 @@ package com.my.televip.virtuals.ui.Cells;
 import android.content.Context;
 import android.view.View;
 
-import com.my.televip.MainHook;
+import com.my.televip.Utils;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -13,7 +13,7 @@ public class HeaderCell {
     public Object headerCell;
 
     public HeaderCell(Context context){
-        Class<?> headerCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.HeaderCell"), MainHook.lpparam.classLoader);
+        Class<?> headerCellClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.HeaderCell"), Utils.classLoader);
         headerCell = XposedHelpers.newInstance(headerCellClass, context);
     }
 

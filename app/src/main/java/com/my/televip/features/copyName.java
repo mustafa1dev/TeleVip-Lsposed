@@ -5,20 +5,19 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.my.televip.MainHook;
-import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.ActionBar.SimpleTextView;
 import com.my.televip.virtuals.ui.ProfileActivity;
 
 public class copyName {
 
-    public static void init() {
+    public static void init(Context context) {
         try {
             if (loadClass.getProfileActivityClass() != null) {
 
@@ -37,8 +36,8 @@ public class copyName {
                                 simpleTextView.getSimpleTextView().setOnClickListener(v -> {
                                     if (simpleTextView.getText() != null) {
                                         String name = Translator.get(Keys.Copied, simpleTextView.getText());
-                                        ((ClipboardManager) MainHook.launchActivity.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", simpleTextView.getText()));
-                                        Toast.makeText(MainHook.launchActivity, name, Toast.LENGTH_LONG).show();
+                                        ((ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("clipboard", simpleTextView.getText()));
+                                        Toast.makeText(context, name, Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
@@ -47,7 +46,7 @@ public class copyName {
                 }));
             }
         } catch (Throwable t) {
-            Utils.log(t);
+            Logger.e(t);
         }
     }
 }

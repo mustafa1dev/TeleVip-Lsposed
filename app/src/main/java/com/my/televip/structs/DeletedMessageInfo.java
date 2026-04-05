@@ -33,24 +33,12 @@ public class DeletedMessageInfo {
         return this.channelID;
     }
 
-    public boolean isNotChannel()
-    {
-        return this.channelID == NOT_CHANNEL;
-    }
 
     public ArrayList<Integer> getMessageIds() {
         return this.messageIds;
     }
 
-    public void insertMessageIds(ArrayList<Integer> messageIds) {
-        this.messageIds.addAll(messageIds);
-    }
-
     public void insertMessageId(Integer messageId) {
         this.messageIds.add(messageId);
-    }
-
-    public void removeMessageId(Integer messageId) {
-        this.messageIds.remove(messageId);
     }
 }

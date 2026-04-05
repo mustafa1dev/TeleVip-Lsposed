@@ -1,9 +1,8 @@
-package com.my.televip.ui;
+package com.my.televip.settings;
 
-
-import static com.my.televip.MainHook.lpparam;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,6 +16,7 @@ import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.Adapters.DrawerLayoutAdapter;
 import com.my.televip.virtuals.EventType;
 import com.my.televip.virtuals.ui.LaunchActivity;
@@ -29,7 +29,7 @@ import java.util.Arrays;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-public class addItem {
+public class SettingsInjector {
 
     public int id_item_add = -1;
     private Constructor<?> itemConstructor;
@@ -38,19 +38,19 @@ public class addItem {
     @SuppressLint("StaticFieldLeak")
     public static FrameLayout settings;
 
-    private void openView(){
+    private void openView(Context context){
         if (settings == null) {
-            settings = new FrameLayout(MainHook.launchActivity);
+            settings = new FrameLayout(context);
         }
 
         settings.removeAllViews();
-        SettingsActivity settingsActivity = new SettingsActivity(MainHook.launchActivity);
+        SettingsActivity settingsActivity = new SettingsActivity(context);
         settings.addView(settingsActivity.createView());
         show(settings);
     }
 
     public void show(View target) {
-        LaunchActivity launchActivity = new LaunchActivity(MainHook.launchActivity);
+        LaunchActivity launchActivity = new LaunchActivity(target.getContext());
         if (target.getParent() == null) {
             launchActivity.frameLayout.addView(target);
         }
@@ -63,7 +63,20 @@ public class addItem {
         target.bringToFront();
     }
 
-    public  void newTheme(Class<?> SettingsActivityClass, Class<?> SettingsActivity$SettingCell$FactoryClass){
+    public static void hide() {
+        LaunchActivity launchActivity = new LaunchActivity(settings.getContext());
+        for (int i = 0; i < launchActivity.frameLayout.getChildCount(); i++) {
+            View child = launchActivity.frameLayout.getChildAt(i);
+            child.setVisibility(child == settings ? View.GONE : View.VISIBLE);
+        }
+
+        if (settings != null && settings.getParent() != null) {
+            launchActivity.frameLayout.removeView(settings);
+        }
+        SettingsActivity.isSettings = false;
+    }
+
+    public void newSettings(Context context, Class<?> SettingsActivityClass, Class<?> SettingsActivity$SettingCell$FactoryClass){
 
         AbstractMethodHook fillItemsHook = new AbstractMethodHook() {
             @Override
@@ -100,7 +113,7 @@ public class addItem {
 
         Class<?> SettingsActivity$SettingCellClass = XposedHelpers.findClassIfExists(
                 AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell"),
-                lpparam.classLoader
+                Utils.classLoader
         );
 
         GhostDrawable ghostDrawable = new GhostDrawable();
@@ -116,7 +129,7 @@ public class addItem {
             }
         }));
 
-        Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UniversalAdapter"), lpparam.classLoader);
+        Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UniversalAdapter"), Utils.classLoader);
 
         XposedHelpers.findAndHookMethod(SettingsActivityClass, AutomationResolver.resolve("SettingsActivity", "fillItems", AutomationResolver.ResolverType.Method),
                 AutomationResolver.merge(AutomationResolver.resolveObject("fillItems",  new Class[]{java.util.ArrayList.class, UniversalAdapterClass}), fillItemsHook));
@@ -128,21 +141,21 @@ public class addItem {
                 if (uItem != null){
                     int id = XposedHelpers.getIntField(uItem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
                     if (id == MainHook.id) {
-                        openView();
+                        openView(context);
                     }
                 }
             }
         };
 
-        Class<?> UItemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UItem"), lpparam.classLoader);
+        Class<?> UItemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UItem"), Utils.classLoader);
 
         XposedHelpers.findAndHookMethod(
                 SettingsActivityClass,
                 AutomationResolver.resolve("SettingsActivity", "onClick", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("onClick", new Class[]{UItemClass, View.class, int.class, float.class, float.class}), onClickHook));
     }
 
-    public  void oldTheme(){
-        final Class<?> itemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), lpparam.classLoader);
+    public void oldSettings(Context context){
+        final Class<?> itemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), Utils.classLoader);
 
         if (itemClass != null) {
             XposedHelpers.findAndHookMethod(
@@ -179,25 +192,25 @@ public class addItem {
                 @Override
                 protected void afterMethod(final MethodHookParam param) {
 
-                    Object LaunchActivtiy = param.thisObject;
+                    Object Launch = param.thisObject;
 
-                    Object drawerLayoutAdapter = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
+                    Object drawerLayoutAdapter = XposedHelpers.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
                     if (drawerLayoutAdapter != null) {
                         Object args = param.args[1];
 
                         int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
                         if (id == MainHook.id) {
 
-                            Object drawerLayoutContainer = XposedHelpers.getObjectField(LaunchActivtiy, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
+                            Object drawerLayoutContainer = XposedHelpers.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
                             if (drawerLayoutContainer != null) {
                                 XposedHelpers.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method));
                             }
 
-                            openView();
+                            openView(context);
                         }
 
                     } else {
-                        Utils.log("Not found DrawerLayoutAdapter, " + Utils.issue);
+                        Logger.w("Not found DrawerLayoutAdapter, " + Utils.issue);
                     }
                 }
             };
@@ -211,7 +224,7 @@ public class addItem {
             }
 
             if (onCreateMethod == null) {
-                Utils.log("Failed to hook onCreateMethod! Reason: No method found, " + Utils.issue);
+                Logger.w("Failed to hook onCreateMethod! Reason: No method found, " + Utils.issue);
                 return;
             }
 

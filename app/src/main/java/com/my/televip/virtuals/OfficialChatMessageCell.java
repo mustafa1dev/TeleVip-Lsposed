@@ -1,9 +1,9 @@
 package com.my.televip.virtuals;
 
-import de.robv.android.xposed.XposedHelpers;
-import com.my.televip.Utils;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.FieldUtils;
+import com.my.televip.utils.Logger;
+
+import de.robv.android.xposed.XposedHelpers;
 
 public class OfficialChatMessageCell extends ChatMessageCellDefault {
     public OfficialChatMessageCell(Object instance) {
@@ -12,7 +12,7 @@ public class OfficialChatMessageCell extends ChatMessageCellDefault {
 
     public CharSequence getCurrentTimeString()
     {
-        return (CharSequence) FieldUtils.getFieldClassOfClass(this.instance, AutomationResolver.resolve("ChatMessageCell", "currentTimeString", AutomationResolver.ResolverType.Field));
+        return (CharSequence) XposedHelpers.getObjectField(this.instance, AutomationResolver.resolve("ChatMessageCell", "currentTimeString", AutomationResolver.ResolverType.Field));
     }
 
     public void setCurrentTimeString(CharSequence currentTimeString)
@@ -28,7 +28,7 @@ public class OfficialChatMessageCell extends ChatMessageCellDefault {
         }
         catch (Throwable e)
         {
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 }

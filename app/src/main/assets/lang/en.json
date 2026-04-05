@@ -15,7 +15,7 @@
   "HideTyping": "Hide Typing...",
   "TelegramPremium": "Enable Local Premium",
   "RemovesContentSaving": "Removes Content-Saving",
-  "AllowSavingVideos": "Allow saving videos to the gallery",
+  "EnableSavingStories": "Enable Saving Stories",
   "GhostModeSettings": "Ghost Mode",
   "Save": "Save",
   "DeveloperChannel": "Developer Channel",
@@ -51,5 +51,7 @@
   "DisableChannelSwipeBack": "Disable Channel Swipe Back",
   "DisableProfileSwipeBack": "Disable Profile Swipe Back",
   "HidePinnedMessages": "Hide Pinned Messages",
-  "UiSettings": "UI"
+  "UiSettings": "UI",
+  "SecretMediaSave": "Enable Secret Media Save",
+  "HideProxySponsor": "Hide Proxy Sponsor"
 }

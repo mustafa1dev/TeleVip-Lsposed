@@ -1,7 +1,8 @@
 package com.my.televip.base;
 
+import com.my.televip.utils.Logger;
+
 import de.robv.android.xposed.XC_MethodHook;
-import com.my.televip.Utils;
 
 public abstract class AbstractMethodHook extends XC_MethodHook {
     protected void beforeMethod(MethodHookParam param) throws Throwable {
@@ -18,7 +19,7 @@ public abstract class AbstractMethodHook extends XC_MethodHook {
         try {
             beforeMethod(param);
         } catch (Throwable throwable) {
-            Utils.log(throwable);
+            Logger.e(throwable);
         }
     }
 
@@ -28,7 +29,7 @@ public abstract class AbstractMethodHook extends XC_MethodHook {
         try {
             afterMethod(param);
         } catch (Throwable throwable) {
-            Utils.log(throwable);
+            Logger.e(throwable);
         }
     }
 }

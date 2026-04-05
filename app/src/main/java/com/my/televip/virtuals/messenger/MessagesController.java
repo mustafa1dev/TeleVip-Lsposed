@@ -27,6 +27,14 @@ public class MessagesController {
         return XposedHelpers.callStaticMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getInputChannel", AutomationResolver.ResolverType.Method), peer.inputPeer);
     }
 
+    public void hidePromoDialog() {
+        XposedHelpers.callMethod(messagesController, AutomationResolver.resolve("MessagesController", "hidePromoDialog", AutomationResolver.ResolverType.Method));
+    }
+
+    public static Object getInputChannel(long id) {
+        return XposedHelpers.callStaticMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getInputChannel", AutomationResolver.ResolverType.Method), id);
+    }
+
     public static MessagesController getInstance(int num){
         return new MessagesController(XposedHelpers.callStaticMethod(loadClass.getMessagesControllerClass(), AutomationResolver.resolve("MessagesController", "getInstance", AutomationResolver.ResolverType.Method), num));
     }

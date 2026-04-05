@@ -15,7 +15,7 @@
   "HideTyping": "اخفاء مؤشر الكتابة",
   "TelegramPremium": "فتح تيليجرام المميز",
   "RemovesContentSaving": "إزالة قيود حفظ المحتوى",
-  "AllowSavingVideos": "السماح بحفظ الفيديو في المعرض",
+  "EnableSavingStories": "السماح بحفظ القصص",
   "GhostModeSettings": "وضع الشبح",
   "Save": "حفظ",
   "DeveloperChannel": "قناة المطور",
@@ -51,5 +51,7 @@
   "DisableChannelSwipeBack": "تعطيل الرجوع بالسحب في القنوات",
   "DisableProfileSwipeBack": "تعطيل الرجوع بالسحب في الملف الشخصي",
   "HidePinnedMessages": "إخفاء الرسائل المثبتة",
-  "UiSettings": "واجهة المستخدم"
+  "UiSettings": "واجهة المستخدم",
+  "SecretMediaSave": "تفعيل حفظ الوسائط السرية",
+  "HideProxySponsor": "إخفاء راعي الخادم الوسيط"
 }

@@ -15,7 +15,7 @@
   "HideTyping": "隐藏正在输入...",
   "TelegramPremium": "启用 Telegram 本地会员",
   "RemovesContentSaving": "移除内容保存限制",
-  "AllowSavingVideos": "允许将视频保存到图库",
+  "EnableSavingStories": "启用保存故事",
   "GhostModeSettings": "幽灵模式",
   "Save": "保存",
   "DeveloperChannel": "开发者频道",
@@ -51,5 +51,7 @@
   "DisableChannelSwipeBack": "禁用频道滑动返回",
   "DisableProfileSwipeBack": "禁用个人资料滑动返回",
   "HidePinnedMessages": "隐藏置顶消息",
-  "UiSettings": "用户界面"
+  "UiSettings": "用户界面",
+  "SecretMediaSave": "启用秘密媒体保存",
+  "HideProxySponsor": "隐藏代理赞助商"
 }

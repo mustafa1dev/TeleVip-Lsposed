@@ -1,23 +1,11 @@
 package com.my.televip;
 
 
-import static com.my.televip.obfuscate.AutomationResolver.resolverRegistry;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.my.televip.application.AndroidUtilities;
-import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.base.AbstractMethodHook;
-import com.my.televip.dex.DexInjector;
-import com.my.televip.features.FeatureManager;
-import com.my.televip.features.SaveEditsHistory;
-import com.my.televip.language.Translator;
-import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.ui.SettingsActivity;
-import com.my.televip.ui.addItem;
-import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -26,82 +14,35 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 
 public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
-    public static XC_LoadPackage.LoadPackageParam lpparam;
 
     public boolean isStart;
     @SuppressLint("StaticFieldLeak")
-    public static Activity launchActivity;
     public static int id = 8353847;
-    public static String modulePath;
 
     @Override
-    public void initZygote(StartupParam startupParam){ modulePath = startupParam.modulePath; }
+    public void initZygote(StartupParam startupParam){ Utils.modulePath = startupParam.modulePath; }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
         if (!ClientChecker.ClientType.containsPackage(lpparam.packageName)) {
             return;
         }
-        MainHook.lpparam = lpparam;
         Utils.pkgName = lpparam.packageName;
+        Utils.classLoader = lpparam.classLoader;
+
 
         XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onCreate", Bundle.class, new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
-                launchActivity = (Activity) param.thisObject;
+                Activity launchActivity = (Activity) param.thisObject;
                 if (!isStart) {
-                    startHook();
+                    TeleVip.startHook(lpparam, launchActivity);
                     isStart = true;
                 }
             }
         });
     }
 
-    public void startHook() {
-        try {
-            resolverRegistry.loadParameter();
-            Translator.init();
-            AndroidUtilities.init();
-            DexInjector.injectDex();
-            Bridge.init();
-            FeatureManager.init();
-            SettingsActivity.init();
-
-            ApplicationLoaderHook.init(lpparam.classLoader);
-
-
-            Class<?> SettingsActivityClass = XposedHelpers.findClassIfExists(
-                    AutomationResolver.resolve("org.telegram.ui.SettingsActivity"),
-                    lpparam.classLoader
-            );
-
-            Class<?> SettingsActivity$SettingCell$FactoryClass = XposedHelpers.findClassIfExists(
-                    AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell$Factory"),
-                    lpparam.classLoader
-            );
-
-            addItem theme = new addItem();
-            if (SettingsActivityClass != null && SettingsActivity$SettingCell$FactoryClass != null) {
-                theme.newTheme(SettingsActivityClass, SettingsActivity$SettingCell$FactoryClass);
-            } else {
-                theme.oldTheme();
-            }
-
-            FeatureManager.readFeature();
-
-            XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onDestroy", new AbstractMethodHook() {
-                @Override
-                protected void beforeMethod(MethodHookParam param) {
-                    if (SaveEditsHistory.messageDatabase != null) {
-                        SaveEditsHistory.messageDatabase.closeDatabase();
-                    }
-                }
-            });
-        } catch (Exception e){
-            Utils.log(e);
-        }
-
-    }
 
 }
 

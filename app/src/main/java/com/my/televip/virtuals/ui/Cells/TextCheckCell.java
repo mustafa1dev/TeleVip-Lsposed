@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.my.televip.MainHook;
+import com.my.televip.Utils;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -14,7 +14,7 @@ public class TextCheckCell {
     public Object textCell;
 
     public TextCheckCell(Context context){
-        Class<?> textCheckClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextCheckCell"), MainHook.lpparam.classLoader);
+        Class<?> textCheckClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Cells.TextCheckCell"), Utils.classLoader);
         textCell = XposedHelpers.newInstance(textCheckClass, context);
     }
 

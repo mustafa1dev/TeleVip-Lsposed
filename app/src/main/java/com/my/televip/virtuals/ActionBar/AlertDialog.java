@@ -1,11 +1,10 @@
 package com.my.televip.virtuals.ActionBar;
 
-import static com.my.televip.MainHook.lpparam;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 
+import com.my.televip.Utils;
 import com.my.televip.loadClass;
 import com.my.televip.obfuscate.AutomationResolver;
 
@@ -25,7 +24,7 @@ public class AlertDialog {
         Class<?> listenerClass = loadClass.getAlertDialog$OnButtonClickListenerClass();
         if (listenerClass != null) {
             return Proxy.newProxyInstance(
-                    lpparam.classLoader,
+                    Utils.classLoader,
                     new Class[]{listenerClass},
                     (proxy, method, args) -> {
                         // يفترض اسم الدالة onClick

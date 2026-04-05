@@ -1,4 +1,4 @@
-package com.my.televip.ui;
+package com.my.televip.settings;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.my.televip.application.AndroidUtilities;
 import com.my.televip.virtuals.Theme;
 
-public class ToolBar extends LinearLayout {
+public class SettingsToolBar extends LinearLayout {
 
     private final Context context;
     private TextView title;
     private ImageView image;
 
-    public ToolBar(Context context){
+    public SettingsToolBar(Context context){
         super(context);
         this.context = context;
         createToolbar();

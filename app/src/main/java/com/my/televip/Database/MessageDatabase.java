@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.my.televip.Utils;
+import com.my.televip.utils.Logger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -84,7 +84,7 @@ public class MessageDatabase extends SQLiteOpenHelper {
                 database.insert(TABLE_MESSAGES, null, values);
             }
         } catch (Throwable t) {
-            Utils.log(t);
+            Logger.e(t);
         }
     }
     public boolean searchMessage(long id, int msgId, String message) {

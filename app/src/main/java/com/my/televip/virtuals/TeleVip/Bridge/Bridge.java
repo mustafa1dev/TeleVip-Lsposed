@@ -1,16 +1,16 @@
 package com.my.televip.virtuals.TeleVip.Bridge;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.my.televip.MainHook;
-import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.loadClass;
-import com.my.televip.ui.SettingsActivity;
+import com.my.televip.settings.SettingsAdapter;
+import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.ShadowSectionCell;
@@ -27,7 +27,7 @@ public class Bridge {
         return XposedHelpers.callStaticMethod(loadClass.getSettingsAdapterClass(), "getLayoutManager", context);
     }
 
-    public static void init(){
+    public static void init(Activity activity){
         try {
             Class<?> bridgeClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.Bridge", DexInjector.classLoader);
             Class<?> textCheckCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextCheckCellHolder", DexInjector.classLoader);
@@ -39,34 +39,34 @@ public class Bridge {
             XposedHelpers.findAndHookMethod(bridgeClass, "getRow", int.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    param.setResult(SettingsActivity.getRow((int) param.args[0]));
+                    param.setResult(SettingsAdapter.getRow((int) param.args[0]));
                 }
             });
 
             XposedHelpers.findAndHookMethod(bridgeClass, "log", String.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    Utils.log((String) param.args[0]);
+                    Logger.l((String) param.args[0]);
                 }
             });
 
             XposedHelpers.findAndHookMethod(bridgeClass, "getRowCount", new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    param.setResult(SettingsActivity.getRowCount());
+                    param.setResult(SettingsAdapter.getRowCount());
                 }
             });
             
             XposedHelpers.findAndHookMethod(bridgeClass, "onBindViewHolder", Object.class, int.class, int.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                   SettingsActivity.onBindViewHolder(param.args[0], (int) param.args[1], (int) param.args[2]);
+                   SettingsAdapter.onBindViewHolder(activity, param.args[0], (int) param.args[1], (int) param.args[2]);
                 }
             });
 
 
             TypedValue outValue = new TypedValue();
-            MainHook.launchActivity.getTheme().resolveAttribute(
+            activity.getTheme().resolveAttribute(
                     android.R.attr.selectableItemBackground,
                     outValue,
                     true
@@ -75,7 +75,7 @@ public class Bridge {
             XposedHelpers.findAndHookConstructor(textCheckCellClass, View.class, Object.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    TextCheckCell textCheckCell = new TextCheckCell(MainHook.launchActivity);
+                    TextCheckCell textCheckCell = new TextCheckCell(activity);
                     textCheckCell.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
 
                     textCheckCell.getView().setBackgroundResource(outValue.resourceId);
@@ -89,7 +89,7 @@ public class Bridge {
             XposedHelpers.findAndHookConstructor(textSettingsCellClass, View.class, Object.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    TextSettingsCell textSettingsCell = new TextSettingsCell(MainHook.launchActivity);
+                    TextSettingsCell textSettingsCell = new TextSettingsCell(activity);
                     textSettingsCell.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
                     textSettingsCell.getView().setBackgroundResource(outValue.resourceId);
                     textSettingsCell.getView().setClickable(true);
@@ -102,7 +102,7 @@ public class Bridge {
             XposedHelpers.findAndHookConstructor(headerCellClass, View.class, Object.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    HeaderCell header = new HeaderCell(MainHook.launchActivity);
+                    HeaderCell header = new HeaderCell(activity);
                     header.getView().setBackgroundColor(Theme.getBackgroundWhiteOrBlueColor());
                     param.args[0] = header.getView();
                     param.args[1] = header.headerCell;
@@ -112,21 +112,21 @@ public class Bridge {
             XposedHelpers.findAndHookConstructor(shadowSectionCellClass, View.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    param.args[0] = new ShadowSectionCell(MainHook.launchActivity).getView();
+                    param.args[0] = new ShadowSectionCell(activity).getView();
                 }
             });
 
             XposedHelpers.findAndHookConstructor(textInfoCellClass, View.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                    TextInfoCell textInfoCell = new TextInfoCell(MainHook.launchActivity);
+                    TextInfoCell textInfoCell = new TextInfoCell(activity);
                     textInfoCell.setBackgroundColor(Theme.getBackgroundGrayColor());
                     param.args[0] = textInfoCell;
                 }
             });
 
         } catch (Exception e){
-            Utils.log(e);
+            Logger.e(e);
         }
     }
 }
