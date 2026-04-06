@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -34,12 +34,8 @@ public class MessageDatabase extends SQLiteOpenHelper {
                     COLUMN_MESSAGE_EDITED + " TEXT " +
                     ");";
 
-    private final SQLiteDatabase database;
-
     public MessageDatabase(Context context) {
         super(context, getDataBasePath(context), null, DATABASE_VERSION);
-
-        database = getWritableDatabase();
     }
 
     public static String getDataBasePath(Context context) {
@@ -61,14 +57,9 @@ public class MessageDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void closeDatabase() {
-        if (database != null && database.isOpen()) {
-            database.close();
-        }
-    }
-
     public void addMessage(long id, int msgId, String message) {
         try {
+            SQLiteDatabase database = getWritableDatabase();
             if (!searchMessage(id, msgId, message)) {
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_ID, id);
@@ -91,6 +82,7 @@ public class MessageDatabase extends SQLiteOpenHelper {
         if (message == null) return false;
 
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT * FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " +
                     COLUMN_MSG_ID + " = ? AND " +
@@ -103,12 +95,15 @@ public class MessageDatabase extends SQLiteOpenHelper {
             boolean exists = cursor.getCount() > 0;
             cursor.close();
             return exists;
-        } catch (Throwable ignored) {}
+        } catch (Throwable t) {
+            Logger.e(t);
+        }
         return false;
     }
 
     public boolean searchMessage(long id, int msgId) {
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT * FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " +
                     COLUMN_MSG_ID + " = ?";
@@ -119,7 +114,8 @@ public class MessageDatabase extends SQLiteOpenHelper {
             boolean exists = cursor.getCount() > 0;
             cursor.close();
             return exists;
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            Logger.e(t);
         }
         return false;
     }
@@ -127,6 +123,7 @@ public class MessageDatabase extends SQLiteOpenHelper {
 
     public String getMessage(long id, int msgId) {
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
             Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
@@ -136,13 +133,15 @@ public class MessageDatabase extends SQLiteOpenHelper {
             }
             cursor.close();
             return message;
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            Logger.e(t);
         }
         return null;
     }
 
     public String getMessage(long id, int msgId, int msgCount) {
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT " + COLUMN_MESSAGE + " FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ? AND " + COLUMN_MSG_COUNT + " = ?";
             Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId), String.valueOf(msgCount)});
@@ -152,13 +151,15 @@ public class MessageDatabase extends SQLiteOpenHelper {
             }
             cursor.close();
             return message;
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            Logger.e(t);
         }
         return null;
     }
 
     public String getMessageEdited(long id, int msgId, int msgCount) {
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT " + COLUMN_MESSAGE_EDITED + " FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ? AND " + COLUMN_MSG_COUNT + " = ?";
             Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId), String.valueOf(msgCount)});
@@ -168,7 +169,8 @@ public class MessageDatabase extends SQLiteOpenHelper {
             }
             cursor.close();
             return messageEdited;
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            Logger.e(t);
         }
         return null;
     }
@@ -176,6 +178,7 @@ public class MessageDatabase extends SQLiteOpenHelper {
     public int getMaxMessageCount(long id, int msgId) {
         int maxCount = 0;
         try {
+            SQLiteDatabase database = getReadableDatabase();
             String query = "SELECT MAX(" + COLUMN_MSG_COUNT + ") as max_count FROM " + TABLE_MESSAGES +
                     " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_MSG_ID + " = ?";
             Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(id), String.valueOf(msgId)});
@@ -183,7 +186,8 @@ public class MessageDatabase extends SQLiteOpenHelper {
                 maxCount = cursor.getInt(cursor.getColumnIndexOrThrow("max_count"));
             }
             cursor.close();
-        } catch (Throwable ignored) {
+        } catch (Throwable t) {
+            Logger.e(t);
         }
         return maxCount;
     }

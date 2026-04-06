@@ -1,6 +1,7 @@
 package com.my.televip.Clients;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -111,7 +112,7 @@ public class Nagram {
     public static void loadParameter() {
         ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{ArrayList.class, boolean.class, int.class, int.class, long.class});
 
-        ParameterResolver.register("putMessages",new Class[]{int.class, int.class, int.class, long.class, long.class, loadClass.getTLRPC$messages_MessagesClass(), boolean.class});
+        ParameterResolver.register("putMessages",new Class[]{int.class, int.class, int.class, long.class, long.class, ClassLoad.getClass(ClassNames.TL_MESSAGES_MESSAGES), boolean.class});
     }
 
 }

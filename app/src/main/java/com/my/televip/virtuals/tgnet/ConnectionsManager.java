@@ -1,6 +1,7 @@
 package com.my.televip.virtuals.tgnet;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -18,6 +19,6 @@ public class ConnectionsManager {
     }
 
     public static ConnectionsManager getInstance(int num){
-        return new ConnectionsManager(XposedHelpers.callStaticMethod(loadClass.getConnectionsManagerClass(), AutomationResolver.resolve("ConnectionsManager", "getInstance", AutomationResolver.ResolverType.Method), num));
+        return new ConnectionsManager(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.CONNECTIONS_MANAGER), AutomationResolver.resolve("ConnectionsManager", "getInstance", AutomationResolver.ResolverType.Method), num));
     }
 }

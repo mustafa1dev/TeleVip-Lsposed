@@ -1,17 +1,19 @@
-package com.my.televip.settings;
+package com.my.televip.settings.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.my.televip.Configs.ConfigItem;
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Utils;
 import com.my.televip.audio;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
+import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.androidx.ViewHolder;
 import com.my.televip.virtuals.messenger.browser.Browser;
@@ -37,7 +39,7 @@ public class SettingsAdapter {
         return items.size();
     }
 
-    public static void onBindViewHolder(Activity activity, Object holder, int position, int viewType) {
+    public static void onBindViewHolder(Context context, Object holder, SettingsController settingsController, int position, int viewType) {
         ConfigItem item = items.get(position);
 
         switch (viewType) {
@@ -128,23 +130,23 @@ public class SettingsAdapter {
                 boolean checked = !textCheck.cell.isChecked();
                 textCheck.cell.setChecked(checked);
                 featureItem.setEnable(checked);
-                ConfigsManager.load(activity);
+                ConfigManager.load(context);
                 featureItem.getRunnable().run();
             } else if (viewType == ConfigItem.BUTTON) {
                 if (featureItem.getKey().equals(Keys.DeveloperChannel)) {
-                    Browser.openUrl(activity, "https://t.me/t_l0_e");
-                    SettingsInjector.hide();
+                    Browser.openUrl(context, "https://t.me/t_l0_e");
+                    settingsController.hide();
                 } else if (featureItem.getKey().equals(Keys.RestartApp)) {
-                    Intent intent = activity
+                    Intent intent = context
                             .getPackageManager()
                             .getLaunchIntentForPackage(Utils.pkgName);
 
                     if (intent != null) {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        activity.startActivity(intent);
+                        context.startActivity(intent);
                     }
 
-                    activity.finishAffinity();
+                    ((Activity)context).finishAffinity();
                     android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }

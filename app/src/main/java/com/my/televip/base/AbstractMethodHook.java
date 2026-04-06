@@ -1,6 +1,6 @@
 package com.my.televip.base;
 
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import de.robv.android.xposed.XC_MethodHook;
 

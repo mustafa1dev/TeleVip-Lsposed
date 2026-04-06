@@ -3,10 +3,11 @@ package com.my.televip.virtuals;
 import android.graphics.Color;
 import android.text.TextPaint;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.Utils;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class Theme {
     }
 
     public static boolean isLight(){
-        return !((boolean)XposedHelpers.callStaticMethod(loadClass.getThemeClass(), AutomationResolver.resolve("Theme", "isCurrentThemeDark", AutomationResolver.ResolverType.Method)));
+        return !((boolean)XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.THEME), AutomationResolver.resolve("Theme", "isCurrentThemeDark", AutomationResolver.ResolverType.Method)));
     }
 
     public static int getBackgroundGrayColor(){
@@ -74,6 +75,10 @@ public class Theme {
 
     public static int getToolBarColor(){
         return isLight() ? Color.WHITE : Color.rgb(36, 45, 57);
+    }
+
+    public static int getToolBarRippleColor(){
+        return isLight() ? 0x20000000 : 0x20FFFFFF;
     }
 
     public static int getTextToolBarColor(){

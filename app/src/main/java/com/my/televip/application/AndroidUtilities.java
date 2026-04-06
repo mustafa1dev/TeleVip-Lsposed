@@ -3,8 +3,8 @@ package com.my.televip.application;
 import android.content.Context;
 import android.os.Handler;
 
-import com.my.televip.loadClass;
-import com.my.televip.utils.Logger;
+import com.my.televip.Class.ClassLoad;
+import com.my.televip.logging.Logger;
 
 public class AndroidUtilities {
 
@@ -22,9 +22,9 @@ public class AndroidUtilities {
 
     public static void init(Context context) {
         try {
-            applicationHandler = new Handler(loadClass.getApplicationContext().getMainLooper());
+            applicationHandler = new Handler(ClassLoad.getApplicationContext().getMainLooper());
             density = context.getResources().getDisplayMetrics().density;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }

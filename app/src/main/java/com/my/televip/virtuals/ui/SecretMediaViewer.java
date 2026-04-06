@@ -1,12 +1,13 @@
 package com.my.televip.virtuals.ui;
 
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.SecretMediaSave;
 import com.my.televip.hooks.HMethod;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.messenger.FileLoader;
 import com.my.televip.virtuals.messenger.MessageObject;
 import com.my.televip.virtuals.messenger.UserConfig;
@@ -22,10 +23,10 @@ public class SecretMediaViewer {
         try {
             if (!isEnable) {
                 isEnable = true;
-                HMethod.hookMethod(loadClass.getSecretMediaViewerClass(), AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("PhotoViewer$PhotoViewerProvider", new Class[]{loadClass.getMessageObjectClass(), loadClass.getPhotoViewer$PhotoViewerProviderClass(), java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
+                HMethod.hookMethod(ClassLoad.getClass(ClassNames.SECRET_MEDIA_VIEWER), AutomationResolver.resolve("SecretMediaViewer", "openMedia", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("PhotoViewer$PhotoViewerProvider", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ClassLoad.getClass(ClassNames.PHOTO_VIEWER_PROVIDER), java.lang.Runnable.class, java.lang.Runnable.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigsManager.preventMedia.isEnable() && !ConfigsManager.secretMediaSave.isEnable()) {
+                        if (ConfigManager.preventMedia.isEnable() && !ConfigManager.secretMediaSave.isEnable()) {
                             param.args[2] = null;
                             param.args[3] = null;
 
@@ -38,7 +39,7 @@ public class SecretMediaViewer {
                             }
                         }
 
-                        if (ConfigsManager.secretMediaSave.isEnable() && (param.args.length >= 2 || param.args[0] != null)) {
+                        if (ConfigManager.secretMediaSave.isEnable() && (param.args.length >= 2 || param.args[0] != null)) {
                             MessageObject messageObject = new MessageObject(param.args[0]);
                             PhotoViewer.PhotoViewerProvider provider = new PhotoViewer.PhotoViewerProvider(param.args[1]);
                             final PhotoViewer.PlaceProviderObject object = provider.getPlaceForPhoto(messageObject, null, 0, true, false);
@@ -56,7 +57,7 @@ public class SecretMediaViewer {
                     }
                 }));
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }

@@ -1,7 +1,7 @@
 package com.my.televip.language;
 
 import com.my.televip.Utils;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.messenger.LocaleController;
 
 import org.json.JSONObject;
@@ -26,7 +26,7 @@ public class Translator {
             zhJson = new JSONObject(loadLangFromModule("lang/zh.json"));
 
             localeController = new LocaleController();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }
@@ -43,7 +43,7 @@ public class Translator {
             is.close();
             return json;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
         return "{}";
@@ -74,7 +74,7 @@ public class Translator {
             }
             return text;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
 
@@ -101,7 +101,7 @@ public class Translator {
 
             return text;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
 

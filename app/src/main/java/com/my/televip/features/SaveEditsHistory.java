@@ -5,17 +5,17 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.ClientChecker;
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Database.MessageDatabase;
-import com.my.televip.MainHook;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.EventType;
 import com.my.televip.virtuals.SQLite.SQLiteCursor;
@@ -45,10 +45,10 @@ public class SaveEditsHistory {
                 messageDatabase = new MessageDatabase(context);
 
                 HMethod.hookMethod(
-                        loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
+                        ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
                             @Override
                             protected void afterMethod(MethodHookParam param) {
-                                if (ConfigsManager.saveEditsHistory.isEnable()) {
+                                if (ConfigManager.saveEditsHistory.isEnable()) {
                                     ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
                                     if (chatActivity.getSelectedObject() != null) {
@@ -89,7 +89,7 @@ public class SaveEditsHistory {
                                                     }
 
                                                     items.add(Translator.get(Keys.EditsHistory));
-                                                    options.add(MainHook.id);
+                                                    options.add(8353847);
                                                     icons.add(EventType.getIconSettings());
                                                 }
                                             }
@@ -100,14 +100,14 @@ public class SaveEditsHistory {
                         }));
 
                 HMethod.hookMethod(
-                        loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
+                        ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                if (ConfigsManager.saveEditsHistory.isEnable()) {
+                                if (ConfigManager.saveEditsHistory.isEnable()) {
                                     int option = (int) param.args[0];
                                     ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
-                                    if (option == MainHook.id) {
+                                    if (option == 8353847) {
 
                                         if (chatActivity.getSelectedObject() != null) {
                                             MessageObject messageObject = chatActivity.getSelectedObject();
@@ -179,10 +179,10 @@ public class SaveEditsHistory {
                         }));
 
                 HMethod.hookMethod(
-                        loadClass.getMessagesStorageClass(), AutomationResolver.resolve("MessagesStorage", "putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{loadClass.getTLRPC$messages_MessagesClass(), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
+                        ClassLoad.getClass(ClassNames.MESSAGES_STORAGE), AutomationResolver.resolve("MessagesStorage", "putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGES_MESSAGES), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                if (ConfigsManager.saveEditsHistory.isEnable()) {
+                                if (ConfigManager.saveEditsHistory.isEnable()) {
                                     int load_type = (int) param.args[2];
                                     if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
                                         load_type = (int) param.args[0];

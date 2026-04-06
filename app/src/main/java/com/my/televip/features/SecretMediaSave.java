@@ -5,12 +5,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.view.View;
 
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
-import com.my.televip.loadClass;
+import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.messenger.MessageObject;
 import com.my.televip.virtuals.tgnet.TLRPC;
 import com.my.televip.virtuals.ui.Cells.ChatMessageCell;
@@ -30,18 +31,18 @@ public class SecretMediaSave {
         try {
             if (!isEnable) {
                 isEnable = true;
-                HMethod.hookMethod(loadClass.getMessageObjectClass(), AutomationResolver.resolve("MessageObject", "isSecret", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "isSecret", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigsManager.secretMediaSave.isEnable()) param.setResult(false);
+                        if (ConfigManager.secretMediaSave.isEnable()) param.setResult(false);
                     }
                 });
 
-                HMethod.hookMethod(loadClass.getChatActivity$ChatMessageCellDelegateClass(), AutomationResolver.resolve("ChatActivity$ChatMessageCellDelegate", "didPressImage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("didPressImage", new Class[]{loadClass.getChatMessageCellClass(), float.class, float.class, boolean.class}), new AbstractMethodHook() {
+                HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL_DELEGATE), AutomationResolver.resolve("ChatActivity$ChatMessageCellDelegate", "didPressImage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("didPressImage", new Class[]{ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), float.class, float.class, boolean.class}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         try {
-                            if (ConfigsManager.secretMediaSave.isEnable() && param.args[0] != null) {
+                            if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null) {
                                 ChatMessageCell messageCell = new ChatMessageCell(param.args[0]);
                                 if (messageCell.getChatMessageCell() != null) {
                                     MessageObject messageObject = messageCell.getMessageObject();
@@ -52,32 +53,32 @@ public class SecretMediaSave {
                                     bindPhotoViewerToActivity(messageCell);
                                 }
                             }
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             Logger.e(e);
                         }
                     }
                 }));
 
-                HMethod.hookMethod(loadClass.getFileLoaderClass(), AutomationResolver.resolve("FileLoader", "getPathToMessage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("getPathToMessage", new Class[]{loadClass.getTLRPC$MessageClass()}), new AbstractMethodHook() {
+                HMethod.hookMethod(ClassLoad.getClass(ClassNames.FILE_LOADER), AutomationResolver.resolve("FileLoader", "getPathToMessage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("getPathToMessage", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGE)}), new AbstractMethodHook() {
                     @Override
                     protected void beforeMethod(MethodHookParam param) {
                         try {
-                            if (ConfigsManager.secretMediaSave.isEnable() && param.args[0] != null && pathImage != null) {
+                            if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null && pathImage != null) {
                                 TLRPC.Message message = new TLRPC.Message(param.args[0]);
                                 if (message.getID() == id) {
                                     param.setResult(pathImage);
                                 }
                             }
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             Logger.e(e);
                         }
                     }
                 }));
 
 
-                if (ConfigsManager.secretMediaSave.isEnable()) SecretMediaViewer.openMedia();
+                if (ConfigManager.secretMediaSave.isEnable()) SecretMediaViewer.openMedia();
             }
-        } catch (Exception e){
+        } catch (Throwable e){
             Logger.e(e);
         }
     }

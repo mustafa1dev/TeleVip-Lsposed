@@ -4,7 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -14,7 +15,7 @@ public class TextSettingsCell {
     public Object textSettingsCell;
 
     public TextSettingsCell(Context context){
-        textSettingsCell = XposedHelpers.newInstance(loadClass.getTextSettingsCellClass(), context);
+        textSettingsCell = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.TEXT_SETTINGS_CELL), context);
     }
 
     public TextSettingsCell(Object obj){

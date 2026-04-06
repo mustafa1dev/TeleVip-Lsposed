@@ -9,17 +9,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.ClientChecker;
 import com.my.televip.Configs.ConfigPreferences;
-import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.Theme;
@@ -85,9 +85,9 @@ public class OtherFeatures {
 
                 if (clazz != null) {
 
-                    if (loadClass.getChatActivityClass() != null && loadClass.getDrawableClass() != null && isChat && !isEnableChat) {
+                    if (ClassLoad.getClass(ClassNames.CHAT_ACTIVITY) != null && ClassLoad.getClass(ClassNames.DRAWABLE) != null && isChat && !isEnableChat) {
                         isEnableChat = true;
-                        HMethod.hookMethod(loadClass.getChatActivityClass(), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
+                        HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{Context.class}), new AbstractMethodHook() {
                             @Override
                             protected void afterMethod(MethodHookParam param) {
                                 ChatActivity chatActivity = new ChatActivity(param.thisObject);
@@ -95,12 +95,12 @@ public class OtherFeatures {
                                 ActionBarMenuItem headerItem = chatActivity.getHeaderItem();
                                 if (headerItem.getActionBarMenuItem() != null) {
 
-                                    int drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_go_up");
+                                    int drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_go_up");
 
                                     if (!ClientChecker.check(ClientChecker.ClientType.Cherrygram) && !ClientChecker.check(ClientChecker.ClientType.iMe) && !ClientChecker.check(ClientChecker.ClientType.iMeWeb) && !ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.XPlus) && !ClientChecker.check(ClientChecker.ClientType.forkgram) && !ClientChecker.check(ClientChecker.ClientType.forkgramBeta)) {
-                                        headerItem.lazilyAddSubItem(MainHook.id, drawableResource, Translator.get(Keys.ToTheBeginning));
+                                        headerItem.lazilyAddSubItem(8353847, drawableResource, Translator.get(Keys.ToTheBeginning));
                                     }
-                                    drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "player_new_order");
+                                    drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "player_new_order");
 
                                     headerItem.lazilyAddSubItem(8353848, drawableResource, Translator.get(Keys.ToTheMessage));
 
@@ -120,7 +120,7 @@ public class OtherFeatures {
                                         Object chatActivityInstance = param.thisObject;
                                         final Object thisClass = XposedHelpers.getObjectField(chatActivityInstance, AutomationResolver.resolve("ChatActivity", "this$0", AutomationResolver.ResolverType.Field));
                                         ChatActivity chatActivity = new ChatActivity(thisClass);
-                                        if (id == MainHook.id) {
+                                        if (id == 8353847) {
                                             chatActivity.scrollToMessageId(1, 0, true, 0, true, 0);
 
                                         } else if (id == 8353848) {
@@ -169,11 +169,11 @@ public class OtherFeatures {
                                     }
                                 });
 
-                    } else if (loadClass.getProfileActivityClass() != null && !isChat && !isEnableProfile) {
+                    } else if (ClassLoad.getClass(ClassNames.PROFILE_ACTIVITY) != null && !isChat && !isEnableProfile) {
 
                         isEnableProfile = true;
 
-                        HMethod.hookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createActionBarMenu", new Class[]{boolean.class}), new AbstractMethodHook() {
+                        HMethod.hookMethod(ClassLoad.getClass(ClassNames.PROFILE_ACTIVITY), AutomationResolver.resolve("ProfileActivity", "createActionBarMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createActionBarMenu", new Class[]{boolean.class}), new AbstractMethodHook() {
                             @Override
                             protected void afterMethod(MethodHookParam param) {
                                 ProfileActivity profileActivity = new ProfileActivity(param.thisObject);
@@ -190,12 +190,12 @@ public class OtherFeatures {
                                     int drawableResource = 0x7f0806d3;
 
                                     if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
-                                        drawableResource = XposedHelpers.getStaticIntField(loadClass.getDrawableClass(), "msg_filled_menu_users");
+                                        drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_filled_menu_users");
                                     }
 
                                     if (id > 1) {
                                         ConfigPreferences.putLong("id", id);
-                                        otherItem.addSubItem(MainHook.id, drawableResource, String.valueOf(id));
+                                        otherItem.addSubItem(8353847, drawableResource, String.valueOf(id));
                                     }
                                 }
                             }
@@ -209,7 +209,7 @@ public class OtherFeatures {
                                     protected void afterMethod(MethodHookParam param) {
                                         int id = (int) param.args[0];
 
-                                        if (id == MainHook.id) {
+                                        if (id == 8353847) {
 
                                             long ID = ConfigPreferences.getLong("id");
 

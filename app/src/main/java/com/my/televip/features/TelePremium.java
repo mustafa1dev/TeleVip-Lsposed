@@ -1,13 +1,14 @@
 package com.my.televip.features;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.ClientChecker;
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -21,12 +22,12 @@ public class TelePremium {
             if (!isEnable) {
                 isEnable = true;
 
-                if (loadClass.getUserConfigClass() != null) {
+                if (ClassLoad.getClass(ClassNames.USER_CONFIG) != null) {
 
-                    HMethod.hookMethod(loadClass.getUserConfigClass(), AutomationResolver.resolve("UserConfig", "isPremium", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.USER_CONFIG), AutomationResolver.resolve("UserConfig", "isPremium", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                         @Override
                         public void beforeMethod(XC_MethodHook.MethodHookParam param) {
-                            if (ConfigsManager.telegramPremium.isEnable()) param.setResult(true);
+                            if (ConfigManager.telegramPremium.isEnable()) param.setResult(true);
                         }
                     });
                 }
@@ -36,7 +37,7 @@ public class TelePremium {
                         HMethod.hookMethod(ForkPremiumPreferencClass, "isPremium", new AbstractMethodHook() {
                             @Override
                             protected void beforeMethod(MethodHookParam param) {
-                                if (ConfigsManager.telegramPremium.isEnable())
+                                if (ConfigManager.telegramPremium.isEnable())
                                     param.setResult(true);
                             }
                         });

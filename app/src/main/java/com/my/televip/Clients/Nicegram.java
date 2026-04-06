@@ -2,7 +2,8 @@ package com.my.televip.Clients;
 
 import android.view.View;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -110,7 +111,7 @@ public class Nicegram {
 
     public static void loadParameter() {
 
-        ParameterResolver.register("fillMessageMenu",new Class[]{loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class});
+        ParameterResolver.register("fillMessageMenu",new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class, ArrayList.class});
 
         ParameterResolver.register("processSelectedOption",new Class[]{int.class, View.class});
 

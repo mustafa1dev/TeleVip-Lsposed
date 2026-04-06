@@ -1,7 +1,8 @@
 package com.my.televip.virtuals.tgnet;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.Utils;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import java.lang.reflect.Proxy;
@@ -27,13 +28,13 @@ public class RequestDelegate {
     }
 
     public static Object run(requestDelegate lambda) {
-        Class<?> requestDelegateClass = loadClass.getRequestDelegateClass();
+        Class<?> requestDelegateClass = ClassLoad.getClass(ClassNames.REQUEST_DELEGATE);
         if (requestDelegateClass != null) {
             return Proxy.newProxyInstance(
                     Utils.classLoader,
                     new Class[]{requestDelegateClass},
                     (proxy, method, args) -> {
-                        if (method.getParameterCount() == 2 && method.getParameterTypes()[0] == loadClass.getTLObjectClass()) {
+                        if (method.getParameterCount() == 2 && method.getParameterTypes()[0] == ClassLoad.getClass(ClassNames.TL_OBJECT)) {
                             lambda.run(args[0], args[1]);
                         }
                         return null;

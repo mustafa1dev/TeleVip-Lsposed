@@ -1,25 +1,22 @@
-package com.my.televip.settings;
+package com.my.televip.settings.hook;
 
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.ClientChecker;
 import com.my.televip.Drawable.GhostDrawable;
-import com.my.televip.MainHook;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.settings.controller.SettingsController;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.Adapters.DrawerLayoutAdapter;
 import com.my.televip.virtuals.EventType;
-import com.my.televip.virtuals.ui.LaunchActivity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -29,54 +26,12 @@ import java.util.Arrays;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
-public class SettingsInjector {
+public class SettingsHook {
 
     public int id_item_add = -1;
     private Constructor<?> itemConstructor;
 
-
-    @SuppressLint("StaticFieldLeak")
-    public static FrameLayout settings;
-
-    private void openView(Context context){
-        if (settings == null) {
-            settings = new FrameLayout(context);
-        }
-
-        settings.removeAllViews();
-        SettingsActivity settingsActivity = new SettingsActivity(context);
-        settings.addView(settingsActivity.createView());
-        show(settings);
-    }
-
-    public void show(View target) {
-        LaunchActivity launchActivity = new LaunchActivity(target.getContext());
-        if (target.getParent() == null) {
-            launchActivity.frameLayout.addView(target);
-        }
-
-        for (int i = 0; i < launchActivity.frameLayout.getChildCount(); i++) {
-            View child = launchActivity.frameLayout.getChildAt(i);
-            child.setVisibility(child == target ? View.VISIBLE : View.GONE);
-        }
-
-        target.bringToFront();
-    }
-
-    public static void hide() {
-        LaunchActivity launchActivity = new LaunchActivity(settings.getContext());
-        for (int i = 0; i < launchActivity.frameLayout.getChildCount(); i++) {
-            View child = launchActivity.frameLayout.getChildAt(i);
-            child.setVisibility(child == settings ? View.GONE : View.VISIBLE);
-        }
-
-        if (settings != null && settings.getParent() != null) {
-            launchActivity.frameLayout.removeView(settings);
-        }
-        SettingsActivity.isSettings = false;
-    }
-
-    public void newSettings(Context context, Class<?> SettingsActivityClass, Class<?> SettingsActivity$SettingCell$FactoryClass){
+    public void newSettings(Class<?> SettingsActivityClass, Class<?> SettingsActivity$SettingCell$FactoryClass, SettingsController settingsController){
 
         AbstractMethodHook fillItemsHook = new AbstractMethodHook() {
             @Override
@@ -87,10 +42,10 @@ public class SettingsInjector {
                     int color1 = 0xFFF46F6F;
                     int color2 = 0xFFDF5555;
 
-                    Object uItem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), MainHook.id,
+                    Object uItem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingCell$Factory","of", AutomationResolver.ResolverType.Method), 8353847,
                             color1,
                             color2,
-                            MainHook.id,
+                            8353847,
                             Translator.get(Keys.GhostMode),
                             Translator.get(Keys.ByMustafa));
                     if (id_item_add == -1) {
@@ -122,7 +77,7 @@ public class SettingsInjector {
             @Override
             protected void afterMethod(MethodHookParam param) {
                 int id = (int) param.args[2];
-                if (id == MainHook.id) {
+                if (id == 8353847) {
                     ImageView iconView = (ImageView) XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("SettingsActivity$SettingCell", "iconView", AutomationResolver.ResolverType.Field));
                     iconView.setImageDrawable(ghostDrawable);
                 }
@@ -140,8 +95,8 @@ public class SettingsInjector {
                 Object uItem = param.args[0];
                 if (uItem != null){
                     int id = XposedHelpers.getIntField(uItem, AutomationResolver.resolve("UItem","id", AutomationResolver.ResolverType.Field));
-                    if (id == MainHook.id) {
-                        openView(context);
+                    if (id == 8353847) {
+                        settingsController.openView();
                     }
                 }
             }
@@ -154,12 +109,12 @@ public class SettingsInjector {
                 AutomationResolver.resolve("SettingsActivity", "onClick", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("onClick", new Class[]{UItemClass, View.class, int.class, float.class, float.class}), onClickHook));
     }
 
-    public void oldSettings(Context context){
+    public void oldSettings(SettingsController settingsController){
         final Class<?> itemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), Utils.classLoader);
 
         if (itemClass != null) {
             XposedHelpers.findAndHookMethod(
-                    loadClass.getDrawerLayoutAdapterClass(),
+                    ClassLoad.getClass(ClassNames.DRAWER_LAYOUT_ADAPTER),
                     AutomationResolver.resolve("DrawerLayoutAdapter", "resetItems", AutomationResolver.ResolverType.Method),
                     new AbstractMethodHook() {
                         @Override
@@ -174,7 +129,7 @@ public class SettingsInjector {
                                 itemConstructor.setAccessible(true);
                             }
 
-                            Object newItem = itemConstructor.newInstance(MainHook.id, Translator.get(Keys.GhostMode), EventType.getIconSettings());
+                            Object newItem = itemConstructor.newInstance(8353847, Translator.get(Keys.GhostMode), EventType.getIconSettings());
 
                             if (items instanceof ArrayList<?>) {
                                 ArrayList<Object> typedItems = (ArrayList<Object>) items;
@@ -199,14 +154,14 @@ public class SettingsInjector {
                         Object args = param.args[1];
 
                         int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
-                        if (id == MainHook.id) {
+                        if (id == 8353847) {
 
                             Object drawerLayoutContainer = XposedHelpers.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
                             if (drawerLayoutContainer != null) {
                                 XposedHelpers.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method));
                             }
 
-                            openView(context);
+                            settingsController.openView();
                         }
 
                     } else {
@@ -216,7 +171,7 @@ public class SettingsInjector {
             };
 
             Method onCreateMethod = null;
-            for (Method method : loadClass.getLaunchActivityClass().getDeclaredMethods()) {
+            for (Method method : ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY).getDeclaredMethods()) {
                 if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject("onCreateMethod", new Class[]{android.view.View.class,int.class, float.class, float.class}))) {
                     onCreateMethod = method;
                     break;

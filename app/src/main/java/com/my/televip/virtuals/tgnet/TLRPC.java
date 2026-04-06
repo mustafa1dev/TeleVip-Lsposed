@@ -1,9 +1,10 @@
 package com.my.televip.virtuals.tgnet;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.Utils;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import java.util.ArrayList;
 
@@ -84,7 +85,7 @@ public class TLRPC {
         }
 
         public static Message TLdeserialize(NativeByteBuffer stream, int constructor, boolean exception){
-            return new Message(XposedHelpers.callStaticMethod(loadClass.getTLRPC$MessageClass(), AutomationResolver.resolve("TLRPC$Message", "TLdeserialize", AutomationResolver.ResolverType.Method), stream.nativeByteBuffer, constructor, exception));
+            return new Message(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.TL_MESSAGE), AutomationResolver.resolve("TLRPC$Message", "TLdeserialize", AutomationResolver.ResolverType.Method), stream.nativeByteBuffer, constructor, exception));
         }
 
         public void readAttachPath(NativeByteBuffer stream, long currentUserId){
@@ -183,7 +184,7 @@ public class TLRPC {
 
         public TL_messages_affectedMessages()
         {
-            this.instance = XposedHelpers.newInstance(loadClass.getTL_messages_affectedMessagesClass());
+            this.instance = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.TL_MESSAGES_AFFECTED));
         }
         public TL_messages_affectedMessages(Object instance)
         {
@@ -216,7 +217,7 @@ public class TLRPC {
 
         public TL_channels_readHistory()
         {
-            this.instance = XposedHelpers.newInstance(loadClass.getTL_channels_readHistoryClass());
+            this.instance = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.TL_CHANNELS_READ_HISTORY));
         }
         public TL_channels_readHistory(Object instance)
         {
@@ -241,7 +242,7 @@ public class TLRPC {
 
         public TL_messages_readHistory()
         {
-            this.instance = XposedHelpers.newInstance(loadClass.getTL_messages_readHistoryClass());
+            this.instance = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.TL_MESSAGES_READ_HISTORY));
         }
 
         public TL_messages_readHistory(Object instance)

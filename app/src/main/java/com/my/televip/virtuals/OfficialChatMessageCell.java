@@ -1,7 +1,7 @@
 package com.my.televip.virtuals;
 
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import de.robv.android.xposed.XposedHelpers;
 

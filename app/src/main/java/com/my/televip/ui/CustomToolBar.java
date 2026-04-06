@@ -1,4 +1,4 @@
-package com.my.televip.settings;
+package com.my.televip.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.my.televip.application.AndroidUtilities;
 import com.my.televip.virtuals.Theme;
 
-public class SettingsToolBar extends LinearLayout {
+public class CustomToolBar extends LinearLayout {
 
     private final Context context;
     private TextView title;
     private ImageView image;
 
-    public SettingsToolBar(Context context){
+    public CustomToolBar(Context context){
         super(context);
         this.context = context;
         createToolbar();
@@ -81,12 +81,7 @@ public class SettingsToolBar extends LinearLayout {
         image.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         /* Ripple تيليجرام */
-        Drawable rippleDrawable = new android.graphics.drawable.RippleDrawable(
-                ColorStateList.valueOf(0x20FFFFFF),
-                null,
-                null
-        );
-        image.setBackground(rippleDrawable);
+
 
         /* ================= Title ================= */
         title = new TextView(context);
@@ -122,6 +117,16 @@ public class SettingsToolBar extends LinearLayout {
     public void setImageDrawable(Drawable drawable){
         this.image.setImageDrawable(drawable);
     }
+
+    public void setRippleColor(int color) {
+        Drawable rippleDrawable = new android.graphics.drawable.RippleDrawable(
+                ColorStateList.valueOf(color),
+                null,
+                null
+        );
+        image.setBackground(rippleDrawable);
+    }
+
     public ImageView getImage(){
         return this.image;
     }

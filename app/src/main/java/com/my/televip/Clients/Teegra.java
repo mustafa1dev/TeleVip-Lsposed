@@ -1,6 +1,7 @@
 package com.my.televip.Clients;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -115,6 +116,6 @@ public class Teegra {
         ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{long.class,ArrayList.class, boolean.class, boolean.class});
         ParameterResolver.register("markMessagesAsDeleted",new Class[]{long.class, java.util.ArrayList.class, boolean.class, boolean.class,boolean.class});
 
-        ParameterResolver.register("deleteMessages",new Class[]{java.util.ArrayList.class, java.util.ArrayList.class, loadClass.getTLRPC$EncryptedChatClass(), long.class, boolean.class, boolean.class, boolean.class, long.class, loadClass.getTLObjectClass()});
+        ParameterResolver.register("deleteMessages",new Class[]{java.util.ArrayList.class, java.util.ArrayList.class, ClassLoad.getClass(ClassNames.TLRPC_ENCRYPTED_CHAT), long.class, boolean.class, boolean.class, boolean.class, long.class, ClassLoad.getClass(ClassNames.TL_OBJECT)});
     }
 }

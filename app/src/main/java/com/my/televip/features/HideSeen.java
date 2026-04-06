@@ -1,11 +1,12 @@
 package com.my.televip.features;
 
 import com.my.televip.Callback.IntCallback;
+import com.my.televip.Class.ClassNames;
 import com.my.televip.ClientChecker;
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.application.AndroidUtilities;
-import com.my.televip.loadClass;
-import com.my.televip.utils.Logger;
+import com.my.televip.Class.ClassLoad;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.SQLite.SQLiteCursor;
 import com.my.televip.virtuals.messenger.MessagesController;
 import com.my.televip.virtuals.messenger.MessagesStorage;
@@ -34,11 +35,11 @@ public class HideSeen {
                     if (onComplete.requestDelegate != null) {
                         onComplete.run(fakeRes.getTL_messages_affectedMessages(), null);
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Logger.e(e);
                 }
             });
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }
@@ -70,7 +71,7 @@ public class HideSeen {
 
     public static void handleReadAfterSend(Object object) {
         try {
-            if (ConfigsManager.hideSeen.isEnable() && ConfigsManager.markReadAfterSend.isEnable()) {
+            if (ConfigManager.hideSeen.isEnable() && ConfigManager.markReadAfterSend.isEnable()) {
                 TLRPC.InputPeer peer = extractPeerFromSendObject(object);
 
                 if (peer != null && peer.inputPeer != null) {
@@ -80,7 +81,7 @@ public class HideSeen {
                             getDialogMaxMessageId(messagesStorage, dialogId, (param -> markReadOnServer(param, peer))));
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }
@@ -94,7 +95,7 @@ public class HideSeen {
                 if (cursor.next()) {
                     max[0] = cursor.intValue(0);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 Logger.e(e);
             } finally {
                 if (cursor != null) {
@@ -137,7 +138,7 @@ public class HideSeen {
             isReadMessages = true;
             getConnectionsManager().sendRequest(req, RequestDelegate.run((response, error) -> {
                 if (error == null) {
-                    if (loadClass.getTL_messages_affectedMessagesClass().isInstance(response)) {
+                    if (ClassLoad.getClass(ClassNames.TL_MESSAGES_AFFECTED).isInstance(response)) {
                         TLRPC.TL_messages_affectedMessages res = new TLRPC.TL_messages_affectedMessages(response);
                         if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
                             getMessagesController().processNewDifferenceParams(-1, res.getPts(), -1, res.getPtsCount());
@@ -148,7 +149,7 @@ public class HideSeen {
 
                 }
             }));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }

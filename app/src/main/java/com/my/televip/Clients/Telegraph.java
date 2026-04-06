@@ -2,12 +2,13 @@ package com.my.televip.Clients;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.Utils;
-import com.my.televip.loadClass;
+import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
-import com.my.televip.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -225,7 +226,7 @@ public class Telegraph {
         methodList.add(new MethodInfo("ChatActivity","hasSelectedNoforwardsMessage","yt"));
         methodList.add(new MethodInfo("Theme","isCurrentThemeDark","U3"));
 
-        ParameterResolver.register("fillMessageMenu", new Class[]{loadClass.getMessageObjectClass(), loadClass.getMessageObjectClass(), ArrayList.class, ArrayList.class, ArrayList.class});
+        ParameterResolver.register("fillMessageMenu", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class});
 
     }
 

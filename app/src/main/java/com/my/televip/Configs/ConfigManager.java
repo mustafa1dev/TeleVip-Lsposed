@@ -12,6 +12,7 @@ import com.my.televip.features.DownloadSpeed;
 import com.my.televip.features.EnableSavingStories;
 import com.my.televip.features.FixTLError;
 import com.my.televip.features.GhostMode;
+import com.my.televip.features.HideOnline;
 import com.my.televip.features.HidePhone;
 import com.my.televip.features.HidePinnedMessages;
 import com.my.televip.features.HideProxySponsor;
@@ -20,19 +21,20 @@ import com.my.televip.features.OtherFeatures;
 import com.my.televip.features.PreventMedia;
 import com.my.televip.features.RemovesContentSaving;
 import com.my.televip.features.SaveEditsHistory;
+import com.my.televip.features.SecretMediaSave;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.features.TelePremium;
 import com.my.televip.features.copyName;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.ui.Cells.ChatMessageCell;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ConfigsManager {
+public class ConfigManager {
     
 
     public static List<ConfigItem> configs = new ArrayList<>();
@@ -118,7 +120,7 @@ public class ConfigsManager {
         hidePhone = new ConfigItem(ConfigItem.SWITCH, Keys.HidePhone, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HidePhone), HidePhone::init);
         configs.add(hidePhone);
 
-        hideOnline = new ConfigItem(ConfigItem.SWITCH, Keys.HideOnline, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HideOnline), GhostMode::init);
+        hideOnline = new ConfigItem(ConfigItem.SWITCH, Keys.HideOnline, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HideOnline), () -> { GhostMode.init(); HideOnline.init(); });
         configs.add(hideOnline);
 
         onlineInfo = new ConfigItem(ConfigItem.INFO, Keys.OfflineVisibilityInfo);
@@ -140,7 +142,7 @@ public class ConfigsManager {
         messages = new ConfigItem(ConfigItem.HEADER, Keys.MessagesSettings);
         configs.add(messages);
 
-        showDeletedMessages = new ConfigItem(ConfigItem.SWITCH, Keys.ShowDeletedMessages, ConfigPreferences.getBoolean(Keys.DisableStories), ShowDeletedMessages::initProcessing);
+        showDeletedMessages = new ConfigItem(ConfigItem.SWITCH, Keys.ShowDeletedMessages, ConfigPreferences.getBoolean(Keys.ShowDeletedMessages), ShowDeletedMessages::initProcessing);
         configs.add(showDeletedMessages);
 
         if (!ClientChecker.check(ClientChecker.ClientType.NagramX)) {
@@ -168,7 +170,7 @@ public class ConfigsManager {
         media = new ConfigItem(ConfigItem.HEADER, Keys.MediaSettings);
         configs.add(media);
 
-        secretMediaSave = new ConfigItem(ConfigItem.SWITCH, Keys.SecretMediaSave, ConfigPreferences.getBoolean(Keys.SecretMediaSave), PreventMedia::init);
+        secretMediaSave = new ConfigItem(ConfigItem.SWITCH, Keys.SecretMediaSave, ConfigPreferences.getBoolean(Keys.SecretMediaSave), SecretMediaSave::init);
         configs.add(secretMediaSave);
 
         preventMedia = new ConfigItem(ConfigItem.SWITCH, Keys.PreventMedia, ConfigPreferences.getBoolean(Keys.PreventMedia), PreventMedia::init);
@@ -229,6 +231,17 @@ public class ConfigsManager {
 
     }
 
+    public static List<ConfigItem> getItems(Context context) {
+        ConfigManager.load(context);
+
+        List<ConfigItem> items = new ArrayList<>();
+
+        for (ConfigItem configItem : ConfigManager.configs) {
+            items.add(new ConfigItem(configItem.getType(), configItem.getKey(), configItem.getText(), configItem.isEnable(), configItem.getRunnable()));
+        }
+        return items;
+    }
+
     public static void readFeature(Context context) {
         try {
             for (ConfigItem item : configs) {
@@ -242,7 +255,7 @@ public class ConfigsManager {
                 Telegraph.removeAd();
             }
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }

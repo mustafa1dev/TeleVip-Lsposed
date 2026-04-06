@@ -1,23 +1,25 @@
-package com.my.televip.settings;
+package com.my.televip.settings.ui;
 
-
-import static com.my.televip.settings.SettingsInjector.hide;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.my.televip.Configs.ConfigMapper;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Configs.ConfigPreferences;
 import com.my.televip.Drawable.ArrowDrawable;
 import com.my.televip.audio;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.dex.DexInjector;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.ui.CustomToolBar;
+import com.my.televip.settings.controller.SettingsController;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
@@ -35,30 +37,31 @@ public class SettingsActivity {
     public RecyclerListView listView;
 
 
-    public View createView() {
+    public View createView(SettingsController settingsController) {
         if (SettingsAdapter.items != null && !SettingsAdapter.items.isEmpty()) SettingsAdapter.items.clear();
-        SettingsAdapter.items = ConfigMapper.getItems(context);
+        SettingsAdapter.items = ConfigManager.getItems(context);
 
         LinearLayout fragmentView = new LinearLayout(context);
         fragmentView.setOrientation(LinearLayout.VERTICAL);
         fragmentView.setBackgroundColor(Theme.getBackgroundGrayColor());
         try {
 
-            SettingsToolBar toolbar = new SettingsToolBar(context);
+            CustomToolBar toolbar = new CustomToolBar(context);
 
             toolbar.setColorTitle(Theme.getTextToolBarColor());
+            toolbar.setRippleColor(Theme.getToolBarRippleColor());
             toolbar.setTextTitle(Translator.get(Keys.GhostMode));
 
             ArrowDrawable arrow = new ArrowDrawable();
             toolbar.setImageDrawable(arrow);
-            toolbar.getImage().setOnClickListener(v -> hide());
+            toolbar.getImage().setOnClickListener(v -> settingsController.hide());
 
             fragmentView.addView(toolbar);
 
             listView = new RecyclerListView(context);
 
             Object adapter = XposedHelpers.newInstance(
-                    loadClass.getSettingsAdapter$ListAdapterClass(),
+                    ClassLoad.getClass(ClassNames.SETTINGS_ADAPTER_LIST_ADAPTER, DexInjector.classLoader),
                     context);
 
             listView.setAdapter(adapter);
@@ -77,7 +80,7 @@ public class SettingsActivity {
 
             fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
 
@@ -86,8 +89,11 @@ public class SettingsActivity {
 
     public SettingsActivity(Context context) {
         this.context = context;
+        isSettings = true;
+    }
+
+    public void showDialog(SettingsController settingsController) {
         try {
-            isSettings = true;
 
             if (!ConfigPreferences.getBoolean("DSA")) {
                 AlertDialog alertDialog = new AlertDialog(context);
@@ -97,34 +103,33 @@ public class SettingsActivity {
 
                 alertDialog.setPositiveButton(Translator.get(Keys.Join), AlertDialog.click(() -> {
                     Browser.openUrl(context, "https://t.me/t_l0_e");
-                    hide();
+                    settingsController.hide();
                 }));
 
                 alertDialog.setNegativeButton(Translator.get(Keys.Cancel), null);
                 alertDialog.setNeutralButton(Translator.get(Keys.DontShowAgain), AlertDialog.click(() -> ConfigPreferences.putBoolean("DSA", true)));
                 alertDialog.show();
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }
 
-    public static void init() {
+    public static void init(SettingsController settingsController) {
         audio.init();
         try {
-
-            HMethod.hookMethod(loadClass.getLaunchActivityClass(), "onBackPressed", new AbstractMethodHook() {
+            HMethod.hookMethod(ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY), "onBackPressed", new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(MethodHookParam param) {
                     if (isSettings) {
-                        hide();
-                        SettingsInjector.settings = null;
+                        settingsController.hide();
+                        settingsController.settingsView = null;
                         param.setResult(null);
                     }
                 }
             });
 
-            HMethod.hookMethod(loadClass.getAndroidUtilitiesClass(), AutomationResolver.resolve("AndroidUtilities", "isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+            HMethod.hookMethod(ClassLoad.getClass(ClassNames.ANDROID_UTILITIES), AutomationResolver.resolve("AndroidUtilities", "isTablet", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(MethodHookParam param) {
                     if (isSettings) {
@@ -132,7 +137,7 @@ public class SettingsActivity {
                     }
                 }
             });
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Logger.e(e);
         }
     }

@@ -1,10 +1,11 @@
 package com.my.televip;
 
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.base.AbstractMethodHook;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -16,8 +17,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     public boolean isStart;
-    @SuppressLint("StaticFieldLeak")
-    public static int id = 8353847;
 
     @Override
     public void initZygote(StartupParam startupParam){ Utils.modulePath = startupParam.modulePath; }
@@ -31,12 +30,12 @@ public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
         Utils.classLoader = lpparam.classLoader;
 
 
-        XposedHelpers.findAndHookMethod(loadClass.getLaunchActivityClass(), "onCreate", Bundle.class, new AbstractMethodHook() {
+        XposedHelpers.findAndHookMethod(ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY), "onCreate", Bundle.class, new AbstractMethodHook() {
             @Override
             protected void beforeMethod(MethodHookParam param) {
                 Activity launchActivity = (Activity) param.thisObject;
                 if (!isStart) {
-                    TeleVip.startHook(lpparam, launchActivity);
+                    TeleVip.startHook(launchActivity);
                     isStart = true;
                 }
             }

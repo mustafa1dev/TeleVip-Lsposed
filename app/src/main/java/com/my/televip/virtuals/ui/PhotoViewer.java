@@ -2,7 +2,8 @@ package com.my.televip.virtuals.ui;
 
 import android.app.Activity;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.messenger.ImageReceiver;
 import com.my.televip.virtuals.messenger.MessageObject;
@@ -18,7 +19,7 @@ public class PhotoViewer {
     }
 
     public static PhotoViewer getInstance(){
-        return new PhotoViewer(XposedHelpers.callStaticMethod(loadClass.getPhotoViewerClass(), AutomationResolver.resolve("PhotoViewer", "getInstance", AutomationResolver.ResolverType.Method)));
+        return new PhotoViewer(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.PHOTO_VIEWER), AutomationResolver.resolve("PhotoViewer", "getInstance", AutomationResolver.ResolverType.Method)));
     }
 
     public void setParentActivity(Activity activity){

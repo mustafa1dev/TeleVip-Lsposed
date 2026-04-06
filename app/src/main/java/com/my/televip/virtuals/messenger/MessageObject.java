@@ -1,6 +1,7 @@
 package com.my.televip.virtuals.messenger;
 
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.tgnet.TLRPC;
 
@@ -23,7 +24,7 @@ public class MessageObject {
     }
 
     public static long getDialogId(TLRPC.Message message) {
-        return (long) XposedHelpers.callStaticMethod(loadClass.getMessageObjectClass(), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
+        return (long) XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
     }
 
     public Object getMessageObject(){

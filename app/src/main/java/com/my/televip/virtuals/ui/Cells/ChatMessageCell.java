@@ -6,15 +6,16 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.OfficialChatMessageCell;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.messenger.MessageObject;
@@ -30,45 +31,47 @@ public class ChatMessageCell {
 
     public static void init()
     {
-        isEnable = true;
         try {
-            if (loadClass.getChatMessageCellClass() != null) {
-                XposedHelpers.findAndHookMethod(loadClass.getChatMessageCellClass(), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{loadClass.getMessageObjectClass()}),  new AbstractMethodHook() {
-                    @Override
-                    protected void afterMethod(MethodHookParam param) {
-                        if (ConfigsManager.showDeletedMessages.isEnable() || ConfigsManager.showMessageId.isEnable()) {
-                            try {
-                                currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
-                                lastVisibleTime = System.currentTimeMillis();
-                                Object msgObj = param.args[0];
-                                if (msgObj == null)
-                                    return;
-                                MessageObject messageObject = new MessageObject(msgObj);
-                                TLRPC.Message owner = messageObject.getMessageOwner();
-                                if (owner == null)
-                                    return;
-                                int flags = owner.getFlags();
-                                if (ConfigsManager.showMessageId.isEnable()) {
-                                    if (owner.getID() != 0) {
-                                        String textId = "ID " + owner.getID();
-                                        setSpannableStringBuilderText(textId, param.thisObject, false);
+            if (!isEnable) {
+                isEnable = true;
+                if (ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL) != null) {
+                    XposedHelpers.findAndHookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT)}), new AbstractMethodHook() {
+                        @Override
+                        protected void afterMethod(MethodHookParam param) {
+                            if (ConfigManager.showDeletedMessages.isEnable() || ConfigManager.showMessageId.isEnable()) {
+                                try {
+                                    currentMessageObject = new MessageObject(XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatMessageCell", "currentMessageObject", AutomationResolver.ResolverType.Field)));
+                                    lastVisibleTime = System.currentTimeMillis();
+                                    Object msgObj = param.args[0];
+                                    if (msgObj == null)
+                                        return;
+                                    MessageObject messageObject = new MessageObject(msgObj);
+                                    TLRPC.Message owner = messageObject.getMessageOwner();
+                                    if (owner == null)
+                                        return;
+                                    int flags = owner.getFlags();
+                                    if (ConfigManager.showMessageId.isEnable()) {
+                                        if (owner.getID() != 0) {
+                                            String textId = "ID " + owner.getID();
+                                            setSpannableStringBuilderText(textId, param.thisObject, false);
+                                        }
                                     }
-                                }
 
-                                if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & ConfigsManager.showDeletedMessages.isEnable()) {
-                                    setSpannableStringBuilderText(Translator.get(Keys.Deleted), param.thisObject, true);
-                                } else {
-                                    TextPaint paint = Theme.getTextPaint(Utils.classLoader);
-                                    paint.setShadowLayer(0, 0, 0, Color.WHITE);
+                                    if ((flags & ShowDeletedMessages.FLAG_DELETED) != 0 & ConfigManager.showDeletedMessages.isEnable()) {
+                                        setSpannableStringBuilderText(Translator.get(Keys.Deleted), param.thisObject, true);
+                                    } else {
+                                        TextPaint paint = Theme.getTextPaint(Utils.classLoader);
+                                        paint.setShadowLayer(0, 0, 0, Color.WHITE);
+                                    }
+                                } catch (Throwable throwable) {
+                                    Logger.e(throwable);
                                 }
-                            } catch (Throwable throwable) {
-                                Logger.e(throwable);
                             }
                         }
-                    }
-                }));
-            } else {
-                Logger.w("Not found ChatMessageCell, " + Utils.issue);
+                    }));
+                } else {
+                    Logger.w("Not found ChatMessageCell, " + Utils.issue);
+                }
             }
         } catch (Throwable t){
             Logger.e(t);

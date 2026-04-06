@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 
+import com.my.televip.Class.ClassNames;
 import com.my.televip.Utils;
-import com.my.televip.loadClass;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 
 import java.lang.reflect.Proxy;
@@ -21,13 +22,12 @@ public class AlertDialog {
     }
 
     public static Object click(OnClick lambda) {
-        Class<?> listenerClass = loadClass.getAlertDialog$OnButtonClickListenerClass();
+        Class<?> listenerClass = ClassLoad.getClass(ClassNames.ALERT_DIALOG_BUTTON_CLICK);
         if (listenerClass != null) {
             return Proxy.newProxyInstance(
                     Utils.classLoader,
                     new Class[]{listenerClass},
                     (proxy, method, args) -> {
-                        // يفترض اسم الدالة onClick
                         if (method.getName().equals(AutomationResolver.resolve("AlertDialog$OnButtonClickListener", "onClick", AutomationResolver.ResolverType.Method))) {
                             lambda.onClick();
                         }
@@ -42,9 +42,7 @@ public class AlertDialog {
     Object alertDialog;
 
     public AlertDialog(Context context) {
-        if (loadClass.getAlertDialogBuilderClass() != null) {
-            alertDialog = XposedHelpers.newInstance(loadClass.getAlertDialogBuilderClass(), context);
-        }
+        alertDialog = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.ALERT_DIALOG_BUILDER), context);
     }
 
     public void setTitle(CharSequence title) {

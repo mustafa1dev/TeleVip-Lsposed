@@ -5,13 +5,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.loadClass;
+import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
 import com.my.televip.virtuals.ActionBar.SimpleTextView;
 import com.my.televip.virtuals.ui.ProfileActivity;
 
@@ -19,9 +20,9 @@ public class copyName {
 
     public static void init(Context context) {
         try {
-            if (loadClass.getProfileActivityClass() != null) {
+            if (ClassLoad.getClass(ClassNames.PROFILE_ACTIVITY) != null) {
 
-                HMethod.hookMethod(loadClass.getProfileActivityClass(), AutomationResolver.resolve("ProfileActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{loadClass.getContextClass()}), new AbstractMethodHook() {
+                HMethod.hookMethod(ClassLoad.getClass(ClassNames.PROFILE_ACTIVITY), AutomationResolver.resolve("ProfileActivity", "createView", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("createView", new Class[]{Context.class}), new AbstractMethodHook() {
                     @Override
                     protected void afterMethod(MethodHookParam param) {
                         final ProfileActivity profileActivity = new ProfileActivity(param.thisObject);

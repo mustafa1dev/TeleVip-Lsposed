@@ -1,11 +1,12 @@
 package com.my.televip.features;
 
-import com.my.televip.Configs.ConfigsManager;
+import com.my.televip.Class.ClassNames;
+import com.my.televip.Class.ClassLoad;
+import com.my.televip.Configs.ConfigManager;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
-import com.my.televip.loadClass;
+import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.utils.Logger;
 
 public class EnableSavingStories {
 
@@ -16,12 +17,12 @@ public class EnableSavingStories {
             if (!isEnable) {
                 isEnable = true;
 
-                if (loadClass.getPeerStoriesView$StoryItemHoldeClass() != null) {
-                    HMethod.hookMethod(loadClass.getPeerStoriesView$StoryItemHoldeClass(), AutomationResolver.resolve("PeerStoriesView$StoryItemHolder", "allowScreenshots", AutomationResolver.ResolverType.Method),
+                if (ClassLoad.getClass(ClassNames.STORY_ITEM_HOLDER) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.STORY_ITEM_HOLDER), AutomationResolver.resolve("PeerStoriesView$StoryItemHolder", "allowScreenshots", AutomationResolver.ResolverType.Method),
                             new AbstractMethodHook() {
                                 @Override
                                 protected void beforeMethod(MethodHookParam param) {
-                                    if (ConfigsManager.enableSavingStories.isEnable())
+                                    if (ConfigManager.enableSavingStories.isEnable())
                                         param.setResult(true);
                                 }
                             });

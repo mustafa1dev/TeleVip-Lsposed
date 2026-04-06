@@ -1,7 +1,7 @@
 package com.my.televip.dex;
 
 import com.my.televip.Utils;
-import com.my.televip.utils.Logger;
+import com.my.televip.logging.Logger;
 
 import java.nio.ByteBuffer;
 
@@ -21,7 +21,7 @@ public class DexInjector {
                     buffer,
                     Utils.classLoader
             );
-        } catch (Exception e){
+        } catch (Throwable e){
             Logger.e(e);
         }
 
