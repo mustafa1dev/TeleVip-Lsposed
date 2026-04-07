@@ -15,9 +15,9 @@
         <item>org.forkgram.messenger</item>
         <item>nu.gpu.nagram</item>
         <item>com.iMe.android.web</item>
-        <item>org.open.telegram.market</item>
         <item>ir.ilmili.telegraph</item>
         <item>ru.dahl.messenger</item>
+        <item>nekox.messenger.broken</item>
     </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">

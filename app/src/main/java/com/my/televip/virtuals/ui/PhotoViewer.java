@@ -55,7 +55,7 @@ public class PhotoViewer {
         }
 
         public ImageReceiver getImageReceiver() {
-            return new ImageReceiver(XposedHelpers.getObjectField(placeProviderObject,  AutomationResolver.resolve("PhotoViewer$PlaceProviderObject", "imageReceiver", AutomationResolver.ResolverType.Method)));
+            return new ImageReceiver(XposedHelpers.getObjectField(placeProviderObject,  AutomationResolver.resolve("PhotoViewer$PlaceProviderObject", "imageReceiver", AutomationResolver.ResolverType.Field)));
         }
 
     }

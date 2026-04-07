@@ -63,16 +63,18 @@ public class Translator {
 
     public static String get(String key) {
         try {
-            String lang = localeController.getCurrentLocale().getLanguage();
-            String text;
-            if (lang.equals("ar") && arJson != null && arJson.has(key)) {
-                text = arJson.getString(key);
-            } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
-                text = zhJson.getString(key);
-            } else {
-               text = enJson != null && enJson.has(key) ? enJson.getString(key) : key;
+            if (localeController.getCurrentLocale() != null) {
+                String lang = localeController.getCurrentLocale().getLanguage();
+                String text;
+                if (lang.equals("ar") && arJson != null && arJson.has(key)) {
+                    text = arJson.getString(key);
+                } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
+                    text = zhJson.getString(key);
+                } else {
+                    text = enJson != null && enJson.has(key) ? enJson.getString(key) : key;
+                }
+                return text;
             }
-            return text;
 
         } catch (Throwable e) {
             Logger.e(e);
@@ -83,24 +85,25 @@ public class Translator {
 
     public static String get(String key, Object... args) {
         try {
-            String lang = localeController.getCurrentLocale().getLanguage();
+            if (localeController.getCurrentLocale() != null) {
+                String lang = localeController.getCurrentLocale().getLanguage();
 
-            String text;
+                String text;
 
-            if (lang.equals("ar") && arJson != null && arJson.has(key)) {
-                text = arJson.getString(key);
-            } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
-                text = zhJson.getString(key);
-            } else {
-                text = (enJson != null && enJson.has(key)) ? enJson.getString(key) : key;
+                if (lang.equals("ar") && arJson != null && arJson.has(key)) {
+                    text = arJson.getString(key);
+                } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
+                    text = zhJson.getString(key);
+                } else {
+                    text = (enJson != null && enJson.has(key)) ? enJson.getString(key) : key;
+                }
+
+                if (args != null && args.length > 0) {
+                    return String.format(text, args);
+                }
+
+                return text;
             }
-
-            if (args != null && args.length > 0) {
-                return String.format(text, args);
-            }
-
-            return text;
-
         } catch (Throwable e) {
             Logger.e(e);
         }

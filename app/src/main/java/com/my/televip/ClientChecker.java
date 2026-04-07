@@ -28,9 +28,9 @@ public class ClientChecker {
         iMeWeb("com.iMe.android.web", com.my.televip.Clients.iMeWeb.class),
         forkgram("org.forkgram.messenger", com.my.televip.Clients.forkgram.class),
         forkgramBeta("org.forkclient.messenger.beta", com.my.televip.Clients.forkgramBeta.class),
-        Teegra("org.open.telegram.market", com.my.televip.Clients.Teegra.class),
         Telegraph("ir.ilmili.telegraph", com.my.televip.Clients.Telegraph.class),
-        Telega("ru.dahl.messenger", com.my.televip.Clients.Telega.class);
+        Telega("ru.dahl.messenger", com.my.televip.Clients.Telega.class),
+        Momogram("nekox.messenger.broken", com.my.televip.Clients.Momogram.class);
 
         private final String[] packageNames;
         private final Class<?> resolverClass;

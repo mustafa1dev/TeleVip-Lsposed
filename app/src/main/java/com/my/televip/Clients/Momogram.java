@@ -1,7 +1,7 @@
 package com.my.televip.Clients;
 
-import com.my.televip.Class.ClassNames;
 import com.my.televip.Class.ClassLoad;
+import com.my.televip.Class.ClassNames;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
 import com.my.televip.obfuscate.struct.MethodInfo;
@@ -11,11 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Teegra {
+public class Momogram {
     private static final List<ClassInfo> classList = new ArrayList<>();
     private static final List<FieldInfo> fieldList = new ArrayList<>();
     private static final List<MethodInfo> methodList = new ArrayList<>();
-
 
     public static class ClassResolver
     {
@@ -85,12 +84,13 @@ public class Teegra {
             return has;
         }
     }
+
     public static class ParameterResolver
     {
         static Map<String,Class<?>[]> objectList = new HashMap<>();
 
         public static void register(String name,  Class<?>[] classes){
-            objectList.put(name,classes);
+            objectList.put(name, classes);
         }
 
         public static Class<?>[] resolve(String name) {
@@ -109,13 +109,6 @@ public class Teegra {
     }
 
     public static void loadParameter() {
-        classList.add(new ClassInfo("org.telegram.tgnet.tl.TL_account$updateStatus", "org.telegram.tgnet.TLRPC$TL_account_updateStatus"));
-
-        ParameterResolver.register("item",new Class[]{int.class, String.class,int.class});
-
-        ParameterResolver.register("markMessagesAsDeletedInternal",new Class[]{long.class,ArrayList.class, boolean.class, boolean.class});
-        ParameterResolver.register("markMessagesAsDeleted",new Class[]{long.class, java.util.ArrayList.class, boolean.class, boolean.class,boolean.class});
-
-        ParameterResolver.register("deleteMessages",new Class[]{java.util.ArrayList.class, java.util.ArrayList.class, ClassLoad.getClass(ClassNames.TLRPC_ENCRYPTED_CHAT), long.class, boolean.class, boolean.class, boolean.class, long.class, ClassLoad.getClass(ClassNames.TL_OBJECT)});
+        ParameterResolver.register("sendRequestInternal",new Class[]{ClassLoad.getClass(ClassNames.TL_OBJECT), ClassLoad.getClass(ClassNames.REQUEST_DELEGATE), ClassLoad.getClass(ClassNames.REQUEST_DELEGATE_TIMESTAMP), ClassLoad.getClass(ClassNames.QUICK_ACK_DELEGATE), ClassLoad.getClass(ClassNames.WRITE_TO_SOCKET_DELEGATE), int.class, int.class, int.class, boolean.class, int.class, Runnable.class});
     }
 }

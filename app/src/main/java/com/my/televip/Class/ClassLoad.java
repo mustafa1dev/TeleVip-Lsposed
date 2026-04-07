@@ -2,6 +2,7 @@ package com.my.televip.Class;
 
 import android.content.Context;
 
+import com.my.televip.ClientChecker;
 import com.my.televip.Utils;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
@@ -31,6 +32,7 @@ public class ClassLoad {
             if (cls != null) {
                 cache.put(resolved, cls);
             } else {
+                if ((ClientChecker.check(ClientChecker.ClientType.Nagram) || ClientChecker.check(ClientChecker.ClientType.Momogram)) && name.equals(ClassNames.DRAWABLE)) return null;
                 Logger.w("Not found " + name + ", " + resolved + " " + Utils.issue);
             }
             return cls;

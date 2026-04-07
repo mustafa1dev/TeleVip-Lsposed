@@ -189,7 +189,7 @@ public class OtherFeatures {
 
                                     int drawableResource = 0x7f0806d3;
 
-                                    if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                                    if (!ClientChecker.check(ClientChecker.ClientType.Nagram) && !ClientChecker.check(ClientChecker.ClientType.Momogram)) {
                                         drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_filled_menu_users");
                                     }
 

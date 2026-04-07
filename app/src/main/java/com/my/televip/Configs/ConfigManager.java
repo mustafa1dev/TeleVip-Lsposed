@@ -120,7 +120,10 @@ public class ConfigManager {
         hidePhone = new ConfigItem(ConfigItem.SWITCH, Keys.HidePhone, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HidePhone), HidePhone::init);
         configs.add(hidePhone);
 
-        hideOnline = new ConfigItem(ConfigItem.SWITCH, Keys.HideOnline, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HideOnline), () -> { GhostMode.init(); HideOnline.init(); });
+        hideOnline = new ConfigItem(ConfigItem.SWITCH, Keys.HideOnline, Translator.get(Keys.RestartRequired), ConfigPreferences.getBoolean(Keys.HideOnline), () -> {
+            GhostMode.init();
+            HideOnline.init();
+        });
         configs.add(hideOnline);
 
         onlineInfo = new ConfigItem(ConfigItem.INFO, Keys.OfflineVisibilityInfo);
@@ -150,10 +153,8 @@ public class ConfigManager {
             configs.add(showMessageId);
         }
 
-        if (!ClientChecker.check(ClientChecker.ClientType.Teegra)) {
-            saveEditsHistory = new ConfigItem(ConfigItem.SWITCH, Keys.SaveEditsHistory, ConfigPreferences.getBoolean(Keys.SaveEditsHistory), () -> SaveEditsHistory.init(context));
-            configs.add(saveEditsHistory);
-        }
+        saveEditsHistory = new ConfigItem(ConfigItem.SWITCH, Keys.SaveEditsHistory, ConfigPreferences.getBoolean(Keys.SaveEditsHistory), () -> SaveEditsHistory.init(context));
+        configs.add(saveEditsHistory);
 
         configs.add(shadows);
 

@@ -90,7 +90,8 @@ public class SaveEditsHistory {
 
                                                     items.add(Translator.get(Keys.EditsHistory));
                                                     options.add(8353847);
-                                                    icons.add(EventType.getIconSettings());
+                                                    if (!ClientChecker.check(ClientChecker.ClientType.Nagram))
+                                                        icons.add(EventType.getIconSettings());
                                                 }
                                             }
                                         }

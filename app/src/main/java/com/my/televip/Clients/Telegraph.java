@@ -142,6 +142,7 @@ public class Telegraph {
         classList.add(new ClassInfo("org.telegram.ui.Components.UniversalAdapter","org.telegram.ui.Components.iN"));
         classList.add(new ClassInfo("org.telegram.messenger.SharedConfig","org.telegram.messenger.DC"));
         classList.add(new ClassInfo("org.telegram.messenger.MessagesStorage$IntCallback","org.telegram.messenger.uw$AUx"));
+        classList.add(new ClassInfo("org.telegram.ui.ChatActivity$ChatMessageCellDelegate","org.telegram.ui.Og$LPT6"));
 
         fieldList.add(new FieldInfo("ApplicationLoader", "applicationContext", "b"));
         fieldList.add(new FieldInfo("LaunchActivity", "drawerLayoutAdapter", "M"));
@@ -165,6 +166,7 @@ public class Telegraph {
         fieldList.add(new FieldInfo("UItem","id","d"));
         fieldList.add(new FieldInfo("SettingsActivity$SettingCell","iconView","c"));
         fieldList.add(new FieldInfo("ChatActivity","pinnedMessageView","l2"));
+        fieldList.add(new FieldInfo("PhotoViewer$PlaceProviderObject","imageReceiver","a"));
 
         methodList.add(new MethodInfo("AlertDialog","setTitle", "H"));
         methodList.add(new MethodInfo("AlertDialog","setView", "O"));
@@ -225,6 +227,12 @@ public class Telegraph {
         methodList.add(new MethodInfo("ChatActivity","updatePinnedMessageView","Uz"));
         methodList.add(new MethodInfo("ChatActivity","hasSelectedNoforwardsMessage","yt"));
         methodList.add(new MethodInfo("Theme","isCurrentThemeDark","U3"));
+        methodList.add(new MethodInfo("MessagesController","checkPromoInfoInternal","q9"));
+        methodList.add(new MethodInfo("MessagesController","hidePromoDialog","Hc"));
+        methodList.add(new MethodInfo("ChatActivity$ChatMessageCellDelegate","didPressImage","C"));
+        methodList.add(new MethodInfo("PhotoViewer","getInstance","pc"));
+        methodList.add(new MethodInfo("PhotoViewer","setParentActivity","Oe"));
+        methodList.add(new MethodInfo("PhotoViewer","openPhoto","Kd"));
 
         ParameterResolver.register("fillMessageMenu", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class});
 
