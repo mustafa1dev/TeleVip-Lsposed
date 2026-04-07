@@ -32,6 +32,16 @@ A module for modifying Telegram with the following features:
 
 15. Disable Number Rounding.
 
+16. Disable Channel Swipe
+
+17. Disable Profile Swipe
+
+18. Hide Pinned Messages
+
+19. Enable Secret Media
+
+20. Hide Proxy Sponsor
+
 There are additional features that are not listed here.
 
 # Support clients
