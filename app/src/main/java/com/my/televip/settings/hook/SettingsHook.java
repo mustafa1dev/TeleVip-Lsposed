@@ -9,6 +9,7 @@ import com.my.televip.ClientChecker;
 import com.my.televip.Drawable.GhostDrawable;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.Class.ClassLoad;
@@ -73,7 +74,7 @@ public class SettingsHook {
 
         GhostDrawable ghostDrawable = new GhostDrawable();
 
-        XposedHelpers.findAndHookMethod(SettingsActivity$SettingCellClass, AutomationResolver.resolve("SettingsActivity$SettingCell","set", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("set", new Class[]{int.class, int.class, int.class, CharSequence.class, CharSequence.class, CharSequence.class}), new AbstractMethodHook() {
+        HMethod.hookMethod(SettingsActivity$SettingCellClass, AutomationResolver.resolve("SettingsActivity$SettingCell","set", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("set", new Class[]{int.class, int.class, int.class, CharSequence.class, CharSequence.class, CharSequence.class}), new AbstractMethodHook() {
             @Override
             protected void afterMethod(MethodHookParam param) {
                 int id = (int) param.args[2];
@@ -86,7 +87,7 @@ public class SettingsHook {
 
         Class<?> UniversalAdapterClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UniversalAdapter"), Utils.classLoader);
 
-        XposedHelpers.findAndHookMethod(SettingsActivityClass, AutomationResolver.resolve("SettingsActivity", "fillItems", AutomationResolver.ResolverType.Method),
+        HMethod.hookMethod(SettingsActivityClass, AutomationResolver.resolve("SettingsActivity", "fillItems", AutomationResolver.ResolverType.Method),
                 AutomationResolver.merge(AutomationResolver.resolveObject("fillItems",  new Class[]{java.util.ArrayList.class, UniversalAdapterClass}), fillItemsHook));
 
         AbstractMethodHook onClickHook = new AbstractMethodHook() {
@@ -104,7 +105,7 @@ public class SettingsHook {
 
         Class<?> UItemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Components.UItem"), Utils.classLoader);
 
-        XposedHelpers.findAndHookMethod(
+        HMethod.hookMethod(
                 SettingsActivityClass,
                 AutomationResolver.resolve("SettingsActivity", "onClick", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("onClick", new Class[]{UItemClass, View.class, int.class, float.class, float.class}), onClickHook));
     }
@@ -113,7 +114,7 @@ public class SettingsHook {
         final Class<?> itemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), Utils.classLoader);
 
         if (itemClass != null) {
-            XposedHelpers.findAndHookMethod(
+            HMethod.hookMethod(
                     ClassLoad.getClass(ClassNames.DRAWER_LAYOUT_ADAPTER),
                     AutomationResolver.resolve("DrawerLayoutAdapter", "resetItems", AutomationResolver.ResolverType.Method),
                     new AbstractMethodHook() {
@@ -164,26 +165,27 @@ public class SettingsHook {
                             settingsController.openView();
                         }
 
-                    } else {
-                        Logger.w("Not found DrawerLayoutAdapter, " + Utils.issue);
                     }
                 }
             };
 
-            Method onCreateMethod = null;
-            for (Method method : ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY).getDeclaredMethods()) {
-                if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject("onCreateMethod", new Class[]{android.view.View.class,int.class, float.class, float.class}))) {
-                    onCreateMethod = method;
-                    break;
+            if (ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY) != null) {
+
+                Method onCreateMethod = null;
+                for (Method method : ClassLoad.getClass(ClassNames.LAUNCH_ACTIVITY).getDeclaredMethods()) {
+                    if (Arrays.equals(method.getParameterTypes(), AutomationResolver.resolveObject("onCreateMethod", new Class[]{android.view.View.class, int.class, float.class, float.class}))) {
+                        onCreateMethod = method;
+                        break;
+                    }
                 }
-            }
 
-            if (onCreateMethod == null) {
-                Logger.w("Failed to hook onCreateMethod! Reason: No method found, " + Utils.issue);
-                return;
-            }
+                if (onCreateMethod == null) {
+                    Logger.w("Failed to hook onCreateMethod! Reason: No method found, " + Utils.issue);
+                    return;
+                }
 
-            XposedBridge.hookMethod(onCreateMethod, onCreateHook);
+                XposedBridge.hookMethod(onCreateMethod, onCreateHook);
+            }
         }
 
     }

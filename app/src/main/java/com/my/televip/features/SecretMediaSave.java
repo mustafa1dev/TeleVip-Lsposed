@@ -31,49 +31,54 @@ public class SecretMediaSave {
         try {
             if (!isEnable) {
                 isEnable = true;
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "isSecret", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigManager.secretMediaSave.isEnable()) param.setResult(false);
-                    }
-                });
-
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL_DELEGATE), AutomationResolver.resolve("ChatActivity$ChatMessageCellDelegate", "didPressImage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("didPressImage", new Class[]{ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), float.class, float.class, boolean.class}), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        try {
-                            if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null) {
-                                ChatMessageCell messageCell = new ChatMessageCell(param.args[0]);
-                                if (messageCell.getChatMessageCell() != null) {
-                                    MessageObject messageObject = messageCell.getMessageObject();
-                                    if (messageObject.getMessageObject() != null) {
-                                        TLRPC.Message message = messageObject.getMessageOwner();
-                                        if (message.getTtl() > 0) message.setTtl(0);
+                if (ClassLoad.getClass(ClassNames.MESSAGE_OBJECT) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "isSecret", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            if (ConfigManager.secretMediaSave.isEnable()) param.setResult(false);
+                        }
+                    });
+                }
+                if (ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL_DELEGATE) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL_DELEGATE), AutomationResolver.resolve("ChatActivity$ChatMessageCellDelegate", "didPressImage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("didPressImage", new Class[]{ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), float.class, float.class, boolean.class}), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            try {
+                                if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null) {
+                                    ChatMessageCell messageCell = new ChatMessageCell(param.args[0]);
+                                    if (messageCell.getChatMessageCell() != null) {
+                                        MessageObject messageObject = messageCell.getMessageObject();
+                                        if (messageObject.getMessageObject() != null) {
+                                            TLRPC.Message message = messageObject.getMessageOwner();
+                                            if (message.getTtl() > 0) message.setTtl(0);
+                                        }
+                                        bindPhotoViewerToActivity(messageCell);
                                     }
-                                    bindPhotoViewerToActivity(messageCell);
                                 }
+                            } catch (Throwable e) {
+                                Logger.e(e);
                             }
-                        } catch (Throwable e) {
-                            Logger.e(e);
                         }
-                    }
-                }));
+                    }));
+                }
 
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.FILE_LOADER), AutomationResolver.resolve("FileLoader", "getPathToMessage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("getPathToMessage", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGE)}), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        try {
-                            if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null && pathImage != null) {
-                                TLRPC.Message message = new TLRPC.Message(param.args[0]);
-                                if (message.getID() == id) {
-                                    param.setResult(pathImage);
+                if (ClassLoad.getClass(ClassNames.FILE_LOADER) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.FILE_LOADER), AutomationResolver.resolve("FileLoader", "getPathToMessage", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("getPathToMessage", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGE)}), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            try {
+                                if (ConfigManager.secretMediaSave.isEnable() && param.args[0] != null && pathImage != null) {
+                                    TLRPC.Message message = new TLRPC.Message(param.args[0]);
+                                    if (message.getID() == id) {
+                                        param.setResult(pathImage);
+                                    }
                                 }
+                            } catch (Throwable e) {
+                                Logger.e(e);
                             }
-                        } catch (Throwable e) {
-                            Logger.e(e);
                         }
-                    }
-                }));
+                    }));
+                }
 
 
                 if (ConfigManager.secretMediaSave.isEnable()) SecretMediaViewer.openMedia();

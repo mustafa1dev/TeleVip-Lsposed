@@ -9,6 +9,7 @@ import com.my.televip.Class.ClassNames;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.Class.ClassLoad;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.settings.ui.SettingsAdapter;
 import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.logging.Logger;
@@ -37,28 +38,28 @@ public class Bridge {
             Class<?> shadowSectionCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$ShadowSectionCellHolder", DexInjector.classLoader);
             Class<?> textInfoCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextInfoCellHolder", DexInjector.classLoader);
 
-            XposedHelpers.findAndHookMethod(bridgeClass, "getRow", int.class, new AbstractMethodHook() {
+            HMethod.hookMethod(bridgeClass, "getRow", int.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     param.setResult(SettingsAdapter.getRow((int) param.args[0]));
                 }
             });
 
-            XposedHelpers.findAndHookMethod(bridgeClass, "log", String.class, new AbstractMethodHook() {
+            HMethod.hookMethod(bridgeClass, "log", String.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     Logger.l((String) param.args[0]);
                 }
             });
 
-            XposedHelpers.findAndHookMethod(bridgeClass, "getRowCount", new AbstractMethodHook() {
+            HMethod.hookMethod(bridgeClass, "getRowCount", new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                     param.setResult(SettingsAdapter.getRowCount());
                 }
             });
             
-            XposedHelpers.findAndHookMethod(bridgeClass, "onBindViewHolder", Object.class, int.class, int.class, new AbstractMethodHook() {
+            HMethod.hookMethod(bridgeClass, "onBindViewHolder", Object.class, int.class, int.class, new AbstractMethodHook() {
                 @Override
                 protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
                    SettingsAdapter.onBindViewHolder(context, param.args[0], settingsController, (int) param.args[1], (int) param.args[2]);

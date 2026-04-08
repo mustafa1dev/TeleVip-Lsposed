@@ -18,24 +18,35 @@ public class RemovesContentSaving {
             if (!isEnable) {
                 isEnable = true;
 
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGES_CONTROLLER), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("isChatNoForwards", new Class[]{ClassLoad.getClass(ClassNames.TLRPC_CHAT)}), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigManager.removesContentSaving.isEnable()) param.setResult(false);
-                    }
-                }));
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "hasSelectedNoforwardsMessage", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigManager.removesContentSaving.isEnable()) param.setResult(false);
-                    }
-                });
-                HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "canForwardMessage", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
-                    @Override
-                    protected void beforeMethod(MethodHookParam param) {
-                        if (ConfigManager.removesContentSaving.isEnable()) param.setResult(true);
-                    }
-                });
+                if (ClassLoad.getClass(ClassNames.MESSAGES_CONTROLLER) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGES_CONTROLLER), AutomationResolver.resolve("MessagesController", "isChatNoForwards", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("isChatNoForwards", new Class[]{ClassLoad.getClass(ClassNames.TLRPC_CHAT)}), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            if (ConfigManager.removesContentSaving.isEnable())
+                                param.setResult(false);
+                        }
+                    }));
+                }
+
+                if (ClassLoad.getClass(ClassNames.CHAT_ACTIVITY) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "hasSelectedNoforwardsMessage", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            if (ConfigManager.removesContentSaving.isEnable())
+                                param.setResult(false);
+                        }
+                    });
+                }
+
+                if (ClassLoad.getClass(ClassNames.MESSAGE_OBJECT) != null) {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "canForwardMessage", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
+                        @Override
+                        protected void beforeMethod(MethodHookParam param) {
+                            if (ConfigManager.removesContentSaving.isEnable())
+                                param.setResult(true);
+                        }
+                    });
+                }
             }
         } catch (Throwable t) {
             Logger.e(t);

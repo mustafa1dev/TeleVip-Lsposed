@@ -43,7 +43,7 @@ public class ShowDeletedMessages {
 
     private static boolean isDeleteMessage = false;
 
-    public static final boolean DEBUG_MODE=false;
+    public static final boolean DEBUG_MODE = false;
 
     public static boolean isEnable = false;
 
@@ -239,8 +239,6 @@ public class ShowDeletedMessages {
                         }
                     });
                 }
-            } else {
-                Logger.w("Not found MessagesController, " + Utils.issue);
             }
 
         } catch (Throwable e){
@@ -446,8 +444,6 @@ public class ShowDeletedMessages {
                                             }
                                         }
                                 ));
-                    } else {
-                        Logger.w("Not found MessagesStorage, " + Utils.issue);
                     }
 
                     if (ClassLoad.getClass(ClassNames.NOTIFICATIONS_CONTROLLER) != null) {
@@ -466,8 +462,6 @@ public class ShowDeletedMessages {
                                         param.setResult(null);
                                 }
                             });
-                    } else {
-                        Logger.w("Not found NotificationsController, " + Utils.issue);
                     }
 
                     if (ClassLoad.getClass(ClassNames.MESSAGES_CONTROLLER) != null) {
@@ -495,8 +489,6 @@ public class ShowDeletedMessages {
                                             }
                                         }
                                 ));
-                    } else {
-                        Logger.w("Not found MessagesController, " + Utils.issue);
                     }
 
                     if (ClassLoad.getClass(ClassNames.NOTIFICATION_CENTER) != null) {
@@ -516,8 +508,6 @@ public class ShowDeletedMessages {
                                 isDeleteMessage = false;
                             }
                         }));
-                    } else {
-                        Logger.w("Not found NotificationCenter, " + Utils.issue);
                     }
 
                     ShowDeletedMessages.init();

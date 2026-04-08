@@ -8,22 +8,21 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class Translator {
 
-    private static JSONObject arJson;
-    private static JSONObject enJson;
-    private static JSONObject zhJson;
+    private static final Map<String, JSONObject> langMap = new HashMap<>();
 
     private static LocaleController localeController;
 
     public static void init() {
         try {
-            arJson = new JSONObject(loadLangFromModule("lang/ar.json"));
-            enJson = new JSONObject(loadLangFromModule("lang/en.json"));
-            zhJson = new JSONObject(loadLangFromModule("lang/zh.json"));
+            loadAllLanguages();
 
             localeController = new LocaleController();
         } catch (Throwable e) {
@@ -31,22 +30,34 @@ public class Translator {
         }
     }
 
-    private static String loadLangFromModule(String assetPath) {
+    private static void loadAllLanguages() {
         try (ZipFile zipFile = new ZipFile(Utils.modulePath)) {
 
-            ZipEntry entry = zipFile.getEntry("assets/" + assetPath);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-            if (entry == null) return "{}";
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
 
-            InputStream is = zipFile.getInputStream(entry);
-            String json = readFully(is);
-            is.close();
-            return json;
+                String name = entry.getName();
+
+                if (name.startsWith("assets/lang/") && name.endsWith(".json")) {
+
+                    String langCode = name.substring(
+                            name.lastIndexOf("/") + 1,
+                            name.lastIndexOf(".")
+                    );
+
+                    InputStream is = zipFile.getInputStream(entry);
+                    String json = readFully(is);
+                    is.close();
+
+                    langMap.put(langCode, new JSONObject(json));
+                }
+            }
 
         } catch (Throwable e) {
             Logger.e(e);
         }
-        return "{}";
     }
 
     private static String readFully(InputStream is) throws Exception {
@@ -65,14 +76,19 @@ public class Translator {
         try {
             if (localeController.getCurrentLocale() != null) {
                 String lang = localeController.getCurrentLocale().getLanguage();
-                String text;
-                if (lang.equals("ar") && arJson != null && arJson.has(key)) {
-                    text = arJson.getString(key);
-                } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
-                    text = zhJson.getString(key);
-                } else {
-                    text = enJson != null && enJson.has(key) ? enJson.getString(key) : key;
+                JSONObject langJson = langMap.get(lang);
+
+                if (langJson != null && langJson.has(key)) {
+                    return langJson.optString(key);
                 }
+                JSONObject enJson = langMap.get("en");
+                String text;
+                if (enJson != null && enJson.has(key)) {
+                    text = enJson.optString(key);
+                } else {
+                    text = key;
+                }
+
                 return text;
             }
 
@@ -88,14 +104,21 @@ public class Translator {
             if (localeController.getCurrentLocale() != null) {
                 String lang = localeController.getCurrentLocale().getLanguage();
 
-                String text;
+                String text = null;
 
-                if (lang.equals("ar") && arJson != null && arJson.has(key)) {
-                    text = arJson.getString(key);
-                } else if (lang.equals("zh") && zhJson != null && zhJson.has(key)) {
-                    text = zhJson.getString(key);
-                } else {
-                    text = (enJson != null && enJson.has(key)) ? enJson.getString(key) : key;
+                JSONObject langJson = langMap.get(lang);
+
+                if (langJson != null && langJson.has(key)) {
+                    text = langJson.optString(key);
+                }
+
+                if (text == null) {
+                    JSONObject enJson = langMap.get("en");
+                    if (enJson != null && enJson.has(key)) {
+                        text = enJson.optString(key);
+                    } else {
+                        text = key;
+                    }
                 }
 
                 if (args != null && args.length > 0) {

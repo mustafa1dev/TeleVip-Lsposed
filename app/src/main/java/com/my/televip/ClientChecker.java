@@ -20,7 +20,6 @@ public class ClientChecker {
         TGConnect("com.tgconnect.android", com.my.televip.Clients.TGConnect.class),
         Nagram("xyz.nextalone.nagram", com.my.televip.Clients.Nagram.class),
         Nicegram("app.nicegram", com.my.televip.Clients.Nicegram.class),
-        Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class),
         TelegramBeta("org.telegram.messenger.beta", com.my.televip.Clients.TelegramBeta.class),
         NagramX("nu.gpu.nagram", com.my.televip.Clients.NagramX.class),
         XPlus("com.xplus.messenger", com.my.televip.Clients.XPlus.class),

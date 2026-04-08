@@ -25,7 +25,7 @@ public class TeleVip {
 
             SettingsController settingsController = new SettingsController(context);
 
-            Bridge.init(context , settingsController);
+            Bridge.init(context, settingsController);
             ConfigManager.loadAndRead(context);
             SettingsManager.init(settingsController);
 

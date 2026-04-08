@@ -1,10 +1,9 @@
 package com.my.televip.Clients;
 
-import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-
 import com.my.televip.Class.ClassNames;
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.Utils;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.struct.ClassInfo;
 import com.my.televip.obfuscate.struct.FieldInfo;
@@ -22,8 +21,6 @@ public class Telegraph {
     private static final List<ClassInfo> classList = new ArrayList<>();
     private static final List<FieldInfo> fieldList = new ArrayList<>();
     private static final List<MethodInfo> methodList = new ArrayList<>();
-
-
 
     public static class ClassResolver
     {
@@ -242,25 +239,25 @@ public class Telegraph {
         try {
             Class<?> connectionsManager = XposedHelpers.findClassIfExists("org.telegram.tgnet.ConnectionsManager", Utils.classLoader);
             if (connectionsManager != null) {
-                findAndHookMethod(connectionsManager, "native_expireFile", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_expireFile", long.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return false;
                     }
                 });
-                findAndHookMethod(connectionsManager, "native_daysFile", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_daysFile", long.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return 999;
                     }
                 });
-                findAndHookMethod(connectionsManager, "native_checkLicense", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_checkLicense", long.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return true;
                     }
                 });
-                findAndHookMethod(connectionsManager, "native_removeInstance", int.class, boolean.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_removeInstance", int.class, boolean.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return true;

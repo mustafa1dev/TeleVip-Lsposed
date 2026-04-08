@@ -218,6 +218,7 @@ public class ConfigManager {
             configs.add(hideUpdateApp);
             configs.add(fixTLError);
         }
+
         configs.add(shadows);
 
         btnChannel = new ConfigItem(ConfigItem.BUTTON, Keys.DeveloperChannel);

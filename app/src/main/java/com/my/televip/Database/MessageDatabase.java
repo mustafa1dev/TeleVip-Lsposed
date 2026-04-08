@@ -15,27 +15,15 @@ import java.util.Locale;
 
 public class MessageDatabase extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "SaveMessages.db";
-    private static final int DATABASE_VERSION = 1;
-
-    public static final String TABLE_MESSAGES = "messages";
-    public static final String COLUMN_ID = "id";
-    public static final String COLUMN_MSG_ID = "msg_id";
-    public static final String COLUMN_MESSAGE = "message";
-    public static final String COLUMN_MESSAGE_EDITED = "message_Edited";
-    public static final String COLUMN_MSG_COUNT = "msg_count";
-
-    private static final String TABLE_CREATE =
-            "CREATE TABLE " + TABLE_MESSAGES + " (" +
-                    COLUMN_ID + " LONG, " +
-                    COLUMN_MSG_ID + " INTEGER, " +
-                    COLUMN_MSG_COUNT + " INTEGER, " +
-                    COLUMN_MESSAGE + " TEXT, " +
-                    COLUMN_MESSAGE_EDITED + " TEXT " +
-                    ");";
+    private final String TABLE_MESSAGES = "messages";
+    private final String COLUMN_ID = "id";
+    private final String COLUMN_MSG_ID = "msg_id";
+    private final String COLUMN_MESSAGE = "message";
+    private final String COLUMN_MESSAGE_EDITED = "message_Edited";
+    private final String COLUMN_MSG_COUNT = "msg_count";
 
     public MessageDatabase(Context context) {
-        super(context, getDataBasePath(context), null, DATABASE_VERSION);
+        super(context, getDataBasePath(context), null, 1);
     }
 
     public static String getDataBasePath(Context context) {
@@ -43,11 +31,18 @@ public class MessageDatabase extends SQLiteOpenHelper {
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
-        return new File(appDir, DATABASE_NAME).getAbsolutePath();
+        return new File(appDir, "SaveMessages.db").getAbsolutePath();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String TABLE_CREATE = "CREATE TABLE " + TABLE_MESSAGES + " (" +
+                COLUMN_ID + " LONG, " +
+                COLUMN_MSG_ID + " INTEGER, " +
+                COLUMN_MSG_COUNT + " INTEGER, " +
+                COLUMN_MESSAGE + " TEXT, " +
+                COLUMN_MESSAGE_EDITED + " TEXT " +
+                ");";
         db.execSQL(TABLE_CREATE);
     }
 

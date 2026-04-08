@@ -11,6 +11,7 @@ import com.my.televip.Configs.ConfigManager;
 import com.my.televip.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.features.ShowDeletedMessages;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.Class.ClassLoad;
@@ -29,13 +30,12 @@ public class ChatMessageCell {
     public static MessageObject currentMessageObject;
     public static long lastVisibleTime = -1;
 
-    public static void init()
-    {
+    public static void init() {
         try {
             if (!isEnable) {
                 isEnable = true;
                 if (ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL) != null) {
-                    XposedHelpers.findAndHookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT)}), new AbstractMethodHook() {
+                    HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_MESSAGE_CELL), AutomationResolver.resolve("ChatMessageCell", "measureTime", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("measureTime", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT)}), new AbstractMethodHook() {
                         @Override
                         protected void afterMethod(MethodHookParam param) {
                             if (ConfigManager.showDeletedMessages.isEnable() || ConfigManager.showMessageId.isEnable()) {

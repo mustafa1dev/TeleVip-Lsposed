@@ -5,9 +5,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
 import com.my.televip.Configs.ConfigManager;
-import com.my.televip.Configs.ConfigPreferences;
 import com.my.televip.Drawable.ArrowDrawable;
 import com.my.televip.audio;
 import com.my.televip.base.AbstractMethodHook;
@@ -15,15 +15,12 @@ import com.my.televip.dex.DexInjector;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
-import com.my.televip.Class.ClassLoad;
-import com.my.televip.obfuscate.AutomationResolver;
-import com.my.televip.ui.CustomToolBar;
-import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.logging.Logger;
-import com.my.televip.virtuals.ActionBar.AlertDialog;
+import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.settings.controller.SettingsController;
+import com.my.televip.ui.CustomToolBar;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
-import com.my.televip.virtuals.messenger.browser.Browser;
 import com.my.televip.virtuals.ui.Components.RecyclerListView;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -90,29 +87,6 @@ public class SettingsActivity {
     public SettingsActivity(Context context) {
         this.context = context;
         isSettings = true;
-    }
-
-    public void showDialog(SettingsController settingsController) {
-        try {
-
-            if (!ConfigPreferences.getBoolean("DSA")) {
-                AlertDialog alertDialog = new AlertDialog(context);
-
-                alertDialog.setTitle(Translator.get(Keys.GhostMode));
-                alertDialog.setMessage(Translator.get(Keys.JoinTeleVip));
-
-                alertDialog.setPositiveButton(Translator.get(Keys.Join), AlertDialog.click(() -> {
-                    Browser.openUrl(context, "https://t.me/t_l0_e");
-                    settingsController.hide();
-                }));
-
-                alertDialog.setNegativeButton(Translator.get(Keys.Cancel), null);
-                alertDialog.setNeutralButton(Translator.get(Keys.DontShowAgain), AlertDialog.click(() -> ConfigPreferences.putBoolean("DSA", true)));
-                alertDialog.show();
-            }
-        } catch (Throwable e) {
-            Logger.e(e);
-        }
     }
 
     public static void init(SettingsController settingsController) {

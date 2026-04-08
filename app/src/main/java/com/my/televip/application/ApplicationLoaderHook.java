@@ -3,16 +3,16 @@ package com.my.televip.application;
 import android.app.Application;
 import android.content.Context;
 
+import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
 import com.my.televip.Utils;
-import com.my.televip.Class.ClassLoad;
-import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.hooks.HMethod;
 import com.my.televip.logging.Logger;
+import com.my.televip.obfuscate.AutomationResolver;
 
 import java.io.File;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
 
 public class ApplicationLoaderHook {
     private static boolean initialized = false;
@@ -25,7 +25,7 @@ public class ApplicationLoaderHook {
 
         if (ClassLoad.getClass(ClassNames.APPLICATION_LOADER) == null) { return; }
 
-        XposedHelpers.findAndHookMethod(ClassLoad.getClass(ClassNames.APPLICATION_LOADER), AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
+        HMethod.hookMethod(ClassLoad.getClass(ClassNames.APPLICATION_LOADER), AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 Context app = (Application) param.thisObject;

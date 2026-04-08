@@ -34,7 +34,7 @@ import java.util.Locale;
 
 public class SaveEditsHistory {
 
-    public static MessageDatabase messageDatabase;
+    private static MessageDatabase messageDatabase;
 
     public static boolean isEnable = false;
 
@@ -44,71 +44,14 @@ public class SaveEditsHistory {
                 isEnable = true;
                 messageDatabase = new MessageDatabase(context);
 
-                HMethod.hookMethod(
-                        ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
-                            @Override
-                            protected void afterMethod(MethodHookParam param) {
-                                if (ConfigManager.saveEditsHistory.isEnable()) {
-                                    ChatActivity chatActivity = new ChatActivity(param.thisObject);
+                if (ClassLoad.getClass(ClassNames.CHAT_ACTIVITY) != null) {
 
-                                    if (chatActivity.getSelectedObject() != null) {
-                                        MessageObject messageObject = chatActivity.getSelectedObject();
-
-                                        if (messageObject.getMessageOwner() != null) {
-
-                                            TLRPC.Message message = messageObject.getMessageOwner();
-                                            if (message != null && message.getFrom_id() != null && message.getID() > 0) {
-
-                                                long user_id = message.getFrom_id().getUser_id();
-                                                long chat_id = message.getFrom_id().getChat_id();
-                                                long channel_id = message.getFrom_id().getChannel_id();
-                                                long dialogId = 0;
-
-                                                if (user_id != 0) {
-                                                    dialogId = user_id;
-                                                } else if (chat_id != 0) {
-                                                    dialogId = chat_id;
-                                                } else if (channel_id != 0) {
-                                                    dialogId = channel_id;
-                                                }
-
-                                                if (dialogId != 0 && messageDatabase.getMessage(dialogId, message.getID()) != null) {
-
-                                                    ArrayList<Integer> icons;
-                                                    ArrayList<CharSequence> items;
-                                                    ArrayList<Integer> options;
-
-                                                    if (ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
-                                                        icons = (ArrayList<Integer>) param.args[2];
-                                                        items = (ArrayList<CharSequence>) param.args[3];
-                                                        options = (ArrayList<Integer>) param.args[4];
-                                                    } else {
-                                                        icons = (ArrayList<Integer>) param.args[1];
-                                                        items = (ArrayList<CharSequence>) param.args[2];
-                                                        options = (ArrayList<Integer>) param.args[3];
-                                                    }
-
-                                                    items.add(Translator.get(Keys.EditsHistory));
-                                                    options.add(8353847);
-                                                    if (!ClientChecker.check(ClientChecker.ClientType.Nagram))
-                                                        icons.add(EventType.getIconSettings());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }));
-
-                HMethod.hookMethod(
-                        ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
-                            @Override
-                            protected void beforeMethod(MethodHookParam param) {
-                                if (ConfigManager.saveEditsHistory.isEnable()) {
-                                    int option = (int) param.args[0];
-                                    ChatActivity chatActivity = new ChatActivity(param.thisObject);
-
-                                    if (option == 8353847) {
+                    HMethod.hookMethod(
+                            ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "fillMessageMenu", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("fillMessageMenu", new Class[]{ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), ArrayList.class, ArrayList.class, ArrayList.class}), new AbstractMethodHook() {
+                                @Override
+                                protected void afterMethod(MethodHookParam param) {
+                                    if (ConfigManager.saveEditsHistory.isEnable()) {
+                                        ChatActivity chatActivity = new ChatActivity(param.thisObject);
 
                                         if (chatActivity.getSelectedObject() != null) {
                                             MessageObject messageObject = chatActivity.getSelectedObject();
@@ -116,103 +59,165 @@ public class SaveEditsHistory {
                                             if (messageObject.getMessageOwner() != null) {
 
                                                 TLRPC.Message message = messageObject.getMessageOwner();
-                                                if (message.message != null && message.getFrom_id() != null && message.getID() > 0 && message.getMessage() != null) {
+                                                if (message != null && message.getFrom_id() != null && message.getID() > 0) {
 
-                                                    if (getDialogId(message.getFrom_id()) != 0 & messageDatabase.searchMessage(getDialogId(message.getFrom_id()), message.getID())) {
+                                                    long user_id = message.getFrom_id().getUser_id();
+                                                    long chat_id = message.getFrom_id().getChat_id();
+                                                    long channel_id = message.getFrom_id().getChannel_id();
+                                                    long dialogId = 0;
 
-                                                        AlertDialog alertDialog = new AlertDialog(context);
-                                                        alertDialog.setTitle(Translator.get(Keys.EditsHistory));
+                                                    if (user_id != 0) {
+                                                        dialogId = user_id;
+                                                    } else if (chat_id != 0) {
+                                                        dialogId = chat_id;
+                                                    } else if (channel_id != 0) {
+                                                        dialogId = channel_id;
+                                                    }
 
-                                                        TextView textView = new TextView(context);
+                                                    if (dialogId != 0 && messageDatabase.getMessage(dialogId, message.getID()) != null) {
 
-                                                        int maxMsgCount = messageDatabase.getMaxMessageCount(getDialogId(message.getFrom_id()), message.getID());
+                                                        ArrayList<Integer> icons;
+                                                        ArrayList<CharSequence> items;
+                                                        ArrayList<Integer> options;
 
-                                                        StringBuilder builder = new StringBuilder();
-
-                                                        if (maxMsgCount > 0) {
-
-                                                            for (int i = 1; i <= maxMsgCount; i++) {
-
-                                                                String msg = messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID(), i);
-                                                                String messageEdited = messageDatabase.getMessageEdited(getDialogId(message.getFrom_id()), message.getID(), i);
-
-                                                                if (msg != null && messageEdited != null) {
-                                                                    builder.append(Translator.get(Keys.Message)).append(i).append(Translator.get(Keys.Edited)).append(messageEdited).append("\n");
-                                                                    builder.append(msg).append("\n");
-                                                                }
-                                                            }
+                                                        if (ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
+                                                            icons = (ArrayList<Integer>) param.args[2];
+                                                            items = (ArrayList<CharSequence>) param.args[3];
+                                                            options = (ArrayList<Integer>) param.args[4];
                                                         } else {
-                                                            builder.append(messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID()));
+                                                            icons = (ArrayList<Integer>) param.args[1];
+                                                            items = (ArrayList<CharSequence>) param.args[2];
+                                                            options = (ArrayList<Integer>) param.args[3];
                                                         }
 
-                                                        textView.setText(builder.toString());
-                                                        textView.setPadding(32, 32, 32, 32);
-                                                        textView.setTextSize(16);
-                                                        textView.setTextColor(Theme.getTextColor());
-                                                        textView.setMovementMethod(new ScrollingMovementMethod());
-                                                        textView.setTextIsSelectable(true);
-
-                                                        ScrollView scrollView = new ScrollView(context);
-                                                        scrollView.addView(textView);
-                                                        alertDialog.setView(scrollView);
-                                                        alertDialog.setPositiveButton(Translator.get(Keys.Done), null);
-                                                        alertDialog.show();
+                                                        items.add(Translator.get(Keys.EditsHistory));
+                                                        options.add(8353847);
+                                                        if (!ClientChecker.check(ClientChecker.ClientType.Nagram))
+                                                            icons.add(EventType.getIconSettings());
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }));
+                            }));
 
-                HMethod.hookMethod(
-                        ClassLoad.getClass(ClassNames.MESSAGES_STORAGE), AutomationResolver.resolve("MessagesStorage", "putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGES_MESSAGES), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
-                            @Override
-                            protected void beforeMethod(MethodHookParam param) {
-                                if (ConfigManager.saveEditsHistory.isEnable()) {
-                                    int load_type = (int) param.args[2];
-                                    if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
-                                        load_type = (int) param.args[0];
+                    HMethod.hookMethod(
+                            ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "processSelectedOption", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("processSelectedOption", new Class[]{int.class}), new AbstractMethodHook() {
+                                @Override
+                                protected void beforeMethod(MethodHookParam param) {
+                                    if (ConfigManager.saveEditsHistory.isEnable()) {
+                                        int option = (int) param.args[0];
+                                        ChatActivity chatActivity = new ChatActivity(param.thisObject);
+
+                                        if (option == 8353847) {
+
+                                            if (chatActivity.getSelectedObject() != null) {
+                                                MessageObject messageObject = chatActivity.getSelectedObject();
+
+                                                if (messageObject.getMessageOwner() != null) {
+
+                                                    TLRPC.Message message = messageObject.getMessageOwner();
+                                                    if (message.message != null && message.getFrom_id() != null && message.getID() > 0 && message.getMessage() != null) {
+
+                                                        if (getDialogId(message.getFrom_id()) != 0 & messageDatabase.searchMessage(getDialogId(message.getFrom_id()), message.getID())) {
+
+                                                            AlertDialog alertDialog = new AlertDialog(context);
+                                                            alertDialog.setTitle(Translator.get(Keys.EditsHistory));
+
+                                                            TextView textView = new TextView(context);
+
+                                                            int maxMsgCount = messageDatabase.getMaxMessageCount(getDialogId(message.getFrom_id()), message.getID());
+
+                                                            StringBuilder builder = new StringBuilder();
+
+                                                            if (maxMsgCount > 0) {
+
+                                                                for (int i = 1; i <= maxMsgCount; i++) {
+
+                                                                    String msg = messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID(), i);
+                                                                    String messageEdited = messageDatabase.getMessageEdited(getDialogId(message.getFrom_id()), message.getID(), i);
+
+                                                                    if (msg != null && messageEdited != null) {
+                                                                        builder.append(Translator.get(Keys.Message)).append(i).append(Translator.get(Keys.Edited)).append(messageEdited).append("\n");
+                                                                        builder.append(msg).append("\n");
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                builder.append(messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID()));
+                                                            }
+
+                                                            textView.setText(builder.toString());
+                                                            textView.setPadding(32, 32, 32, 32);
+                                                            textView.setTextSize(16);
+                                                            textView.setTextColor(Theme.getTextColor());
+                                                            textView.setMovementMethod(new ScrollingMovementMethod());
+                                                            textView.setTextIsSelectable(true);
+
+                                                            ScrollView scrollView = new ScrollView(context);
+                                                            scrollView.addView(textView);
+                                                            alertDialog.setView(scrollView);
+                                                            alertDialog.setPositiveButton(Translator.get(Keys.Done), null);
+                                                            alertDialog.show();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
+                                }
+                            }));
+                }
 
-                                    if (load_type == -2) {
-                                        Object messagesStorageObject = param.thisObject;
-                                        Object messagesObject = param.args[0];
+                if (ClassLoad.getClass(ClassNames.MESSAGES_STORAGE) != null) {
+                    HMethod.hookMethod(
+                            ClassLoad.getClass(ClassNames.MESSAGES_STORAGE), AutomationResolver.resolve("MessagesStorage", "putMessages", AutomationResolver.ResolverType.Method), AutomationResolver.merge(AutomationResolver.resolveObject("putMessages", new Class[]{ClassLoad.getClass(ClassNames.TL_MESSAGES_MESSAGES), long.class, int.class, int.class, boolean.class, int.class, long.class}), new AbstractMethodHook() {
+                                @Override
+                                protected void beforeMethod(MethodHookParam param) {
+                                    if (ConfigManager.saveEditsHistory.isEnable()) {
+                                        int load_type = (int) param.args[2];
                                         if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
-                                            messagesObject = param.args[5];
+                                            load_type = (int) param.args[0];
                                         }
 
-                                        if (messagesObject != null) {
-                                            MessagesStorage messagesStorage = new MessagesStorage(messagesStorageObject);
+                                        if (load_type == -2) {
+                                            Object messagesStorageObject = param.thisObject;
+                                            Object messagesObject = param.args[0];
+                                            if (ClientChecker.check(ClientChecker.ClientType.Nagram)) {
+                                                messagesObject = param.args[5];
+                                            }
 
-                                            TLRPC.messages_Messages messages = new TLRPC.messages_Messages(messagesObject);
+                                            if (messagesObject != null) {
+                                                MessagesStorage messagesStorage = new MessagesStorage(messagesStorageObject);
 
-                                            int count = messages.getMessages().size();
+                                                TLRPC.messages_Messages messages = new TLRPC.messages_Messages(messagesObject);
 
-                                            BaseController baseController = new BaseController(messagesStorageObject);
-                                            UserConfig userConfig = baseController.getUserConfig();
-                                            SQLiteDatabase sqLiteDatabase = messagesStorage.getDatabase();
-                                            for (int a = 0; a < count; a++) {
+                                                int count = messages.getMessages().size();
 
-                                                TLRPC.Message message = new TLRPC.Message(messages.getMessages().get(a));
+                                                BaseController baseController = new BaseController(messagesStorageObject);
+                                                UserConfig userConfig = baseController.getUserConfig();
+                                                SQLiteDatabase sqLiteDatabase = messagesStorage.getDatabase();
+                                                for (int a = 0; a < count; a++) {
 
-                                                int id = message.getID();
-                                                SQLiteCursor cursor = sqLiteDatabase.queryFinalized(String.format(Locale.US, "SELECT mid, data, ttl, mention, read_state, send_state, custom_params FROM messages_v2 WHERE mid = %d AND uid = %d", id, MessageObject.getDialogId(message)));
+                                                    TLRPC.Message message = new TLRPC.Message(messages.getMessages().get(a));
 
-                                                if (cursor.next()) {
-                                                    NativeByteBuffer data = cursor.byteBufferValue(1);
+                                                    int id = message.getID();
+                                                    SQLiteCursor cursor = sqLiteDatabase.queryFinalized(String.format(Locale.US, "SELECT mid, data, ttl, mention, read_state, send_state, custom_params FROM messages_v2 WHERE mid = %d AND uid = %d", id, MessageObject.getDialogId(message)));
 
-                                                    if (data.nativeByteBuffer != null) {
+                                                    if (cursor.next()) {
+                                                        NativeByteBuffer data = cursor.byteBufferValue(1);
 
-                                                        TLRPC.Message oldMessage = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                                                        if (data.nativeByteBuffer != null) {
 
-                                                        oldMessage.readAttachPath(data, userConfig.getClientUserId());
-                                                        data.reuse();
-                                                        if (oldMessage.getMessage() != null && message.getMessage() != null) {
-                                                            if (oldMessage.getFrom_id() != null && (!oldMessage.getMessage().equals(message.getMessage()))) {
-                                                                if (getDialogId(message.getFrom_id()) != 0) {
-                                                                    messageDatabase.addMessage(getDialogId(message.getFrom_id()), oldMessage.getID(), oldMessage.getMessage());
+                                                            TLRPC.Message oldMessage = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+
+                                                            oldMessage.readAttachPath(data, userConfig.getClientUserId());
+                                                            data.reuse();
+                                                            if (oldMessage.getMessage() != null && message.getMessage() != null) {
+                                                                if (oldMessage.getFrom_id() != null && (!oldMessage.getMessage().equals(message.getMessage()))) {
+                                                                    if (getDialogId(message.getFrom_id()) != 0) {
+                                                                        messageDatabase.addMessage(getDialogId(message.getFrom_id()), oldMessage.getID(), oldMessage.getMessage());
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -222,10 +227,10 @@ public class SaveEditsHistory {
                                         }
                                     }
                                 }
-                            }
-                        }));
+                            }));
+                }
             }
-        } catch (Throwable t){
+        } catch (Throwable t) {
             Logger.e(t);
         }
     }
