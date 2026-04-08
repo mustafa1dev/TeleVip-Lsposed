@@ -49,7 +49,6 @@ public class CustomToolBar extends LinearLayout {
         this.setFitsSystemWindows(false);
         this.setGravity(Gravity.BOTTOM | Gravity.CENTER_VERTICAL);
 
-        /* padding مثل تيليجرام */
         this.setPadding(
                 AndroidUtilities.dp(8),
                 statusBar,   // أهم سطر
@@ -69,7 +68,6 @@ public class CustomToolBar extends LinearLayout {
         iconParams.gravity = Gravity.CENTER_VERTICAL;
         image.setLayoutParams(iconParams);
 
-        /* Padding داخلي مثل تيليجرام */
         image.setPadding(
                 AndroidUtilities.dp(8),
                 AndroidUtilities.dp(8),
@@ -77,13 +75,9 @@ public class CustomToolBar extends LinearLayout {
                 AndroidUtilities.dp(8)
         );
 
-        /* مهم */
         image.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        /* Ripple تيليجرام */
 
-
-        /* ================= Title ================= */
         title = new TextView(context);
         title.setTextSize(18);
         title.setTypeface(Typeface.DEFAULT_BOLD);

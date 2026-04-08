@@ -8,8 +8,8 @@ android {
         applicationId "com.my.televip"
         minSdk 27
         targetSdk 36
-        versionCode 305
-        versionName "3.3"
+        versionCode 306
+        versionName "3.3.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

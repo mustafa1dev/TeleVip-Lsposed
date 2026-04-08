@@ -15,7 +15,7 @@ public class Logger {
 
     public static void w(String text)
     {
-        XposedBridge.log("[TeleVip] [Warning] pkgName: "+ pkgName +" " + text);
+        XposedBridge.log("[TeleVip] [Warning] pkgName: "+ pkgName + " " + text);
     }
 
     public static void l(String text)

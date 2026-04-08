@@ -116,29 +116,16 @@ public class SaveEditsHistory {
                                             if (messageObject.getMessageOwner() != null) {
 
                                                 TLRPC.Message message = messageObject.getMessageOwner();
-                                                if (message != null && message.getFrom_id() != null && message.getID() > 0 && message.getMessage() != null) {
+                                                if (message.message != null && message.getFrom_id() != null && message.getID() > 0 && message.getMessage() != null) {
 
-                                                    long user_id = message.getFrom_id().getUser_id();
-                                                    long chat_id = message.getFrom_id().getChat_id();
-                                                    long channel_id = message.getFrom_id().getChannel_id();
-                                                    long dialogId = 0;
-
-                                                    if (user_id != 0) {
-                                                        dialogId = user_id;
-                                                    } else if (chat_id != 0) {
-                                                        dialogId = chat_id;
-                                                    } else if (channel_id != 0) {
-                                                        dialogId = channel_id;
-                                                    }
-
-                                                    if (dialogId != 0 & messageDatabase.searchMessage(dialogId, message.getID())) {
+                                                    if (getDialogId(message.getFrom_id()) != 0 & messageDatabase.searchMessage(getDialogId(message.getFrom_id()), message.getID())) {
 
                                                         AlertDialog alertDialog = new AlertDialog(context);
                                                         alertDialog.setTitle(Translator.get(Keys.EditsHistory));
 
                                                         TextView textView = new TextView(context);
 
-                                                        int maxMsgCount = messageDatabase.getMaxMessageCount(dialogId, message.getID());
+                                                        int maxMsgCount = messageDatabase.getMaxMessageCount(getDialogId(message.getFrom_id()), message.getID());
 
                                                         StringBuilder builder = new StringBuilder();
 
@@ -146,8 +133,8 @@ public class SaveEditsHistory {
 
                                                             for (int i = 1; i <= maxMsgCount; i++) {
 
-                                                                String msg = messageDatabase.getMessage(dialogId, message.getID(), i);
-                                                                String messageEdited = messageDatabase.getMessageEdited(dialogId, message.getID(), i);
+                                                                String msg = messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID(), i);
+                                                                String messageEdited = messageDatabase.getMessageEdited(getDialogId(message.getFrom_id()), message.getID(), i);
 
                                                                 if (msg != null && messageEdited != null) {
                                                                     builder.append(Translator.get(Keys.Message)).append(i).append(Translator.get(Keys.Edited)).append(messageEdited).append("\n");
@@ -155,7 +142,7 @@ public class SaveEditsHistory {
                                                                 }
                                                             }
                                                         } else {
-                                                            builder.append(messageDatabase.getMessage(dialogId, message.getID()));
+                                                            builder.append(messageDatabase.getMessage(getDialogId(message.getFrom_id()), message.getID()));
                                                         }
 
                                                         textView.setText(builder.toString());
@@ -222,23 +209,11 @@ public class SaveEditsHistory {
 
                                                         oldMessage.readAttachPath(data, userConfig.getClientUserId());
                                                         data.reuse();
-
-                                                        if (oldMessage.getFrom_id() != null && (!oldMessage.getMessage().equals(message.getMessage()))) {
-                                                            long user_id = message.getFrom_id().getUser_id();
-                                                            long chat_id = message.getFrom_id().getChat_id();
-                                                            long channel_id = message.getFrom_id().getChannel_id();
-                                                            long dialogId = 0;
-
-                                                            if (user_id != 0) {
-                                                                dialogId = user_id;
-                                                            } else if (chat_id != 0) {
-                                                                dialogId = chat_id;
-                                                            } else if (channel_id != 0) {
-                                                                dialogId = channel_id;
-                                                            }
-
-                                                            if (dialogId != 0) {
-                                                                messageDatabase.addMessage(dialogId, oldMessage.getID(), oldMessage.getMessage());
+                                                        if (oldMessage.getMessage() != null && message.getMessage() != null) {
+                                                            if (oldMessage.getFrom_id() != null && (!oldMessage.getMessage().equals(message.getMessage()))) {
+                                                                if (getDialogId(message.getFrom_id()) != 0) {
+                                                                    messageDatabase.addMessage(getDialogId(message.getFrom_id()), oldMessage.getID(), oldMessage.getMessage());
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -253,6 +228,22 @@ public class SaveEditsHistory {
         } catch (Throwable t){
             Logger.e(t);
         }
+    }
+
+    private static long getDialogId(TLRPC.Peer peer) {
+        long user_id = peer.getUser_id();
+        long chat_id = peer.getChat_id();
+        long channel_id = peer.getChannel_id();
+        long dialogId = 0;
+
+        if (user_id != 0) {
+            dialogId = user_id;
+        } else if (chat_id != 0) {
+            dialogId = chat_id;
+        } else if (channel_id != 0) {
+            dialogId = channel_id;
+        }
+        return dialogId;
     }
 
 }

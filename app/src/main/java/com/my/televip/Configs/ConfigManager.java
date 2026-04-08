@@ -37,7 +37,7 @@ import java.util.List;
 public class ConfigManager {
     
 
-    public static List<ConfigItem> configs = new ArrayList<>();
+    private static final List<ConfigItem> configs = new ArrayList<>();
 
 
     // GhostMode
@@ -99,7 +99,7 @@ public class ConfigManager {
 
     public static void load(Context context) {
 
-        if (configs != null && !configs.isEmpty()) configs.clear();
+        configs.clear();
 
         // GhostMode
         ghostModeSettings = new ConfigItem(ConfigItem.HEADER, Keys.GhostModeSettings);
@@ -233,11 +233,12 @@ public class ConfigManager {
     }
 
     public static List<ConfigItem> getItems(Context context) {
-        ConfigManager.load(context);
+        load(context);
 
         List<ConfigItem> items = new ArrayList<>();
 
-        for (ConfigItem configItem : ConfigManager.configs) {
+        for (ConfigItem configItem : configs) {
+            if (configItem == null) continue;
             items.add(new ConfigItem(configItem.getType(), configItem.getKey(), configItem.getText(), configItem.isEnable(), configItem.getRunnable()));
         }
         return items;
@@ -246,6 +247,8 @@ public class ConfigManager {
     public static void readFeature(Context context) {
         try {
             for (ConfigItem item : configs) {
+                if (item == null) continue;
+                if (item.getType() != ConfigItem.SWITCH) continue;
                 if (item.isEnable()) item.run();
             }
 

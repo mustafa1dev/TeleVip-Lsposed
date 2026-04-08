@@ -50,6 +50,8 @@ public class ConfigItem {
 
     public Runnable getRunnable() { return runnable; }
 
-    public void run(){ runnable.run(); }
+    public void run() {
+        if (runnable != null) runnable.run();
+    }
 
 }

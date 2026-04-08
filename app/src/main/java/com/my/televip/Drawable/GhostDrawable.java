@@ -10,8 +10,6 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
-import com.my.televip.virtuals.Theme;
-
 public class GhostDrawable extends Drawable {
 
     private final Paint paint;

@@ -129,9 +129,11 @@ public class SettingsAdapter {
                 TextCheckCellHolder textCheck = new TextCheckCellHolder(holder);
                 boolean checked = !textCheck.cell.isChecked();
                 textCheck.cell.setChecked(checked);
-                featureItem.setEnable(checked);
-                ConfigManager.load(context);
-                featureItem.getRunnable().run();
+                if (featureItem != null) {
+                    featureItem.setEnable(checked);
+                    ConfigManager.load(context);
+                    featureItem.run();
+                }
             } else if (viewType == ConfigItem.BUTTON) {
                 if (featureItem.getKey().equals(Keys.DeveloperChannel)) {
                     Browser.openUrl(context, "https://t.me/t_l0_e");

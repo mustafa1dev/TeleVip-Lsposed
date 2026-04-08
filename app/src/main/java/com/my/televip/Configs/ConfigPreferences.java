@@ -19,7 +19,6 @@ public class ConfigPreferences {
         try {
             return sharedPreferences.getBoolean(key, false);
         } catch (ClassCastException e) {
-
             sharedPreferences.edit().remove(key).apply();
             return false;
         }

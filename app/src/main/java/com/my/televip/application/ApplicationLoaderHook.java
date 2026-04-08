@@ -23,10 +23,7 @@ public class ApplicationLoaderHook {
             return;
 
 
-        if (ClassLoad.getClass(ClassNames.APPLICATION_LOADER) == null) {
-            Logger.w("Not found ApplicationLoader, " + Utils.issue);
-            return;
-        }
+        if (ClassLoad.getClass(ClassNames.APPLICATION_LOADER) == null) { return; }
 
         XposedHelpers.findAndHookMethod(ClassLoad.getClass(ClassNames.APPLICATION_LOADER), AutomationResolver.resolve("ApplicationLoader", "onCreate", AutomationResolver.ResolverType.Method), new XC_MethodHook(51) {
             @Override
