@@ -1,4 +1,4 @@
-package com.my.televip.ui;
+package com.my.televip.ui.toolBar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.my.televip.application.AndroidUtilities;
 import com.my.televip.virtuals.Theme;
 
-public class CustomToolBar extends LinearLayout {
+public class MainToolBar extends LinearLayout {
 
     private final Context context;
     private TextView title;
     private ImageView image;
 
-    public CustomToolBar(Context context){
+    public MainToolBar(Context context){
         super(context);
         this.context = context;
         createToolbar();
@@ -56,7 +56,6 @@ public class CustomToolBar extends LinearLayout {
                 0
         );
 
-        /* ================= Back / Icon ================= */
         image = new ImageView(context);
 
         LinearLayout.LayoutParams iconParams =
@@ -95,7 +94,6 @@ public class CustomToolBar extends LinearLayout {
         titleParams.setMargins(AndroidUtilities.dp(8), 0, 0, 0);
         title.setLayoutParams(titleParams);
 
-        /* ================= Add ================= */
         this.addView(image);
         this.addView(title);
     }

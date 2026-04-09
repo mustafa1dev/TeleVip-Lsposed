@@ -50,23 +50,6 @@ public class ConfigPreferences {
         }
     }
 
-    public static long getLong(String key) {
-        try {
-            return sharedPreferences.getLong(key, 0);
-        } catch (ClassCastException e) {
-            sharedPreferences.edit().remove(key).apply();
-            return 0;
-        }
-    }
-
-    public static void putLong(String key, long l) {
-        try {
-            sharedPreferences.edit().putLong(key, l).apply();
-        } catch (ClassCastException e) {
-            sharedPreferences.edit().remove(key).apply();
-        }
-    }
-
     public static void remove(String key){
         try {
             sharedPreferences.edit().remove(key).apply();

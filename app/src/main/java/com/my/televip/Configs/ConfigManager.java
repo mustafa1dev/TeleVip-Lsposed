@@ -17,14 +17,14 @@ import com.my.televip.features.HidePhone;
 import com.my.televip.features.HidePinnedMessages;
 import com.my.televip.features.HideProxySponsor;
 import com.my.televip.features.HideUpdateApp;
-import com.my.televip.features.OtherFeatures;
 import com.my.televip.features.PreventMedia;
 import com.my.televip.features.RemovesContentSaving;
 import com.my.televip.features.SaveEditsHistory;
 import com.my.televip.features.SecretMediaSave;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.features.TelePremium;
-import com.my.televip.features.copyName;
+import com.my.televip.features.otherFeatures.CopyNameHook;
+import com.my.televip.features.otherFeatures.FeatureInitializer;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.logging.Logger;
@@ -254,8 +254,8 @@ public class ConfigManager {
             }
 
             if (!ClientChecker.check(ClientChecker.ClientType.Telegraph)) {
-                OtherFeatures.init(context);
-                copyName.init(context);
+                FeatureInitializer.init(context);
+                CopyNameHook.init(context);
             } else {
                 Telegraph.removeAd();
             }

@@ -8,10 +8,13 @@ android {
         applicationId "com.my.televip"
         minSdk 27
         targetSdk 36
-        versionCode 306
-        versionName "3.3.2"
+        versionCode 310
+        versionName "3.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildTypes {
@@ -25,12 +28,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    ndkVersion '26.1.10909125'
 }
 
 dependencies {
     compileOnly libs.api
     implementation(libs.gson)
+    implementation(libs.appcompat)
+    implementation(libs.material)
 }
 tasks.register("copyLargestDexAsJava") {
 
@@ -44,7 +48,6 @@ tasks.register("copyLargestDexAsJava") {
         def tempDir = new File(buildDir, "tmp/dexExtract")
         tempDir.mkdirs()
 
-        // فك APK
         copy {
             from zipTree(apkFile)
             into tempDir
@@ -62,10 +65,8 @@ tasks.register("copyLargestDexAsJava") {
         // قراءة dex كـ bytes
         byte[] dexBytes = largestDex.bytes
 
-        // تحويله إلى hex string (لتخزينه داخل Java)
         def hex = dexBytes.collect { String.format("%02X", it) }.join("")
 
-        // توليد كلاس Java
         def outputDir = file("$projectDir/src/main/java/com/my/televip/dex")
         outputDir.mkdirs()
 

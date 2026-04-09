@@ -1,4 +1,4 @@
-package com.my.televip.features;
+package com.my.televip.features.otherFeatures;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -16,7 +16,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.SimpleTextView;
 import com.my.televip.virtuals.ui.ProfileActivity;
 
-public class copyName {
+public class CopyNameHook {
 
     public static void init(Context context) {
         try {

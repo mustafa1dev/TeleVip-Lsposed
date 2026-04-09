@@ -1,5 +1,6 @@
 package com.my.televip.application;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 
@@ -35,5 +36,11 @@ public class AndroidUtilities {
         }
         return (int) Math.ceil(density * value);
     }
+
+    public static int getStatusBarHeight(Context context) {
+        @SuppressLint({"InternalInsetResource", "DiscouragedApi"}) int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        return resourceId > 0 ? context.getResources().getDimensionPixelSize(resourceId) : 0;
+    }
+
 
 }

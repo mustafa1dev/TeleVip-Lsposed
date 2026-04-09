@@ -18,7 +18,7 @@ import com.my.televip.language.Translator;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.settings.controller.SettingsController;
-import com.my.televip.ui.CustomToolBar;
+import com.my.televip.ui.toolBar.MainToolBar;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.Components.RecyclerListView;
@@ -32,18 +32,21 @@ public class SettingsActivity {
     private final Context context;
 
     public RecyclerListView listView;
+    private LinearLayout layout;
 
 
     public View createView(SettingsController settingsController) {
-        if (SettingsAdapter.items != null && !SettingsAdapter.items.isEmpty()) SettingsAdapter.items.clear();
-        SettingsAdapter.items = ConfigManager.getItems(context);
-
-        LinearLayout fragmentView = new LinearLayout(context);
-        fragmentView.setOrientation(LinearLayout.VERTICAL);
-        fragmentView.setBackgroundColor(Theme.getBackgroundGrayColor());
         try {
+            if (SettingsAdapter.items != null && !SettingsAdapter.items.isEmpty())
+                SettingsAdapter.items.clear();
+            SettingsAdapter.items = ConfigManager.getItems(context);
 
-            CustomToolBar toolbar = new CustomToolBar(context);
+            layout = new LinearLayout(context);
+
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setBackgroundColor(Theme.getBackgroundGrayColor());
+
+            MainToolBar toolbar = new MainToolBar(context);
 
             toolbar.setColorTitle(Theme.getTextToolBarColor());
             toolbar.setRippleColor(Theme.getToolBarRippleColor());
@@ -53,7 +56,7 @@ public class SettingsActivity {
             toolbar.setImageDrawable(arrow);
             toolbar.getImage().setOnClickListener(v -> settingsController.hide());
 
-            fragmentView.addView(toolbar);
+            layout.addView(toolbar);
 
             listView = new RecyclerListView(context);
 
@@ -75,13 +78,13 @@ public class SettingsActivity {
             );
             recyclerParams.setMargins(10, 10, 10, 0);
 
-            fragmentView.addView(listView.getRecyclerListView(), recyclerParams);
+            layout.addView(listView.getRecyclerListView(), recyclerParams);
 
         } catch (Throwable e) {
             Logger.e(e);
         }
 
-        return fragmentView;
+        return layout;
     }
 
     public SettingsActivity(Context context) {

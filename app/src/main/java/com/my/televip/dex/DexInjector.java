@@ -1,6 +1,5 @@
 package com.my.televip.dex;
 
-import com.my.televip.Utils;
 import com.my.televip.logging.Logger;
 
 import java.nio.ByteBuffer;
@@ -11,15 +10,15 @@ public class DexInjector {
 
     public static ClassLoader classLoader;
 
-    public static void injectDex() {
+    public static void injectDex(ClassLoader classLoader) {
         try {
             byte[] dexBytes = DexHolder.DEX_BYTES;
 
             ByteBuffer buffer = ByteBuffer.wrap(dexBytes);
 
-            classLoader = new InMemoryDexClassLoader(
+            DexInjector.classLoader = new InMemoryDexClassLoader(
                     buffer,
-                    Utils.classLoader
+                    classLoader
             );
         } catch (Throwable e){
             Logger.e(e);
