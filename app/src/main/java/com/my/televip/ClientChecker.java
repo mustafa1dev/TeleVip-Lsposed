@@ -34,7 +34,8 @@ public class ClientChecker {
         Momogram(new String[]{"nekox.messenger.broken", "momo.gram"}, com.my.televip.Clients.Momogram.class),
         Nekogram("tw.nekomimi.nekogram", com.my.televip.Clients.Nekogram.class),
         Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class),
-        ForkgramClassic("org.forkgram.classic", com.my.televip.Clients.ForkgramClassic.class);
+        ForkgramClassic("org.forkgram.classic", com.my.televip.Clients.ForkgramClassic.class),
+        Turrit("org.telegram.group", com.my.televip.Clients.Turrit.class);
 
         private final String[] packageNames;
         private final Class<?> resolverClass;

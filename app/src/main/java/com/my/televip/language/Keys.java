@@ -95,4 +95,7 @@ public class Keys {
     public static final String GregorianMonthOctober = "GregorianMonthOctober";
     public static final String GregorianMonthNovember = "GregorianMonthNovember";
     public static final String GregorianMonthDecember = "GregorianMonthDecember";
+    public static final String ShowUserID = "ShowUserID";
+    public static final String Open = "Open";
+    public static final String OpenGhostMode = "OpenGhostMode";
 }

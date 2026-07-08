@@ -96,5 +96,8 @@
   "GregorianMonthSeptember": "سبتمبر",
   "GregorianMonthOctober": "أكتوبر",
   "GregorianMonthNovember": "نوفمبر",
-  "GregorianMonthDecember": "ديسمبر"
+  "GregorianMonthDecember": "ديسمبر",
+  "ShowUserID": "عرض معرف المستخدم",
+  "Open": "فتح",
+  "OpenGhostMode": "هل تود فتح الوضع الشبح الآن؟"
 }

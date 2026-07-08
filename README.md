@@ -66,6 +66,7 @@ There are additional features that are not listed here.
 19. Telega 2.4.3 (107)
 20. Momogram 12.6.4-6a8da4a514 (11269)
 21. Forkgram Classic 12.8.10.0 (692608)
+22. Turrit 1.8.9.9.5 (40418)
 
 # Telegram
 

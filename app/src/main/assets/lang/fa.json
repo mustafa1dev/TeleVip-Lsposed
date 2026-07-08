@@ -96,5 +96,8 @@
   "GregorianMonthSeptember": "سپتامبر",
   "GregorianMonthOctober": "اکتبر",
   "GregorianMonthNovember": "نوامبر",
-  "GregorianMonthDecember": "دسامبر"
+  "GregorianMonthDecember": "دسامبر",
+  "ShowUserID": "نمایش شناسه کاربر",
+  "Open": "باز کردن",
+  "OpenGhostMode": "آیا می‌خواهید اکنون حالت شبح را باز کنید؟"
 }

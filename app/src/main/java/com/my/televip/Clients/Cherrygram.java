@@ -175,7 +175,7 @@ public class Cherrygram {
         fieldList.add(new FieldInfo("LocaleController","isRTL", "ᅀ"));
         fieldList.add(new FieldInfo("MessagesController","dialogMessage", "㜁"));
         fieldList.add(new FieldInfo("MessagesController","dialogMessagesByIds", "ᱳ"));
-        fieldList.add(new FieldInfo("NotificationCenter","messagesDeleted", "ឈ"));
+        fieldList.add(new FieldInfo("NotificationCenter","messagesDeleted", "㩂"));
         fieldList.add(new FieldInfo("NotificationCenter","tlSchemeParseException", "ᣎ"));
         fieldList.add(new FieldInfo("UserConfig","clientUserId", "㜜"));
         fieldList.add(new FieldInfo("UserConfig","selectedAccount", "ⳡ"));
@@ -335,6 +335,7 @@ public class Cherrygram {
         methodList.add(new MethodInfo("PeerStoriesView$StoryItemHolder","allowScreenshots","㟹"));
         methodList.add(new MethodInfo("StoriesController","hasStories","ϼ"));
         methodList.add(new MethodInfo("StoriesController","hasStoriesJ","ஏ"));
+        methodList.add(new MethodInfo("ProfileActivity","updateProfileData","ࢣ"));
 
         methodAlias.put("Browser#openUrl", "openUrlCS");
         methodAlias.put("MessagesController#storyEntitiesAllowed2", "storyEntitiesAllowedO");

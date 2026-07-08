@@ -20,6 +20,7 @@
         <item>nekox.messenger.broken</item>
         <item>tw.nekomimi.nekogram</item>
         <item>org.forkgram.classic</item>
+        <item>org.telegram.group</item>
       <!--  <item>momo.gram</item> -->
     </string-array>
 </resources>

@@ -1,6 +1,7 @@
 package com.my.televip.settings;
 
 import com.my.televip.ClientChecker;
+import com.my.televip.Clients.Turrit;
 import com.my.televip.utils.Utils;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.settings.controller.SettingsController;
@@ -32,6 +33,7 @@ public class SettingsManager {
             settings.oldSettings(settingsController);
         }
         if (ClientChecker.check(ClientChecker.ClientType.ForkgramClassic)) settings.oldSettings(settingsController);
+        if (ClientChecker.check(ClientChecker.ClientType.Turrit)) Turrit.showGhostModeDialog(settingsController);
     }
 
 }

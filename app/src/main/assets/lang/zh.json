@@ -96,5 +96,8 @@
   "GregorianMonthSeptember": "九月",
   "GregorianMonthOctober": "十月",
   "GregorianMonthNovember": "十一月",
-  "GregorianMonthDecember": "十二月"
+  "GregorianMonthDecember": "十二月",
+  "ShowUserID": "显示用户ID",
+  "Open": "打开",
+  "OpenGhostMode": "您想现在打开幽灵模式吗？"
 }

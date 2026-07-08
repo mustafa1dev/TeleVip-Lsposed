@@ -113,7 +113,7 @@ public class HijriDate {
     public static String formatDate(Object date, String org) {
         try {
             DateFormatType type = detectFormatType(org);
-            if (type == DateFormatType.UNKNOWN) return null;
+            if (type == DateFormatType.UNKNOWN || type == DateFormatType.TIME_ONLY) return org;
 
             CalendarDate dateCalendar = null;
             SimpleDateFormat sdfTime = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -173,16 +173,12 @@ public class HijriDate {
             date *= 1000;
 
             Calendar calendar = Calendar.getInstance();
-
+            calendar.setTimeInMillis(System.currentTimeMillis());
             CalendarDate rightNow = ConverterCalendar.toCalendar(calendar);
-
-            if (rightNow == null) return null;
 
             int year = rightNow.getYear();
 
             rightNow = ConverterCalendar.toCalendar(date);
-
-            if (rightNow == null) return null;
 
             int dateYear = rightNow.getYear();
             String dateMonthName = rightNow.getMonthName();
@@ -217,9 +213,14 @@ public class HijriDate {
         }
 
         boolean hasTime = v.matches(".*\\d{1,2}:\\d{2}.*");
-        boolean hasYear = v.matches(".*\\b\\d{4}\\b.*");
-        boolean hasDay = v.matches(".*\\b\\d{1,2}\\b.*");
-        boolean hasMonthText = v.matches(".*\\p{L}{2,}.*");
+
+        String withoutTime = v.replaceAll(
+                "\\p{L}*\\s*\\d{1,2}:\\d{2}(:\\d{2})?\\s*\\p{L}*", ""
+        ).trim();
+
+        boolean hasYear = withoutTime.matches(".*\\b\\d{4}\\b.*");
+        boolean hasDay = withoutTime.matches(".*\\b\\d{1,2}\\b.*");
+        boolean hasMonthText = withoutTime.matches(".*\\p{L}{2,}.*");
 
         if (hasTime && !hasDay && !hasMonthText) {
             return DateFormatType.TIME_ONLY;

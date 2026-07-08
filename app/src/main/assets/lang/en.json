@@ -96,5 +96,8 @@
   "GregorianMonthSeptember": "September",
   "GregorianMonthOctober": "October",
   "GregorianMonthNovember": "November",
-  "GregorianMonthDecember": "December"
+  "GregorianMonthDecember": "December",
+  "ShowUserID": "Show User ID",
+  "Open": "Open",
+  "OpenGhostMode": "Would you like to open Ghost Mode now?"
 }

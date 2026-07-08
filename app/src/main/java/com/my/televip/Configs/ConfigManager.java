@@ -79,6 +79,7 @@ public class ConfigManager {
     public static ConfigItem disableChannelSwipeBack;
     public static ConfigItem disableProfileSwipeBack;
     public static ConfigItem hideProxySponsor;
+    public static ConfigItem showUserID;
     public static ConfigItem customCalendar;
 
     // Other Features
@@ -197,6 +198,8 @@ public class ConfigManager {
         items.add(hideProxySponsor);
 
         if (!ClientChecker.check(ClientChecker.ClientType.Telegraph) && !ClientChecker.check(ClientChecker.ClientType.Nekogram) && !ClientChecker.check(ClientChecker.ClientType.Cherrygram)) {
+            showUserID = new ConfigItem(ConfigItem.SWITCH, Keys.ShowUserID, ConfigPreferences.getBoolean(Keys.ShowUserID), () -> EditOnlineTextView.init(context));
+            items.add(showUserID);
             customCalendar = new ConfigItem(ConfigItem.TEXT, Keys.Calendar, true, HijriDate::init);
             items.add(customCalendar);
         }
@@ -251,7 +254,7 @@ public class ConfigManager {
             if (!ClientChecker.check(ClientChecker.ClientType.Telegraph) && !ClientChecker.check(ClientChecker.ClientType.Nekogram) && !ClientChecker.check(ClientChecker.ClientType.Cherrygram)) {
                 FeatureInitializer.init(context);
                 CopyNameHook.init(context);
-                if (!ClientChecker.check(ClientChecker.ClientType.Nagram) && !ClientChecker.check(ClientChecker.ClientType.NagramX)) EditOnlineTextView.init(context);
+                EditOnlineTextView.init(context);
             }
             AlwaysSaveMedia.init();
 
