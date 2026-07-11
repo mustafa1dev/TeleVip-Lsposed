@@ -21,4 +21,17 @@ public class Utils {
         return result;
     }
 
+    public static String getFieldAsString(Object value) {
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof CharSequence) {
+            return value.toString();
+        }
+
+        return String.valueOf(value);
+    }
+
 }

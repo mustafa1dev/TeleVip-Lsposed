@@ -46,31 +46,104 @@ public class HideSeen {
     }
 
     public static boolean isTLMessagesReadHistoryRequest(Object object) {
-        if (object.getClass().getName().contains("TL_messages_readHistory")) return true;
-        return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_HISTORY));
+        if (!ClientChecker.isTgnetObfuscated()) {
+            return object.getClass().getName().contains("TL_messages_readHistory");
+        } else {
+            return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_HISTORY));
+        }
     }
 
     public static boolean isTLChannelsReadHistoryRequest(Object object) {
-        if (object.getClass().getName().contains("TL_channels_readHistory")) return true;
-        return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_HISTORY));
+        if (!ClientChecker.isTgnetObfuscated()) {
+            return object.getClass().getName().contains("TL_channels_readHistory");
+        } else {
+            return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_HISTORY));
+        }
     }
 
     public static boolean isReadMessageRequest(Object object) {
-        String className = object.getClass().getName();
-        Class<?> objectClass = object.getClass();
-        if (className.contains("TL_messages_readHistory") ||
-                className.contains("TL_messages_readEncryptedHistory") ||
-                className.contains("TL_messages_readDiscussion") ||
-                className.contains("TL_messages_readMessageContents") ||
-                className.contains("TL_channels_readMessageContents") ||
-                className.contains("TL_channels_readHistory")) return true;
+        boolean privateHide = ConfigManager.hideSeenPrivateChat.isEnable();
+        boolean channelHide = ConfigManager.hideSeenChannel.isEnable();
 
-        return objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_HISTORY))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_ENCRYPTED_HISTORY))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_DISCUSSION))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_MESSAGE_CONTENTS))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_MESSAGE_CONTENTS))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_HISTORY)));
+        boolean readHistory;
+        boolean readDiscussion;
+        boolean encryptedHistory;
+        boolean readMessageContents;
+        boolean channelReadMessageContents;
+        boolean channelReadHistory;
+
+        if (!ClientChecker.isTgnetObfuscated()) {
+            String className = object.getClass().getName();
+
+            readHistory = className.contains("TL_messages_readHistory");
+            readDiscussion = className.contains("TL_messages_readDiscussion");
+            encryptedHistory = className.contains("TL_messages_readEncryptedHistory");
+            readMessageContents = className.contains("TL_messages_readMessageContents");
+            channelReadMessageContents = className.contains("TL_channels_readMessageContents");
+            channelReadHistory = className.contains("TL_channels_readHistory");
+        } else {
+            Class<?> objectClass = object.getClass();
+
+            readHistory = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_HISTORY)));
+
+            readDiscussion = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_DISCUSSION)));
+
+            encryptedHistory = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_ENCRYPTED_HISTORY)));
+
+            readMessageContents = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_MESSAGES_READ_MESSAGE_CONTENTS)));
+
+            channelReadMessageContents = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_MESSAGE_CONTENTS)));
+
+            channelReadHistory = objectClass.equals(ClassLoad.getClass(
+                    AutomationResolver.resolve(ClassNames.TL_CHANNELS_READ_HISTORY)));
+        }
+
+        if (!(readHistory || readDiscussion ||
+                (privateHide && encryptedHistory) ||
+                (privateHide && readMessageContents) ||
+                (channelHide && channelReadMessageContents) ||
+                (channelHide && channelReadHistory))) {
+            return false;
+        }
+
+        if (privateHide && channelHide) {
+            return true;
+        }
+
+        if (readHistory || readDiscussion) {
+            String objectName;
+            if (!ClientChecker.isTgnetObfuscated()){
+                objectName = object.getClass().getSimpleName();
+            } else {
+                if (readHistory)
+                    objectName = "TLRPC$TL_messages_readHistory";
+                else
+                    objectName = "TLRPC$TL_messages_readDiscussion";
+            }
+            TLRPC.InputPeer inputPeer = new TLRPC.InputPeer(
+                    XposedHelpers.getObjectField(object, AutomationResolver.resolve(objectName,"peer", AutomationResolver.ResolverType.Field)));
+
+            boolean isChannelOrGroup =
+                    inputPeer.getChannel_id() > 0 ||
+                            inputPeer.getChat_id() > 0;
+
+            if (privateHide && !channelHide) {
+                return !isChannelOrGroup;
+            }
+
+            if (channelHide && !privateHide) {
+                return isChannelOrGroup;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     public static void saveReadHistory(Object object) {
@@ -123,8 +196,15 @@ public class HideSeen {
     public static void markReadOnServer(int messageId, TLRPC.InputPeer peer) {
         try {
             Object req;
+            boolean inputPeerChannel;
 
-            if (peer.inputPeer.getClass().getName().contains("TL_inputPeerChannel") || peer.inputPeer.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_INPUT_PEER_CHANNEL))) {
+            if (ClientChecker.isTgnetObfuscated()){
+                inputPeerChannel = peer.inputPeer.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_INPUT_PEER_CHANNEL));
+            } else {
+                inputPeerChannel = peer.inputPeer.getClass().getName().contains("TL_inputPeerChannel");
+            }
+
+            if (inputPeerChannel) {
                 TLRPC.TL_channels_readHistory request;
                 if (!ClientChecker.check(ClientChecker.ClientType.Nagram)) {
                     request = new TLRPC.TL_channels_readHistory();
@@ -167,22 +247,22 @@ public class HideSeen {
     }
 
     private static TLRPC.InputPeer extractPeerFromSendObject(Object object) {
+        if (!ClientChecker.isTgnetObfuscated()) {
         String className = object.getClass().getName();
-        Class<?> objectClass = object.getClass();
-
         if (className.contains("TL_messages_sendMessage") ||
                 className.contains("TL_messages_sendMedia") ||
                 className.contains("TL_messages_sendReaction") ||
                 className.contains("TL_messages_sendPaidReaction") ||
-                className.contains("TL_messages_sendMultiMedia")) {
+                className.contains("TL_messages_sendMultiMedia"))
             return new TLRPC.InputPeer(getPeer(object));
-        }
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MESSAGE))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MEDIA))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_REACTION))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_PAID_REACTION))) ||
-                objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MULTI_MEDIA)))) {
-            return new TLRPC.InputPeer(getPeer(object));
+        } else {
+            Class<?> objectClass = object.getClass();
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MESSAGE))) ||
+                    objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MEDIA))) ||
+                    objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_REACTION))) ||
+                    objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_PAID_REACTION))) ||
+                    objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MULTI_MEDIA))))
+                return new TLRPC.InputPeer(getPeer(object));
         }
         return null;
     }
@@ -190,13 +270,21 @@ public class HideSeen {
     private static Object getPeer(Object msg) {
         Class<?> objectClass = msg.getClass();
         String msgName = null;
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MESSAGE)))) msgName = "TLRPC$TL_messages_sendMessage";
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MEDIA)))) msgName = "TLRPC$TL_messages_sendMedia";
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_REACTION)))) msgName = "TLRPC$TL_messages_sendReaction";
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_PAID_REACTION)))) msgName = "TLRPC$TL_messages_sendPaidReaction";
-        if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MULTI_MEDIA)))) msgName = "TLRPC$TL_messages_sendMultiMedia";
-
-        return XposedHelpers.getObjectField(msg, AutomationResolver.resolve(msgName, "peer", AutomationResolver.ResolverType.Field));
+        if (ClientChecker.isTgnetObfuscated()) {
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MESSAGE))))
+                msgName = "TLRPC$TL_messages_sendMessage";
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MEDIA))))
+                msgName = "TLRPC$TL_messages_sendMedia";
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_REACTION))))
+                msgName = "TLRPC$TL_messages_sendReaction";
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_PAID_REACTION))))
+                msgName = "TLRPC$TL_messages_sendPaidReaction";
+            if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MULTI_MEDIA))))
+                msgName = "TLRPC$TL_messages_sendMultiMedia";
+            return XposedHelpers.getObjectField(msg, AutomationResolver.resolve(msgName, "peer", AutomationResolver.ResolverType.Field));
+        } else {
+            return XposedHelpers.getObjectField(msg, "peer");
+        }
     }
 
     public static Long getDialogId(TLRPC.InputPeer peer) {

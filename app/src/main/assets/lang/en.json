@@ -99,5 +99,12 @@
   "GregorianMonthDecember": "December",
   "ShowUserID": "Show User ID",
   "Open": "Open",
-  "OpenGhostMode": "Would you like to open Ghost Mode now?"
+  "OpenGhostMode": "Would you like to open Ghost Mode now?",
+  "HideSeenPrivateChat": "Private Chats",
+  "HideSeenChannel": "Channels and Groups",
+  "ApproximateCreationDate": "Approximate Creation Date",
+  "Age": "Age",
+  "ApproximateCreationDateNotice": "This date is based on an estimate derived from the Telegram ID and may not match the actual creation date.",
+  "TeleVip": "TeleVip",
+  "EnableVoiceMessageSaving": "Enable Saving Voice Messages"
 }

@@ -1,5 +1,6 @@
 package com.my.televip.virtuals.ui.Cells;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -22,6 +23,7 @@ public class RadioColorCell extends FrameLayout {
     private final RadioButton radioButton;
     public int heightDp = 50;
 
+    @SuppressLint("RtlHardcoded")
     public RadioColorCell(Context context) {
         super(context);
 
@@ -69,21 +71,6 @@ public class RadioColorCell extends FrameLayout {
         textView.setText(text);
         text2View.setVisibility(View.GONE);
         radioButton.setChecked(checked, false);
-    }
-
-    public void setTextAndText2AndValue(CharSequence text, CharSequence text2, boolean checked) {
-        textView.setText(text);
-        text2View.setVisibility(View.VISIBLE);
-        text2View.setText(text2);
-        radioButton.setChecked(checked, false);
-    }
-
-    public void setChecked(boolean checked, boolean animated) {
-        radioButton.setChecked(checked, animated);
-    }
-
-    public boolean isChecked() {
-        return radioButton.isChecked();
     }
 
     @Override

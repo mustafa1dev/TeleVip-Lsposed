@@ -2,6 +2,7 @@ package com.my.televip.features;
 
 
 import com.my.televip.Class.ClassNames;
+import com.my.televip.ClientChecker;
 import com.my.televip.Configs.ConfigManager;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
@@ -28,7 +29,7 @@ public class RemovesContentSaving {
                     }));
                 }
 
-                if (ClassLoad.getClass(ClassNames.CHAT_ACTIVITY) != null) {
+                if (ClassLoad.getClass(ClassNames.CHAT_ACTIVITY) != null && !ClientChecker.check(ClientChecker.ClientType.NagramXF)) {
                     HMethod.hookMethod(ClassLoad.getClass(ClassNames.CHAT_ACTIVITY), AutomationResolver.resolve("ChatActivity", "hasSelectedNoforwardsMessage", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                         @Override
                         protected void beforeMethod(MethodHookParam param) {

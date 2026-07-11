@@ -99,5 +99,11 @@
   "GregorianMonthDecember": "دسامبر",
   "ShowUserID": "نمایش شناسه کاربر",
   "Open": "باز کردن",
-  "OpenGhostMode": "آیا می‌خواهید اکنون حالت شبح را باز کنید؟"
+  "OpenGhostMode": "آیا می‌خواهید اکنون حالت شبح را باز کنید؟",
+  "HideSeenPrivateChat": "چت‌های خصوصی",
+  "HideSeenChannel": "کانال‌ها و گروه‌ها",
+  "ApproximateCreationDate": "تاریخ تقریبی ایجاد",
+  "Age": "سن",
+  "ApproximateCreationDateNotice": "این تاریخ بر اساس تخمینی است که از شناسه تلگرام (Telegram ID) به دست آمده و ممکن است با تاریخ واقعی ایجاد حساب مطابقت نداشته باشد.",
+  "EnableVoiceMessageSaving": "فعال کردن ذخیره پیام‌های صوتی"
 }

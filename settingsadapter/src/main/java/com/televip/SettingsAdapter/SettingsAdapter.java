@@ -64,6 +64,8 @@ public class SettingsAdapter {
                     return new ShadowSectionCellHolder(new FrameLayout(MContext));
                 case 4:
                     return new TextInfoCellHolder(new FrameLayout(MContext));
+                case 5:
+                    return new ExpandableTextCheckCellHolder(new FrameLayout(MContext), null);
                 case 0:
                 default:
                     return new HeaderCellHolder(new FrameLayout(MContext), null);
@@ -78,6 +80,15 @@ public class SettingsAdapter {
         public TextCheckCellHolder(View view, Object  textCheckCell) {
             super(view);
             this.textCheckCell = textCheckCell;
+        }
+    }
+    static class ExpandableTextCheckCellHolder extends RecyclerView.ViewHolder {
+
+        public Object expandableTextCheckCell;
+
+        public ExpandableTextCheckCellHolder(View view, Object  expandableTextCheckCell) {
+            super(view);
+            this.expandableTextCheckCell = expandableTextCheckCell;
         }
     }
 

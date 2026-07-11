@@ -98,4 +98,11 @@ public class Keys {
     public static final String ShowUserID = "ShowUserID";
     public static final String Open = "Open";
     public static final String OpenGhostMode = "OpenGhostMode";
+    public static final String HideSeenPrivateChat = "HideSeenPrivateChat";
+    public static final String HideSeenChannel = "HideSeenChannel";
+    public static final String ApproximateCreationDate = "ApproximateCreationDate";
+    public static final String Age = "Age";
+    public static final String ApproximateCreationDateNotice = "ApproximateCreationDateNotice";
+    public static final String TeleVip = "TeleVip";
+    public static final String EnableVoiceMessageSaving = "EnableVoiceMessageSaving";
 }

@@ -4,22 +4,20 @@ import android.content.Context;
 
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
-import com.my.televip.ClientChecker;
-import com.my.televip.utils.Utils;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Utils;
 
 import de.robv.android.xposed.XposedHelpers;
 
 public class FeatureInitializer {
 
     public static void init(Context context) {
-        if (ClientChecker.check(ClientChecker.ClientType.TelegramPlus)) return;
 
         try {
-            if (!FeatureStateManager.isChatEnabled()) {
+            if (!FeatureStateManager.isChatEnabled() || !FeatureStateManager.isProfileEnabled()) {
 
                 Class<?> actionBarClass = XposedHelpers.findClassIfExists(
                         AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar"),
@@ -43,11 +41,17 @@ public class FeatureInitializer {
                                     FeatureStateManager.saveChat(name);
                                     ChatHook.init(context, name);
                                 }
+
+                                if (name.contains("ProfileActivity") && !FeatureStateManager.isProfileEnabled()) {
+                                    FeatureStateManager.saveProfile(name);
+                                    ProfileHook.init(context, name);
+                                }
                             }
                         });
 
             } else {
                 ChatHook.init(context, FeatureStateManager.getChatClass());
+                ProfileHook.init(context, FeatureStateManager.getProfileClass());
             }
 
         } catch (Throwable t) {

@@ -1,6 +1,7 @@
 package com.my.televip.virtuals.ui.Components;
 
 import com.my.televip.obfuscate.AutomationResolver;
+import com.my.televip.utils.Utils;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -17,11 +18,11 @@ public class UItem {
     }
 
     public String getText(){
-        return (String) XposedHelpers.getObjectField(uItem, AutomationResolver.resolve("UItem", "text", AutomationResolver.ResolverType.Field));
+        return Utils.getFieldAsString(XposedHelpers.getObjectField(uItem, AutomationResolver.resolve("UItem", "text", AutomationResolver.ResolverType.Field)));
     }
 
     public String getSubtext(){
-        return (String) XposedHelpers.getObjectField(uItem, AutomationResolver.resolve("UItem", "subtext", AutomationResolver.ResolverType.Field));
+        return Utils.getFieldAsString(XposedHelpers.getObjectField(uItem, AutomationResolver.resolve("UItem", "subtext", AutomationResolver.ResolverType.Field)));
     }
 
     public Object getUItem(){

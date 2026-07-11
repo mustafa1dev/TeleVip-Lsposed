@@ -68,8 +68,11 @@ public class GhostMode {
     }
 
     public static boolean isOnlineRequest(Object object) {
-        if (object.getClass().getName().contains("TL_account$updateStatus")) return true;
-        return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_ACCOUNT_UPDATE_STATUS));
+        if (!ClientChecker.isTgnetObfuscated()) {
+            return object.getClass().getName().contains("TL_account$updateStatus");
+        } else {
+            return object.getClass().getName().equals(AutomationResolver.resolve(ClassNames.TL_ACCOUNT_UPDATE_STATUS));
+        }
     }
 
 }

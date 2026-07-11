@@ -2,6 +2,7 @@ package com.my.televip.settings.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,16 +10,17 @@ import android.widget.TextView;
 
 import com.my.televip.Configs.ConfigItem;
 import com.my.televip.Configs.ConfigManager;
-import com.my.televip.utils.Utils;
 import com.my.televip.audio;
 import com.my.televip.language.Keys;
 import com.my.televip.language.Translator;
 import com.my.televip.logging.Logger;
 import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.utils.DialogUtils;
+import com.my.televip.utils.Utils;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.androidx.ViewHolder;
 import com.my.televip.virtuals.messenger.browser.Browser;
+import com.my.televip.virtuals.ui.Cells.ExpandableTextCheckCell;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.TextCheckCell;
 import com.my.televip.virtuals.ui.Cells.TextInfoCell;
@@ -76,6 +78,11 @@ public class SettingsAdapter {
                     textCheck.cell.getTextView().setSingleLine(false);
                     textCheck.cell.getTextView().setEllipsize(null);
                     break;
+                case ConfigItem.EXPANDABLE_SWITCH:
+                    ExpandableTextCheckCellHolder expandableTextCheck = new ExpandableTextCheckCellHolder(holder);
+                    expandableTextCheck.cell.addChildren(item);
+
+                    break;
                 case ConfigItem.TEXT:
                     TextSettingsCellHolder settingsCell = new TextSettingsCellHolder(holder);
                     if (item.getKey().equals(Keys.Calendar)) {
@@ -129,14 +136,7 @@ public class SettingsAdapter {
             ViewHolder viewHolder = new ViewHolder(holder);
 
             viewHolder.getItemView().setOnLongClickListener(v -> {
-
-                if (audio.playing) {
-                    audio.stop();
-                } else {
-                    audio.start();
-                    DialogUtils.showQuranAlert(settingsController.getContext());
-                }
-
+                playAudio(settingsController.getContext());
                 return true;
             });
 
@@ -204,6 +204,13 @@ public class SettingsAdapter {
             cell = new TextCheckCell(XposedHelpers.getObjectField(obj, "textCheckCell"));
         }
     }
+    public static class ExpandableTextCheckCellHolder {
+        ExpandableTextCheckCell cell;
+
+        public ExpandableTextCheckCellHolder(Object obj) {
+            cell = (ExpandableTextCheckCell) XposedHelpers.getObjectField(obj, "expandableTextCheckCell");
+        }
+    }
 
     public static class TextSettingsCellHolder {
         TextSettingsCell cell;
@@ -226,6 +233,15 @@ public class SettingsAdapter {
 
         public TextInfoCellHolder(Object obj) {
             text = (TextInfoCell) XposedHelpers.getObjectField(obj, "view");
+        }
+    }
+
+    public static void playAudio(Context context) {
+        if (audio.playing) {
+            audio.stop();
+        } else {
+            audio.start();
+            DialogUtils.showQuranAlert(context);
         }
     }
 

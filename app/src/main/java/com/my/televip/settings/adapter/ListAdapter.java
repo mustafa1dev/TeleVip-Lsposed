@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.settings.ui.SettingsAdapter;
 import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
+import com.my.televip.virtuals.ui.Cells.ExpandableTextCheckCell;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.ShadowSectionCell;
 import com.my.televip.virtuals.ui.Cells.TextCheckCell;
@@ -60,6 +61,9 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case 4:
                 TextInfoCell textInfoCell = Bridge.createTextInfoCell(MContext);
                 return new TextInfoCellHolder(textInfoCell);
+                case 5:
+                ExpandableTextCheckCell expandableTextCheckCell = Bridge.createExpandableTextCheckCell(MContext);
+                return new ExpandableTextCheckCellHolder(expandableTextCheckCell, expandableTextCheckCell);
             case 0:
             default:
                 HeaderCell headerCell = Bridge.createHeaderCell(MContext);
@@ -75,6 +79,15 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public TextCheckCellHolder(View view, Object textCheckCell) {
             super(view);
             this.textCheckCell = textCheckCell;
+        }
+    }
+    static class ExpandableTextCheckCellHolder extends RecyclerView.ViewHolder {
+
+        public Object expandableTextCheckCell;
+
+        public ExpandableTextCheckCellHolder(View view, Object expandableTextCheckCell) {
+            super(view);
+            this.expandableTextCheckCell = expandableTextCheckCell;
         }
     }
 

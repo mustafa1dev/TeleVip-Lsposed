@@ -99,5 +99,11 @@
   "GregorianMonthDecember": "ديسمبر",
   "ShowUserID": "عرض معرف المستخدم",
   "Open": "فتح",
-  "OpenGhostMode": "هل تود فتح الوضع الشبح الآن؟"
+  "OpenGhostMode": "هل تود فتح الوضع الشبح الآن؟",
+  "HideSeenPrivateChat": "المحادثات الخاصة",
+  "HideSeenChannel": "القنوات والمجموعات",
+  "ApproximateCreationDate": "تاريخ الإنشاء التقريبي",
+  "Age": "العمر",
+  "ApproximateCreationDateNotice": "يعتمد هذا التاريخ على تقدير مستند إلى معرف تيليجرام، وقد لا يكون مطابقًا لتاريخ الإنشاء الفعلي.",
+  "EnableVoiceMessageSaving": "السماح بحفظ الرسائل الصوتية"
 }

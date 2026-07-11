@@ -1,13 +1,11 @@
 package com.my.televip.virtuals.TeleVip.Bridge;
 
-
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
-import com.my.televip.ClientChecker;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.dex.DexInjector;
 import com.my.televip.hooks.HMethod;
@@ -15,6 +13,7 @@ import com.my.televip.logging.Logger;
 import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.settings.ui.SettingsAdapter;
 import com.my.televip.virtuals.Theme;
+import com.my.televip.virtuals.ui.Cells.ExpandableTextCheckCell;
 import com.my.televip.virtuals.ui.Cells.HeaderCell;
 import com.my.televip.virtuals.ui.Cells.ShadowSectionCell;
 import com.my.televip.virtuals.ui.Cells.TextCheckCell;
@@ -37,6 +36,7 @@ public class Bridge {
         try {
             Class<?> bridgeClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.Bridge", DexInjector.classLoader);
             Class<?> textCheckCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextCheckCellHolder", DexInjector.classLoader);
+            Class<?> expandableTextCheckCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$ExpandableTextCheckCellHolder", DexInjector.classLoader);
             Class<?> textSettingsCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$TextSettingsCellHolder", DexInjector.classLoader);
             Class<?> headerCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$HeaderCellHolder", DexInjector.classLoader);
             Class<?> shadowSectionCellClass = XposedHelpers.findClassIfExists("com.televip.SettingsAdapter.SettingsAdapter$ShadowSectionCellHolder", DexInjector.classLoader);
@@ -82,6 +82,15 @@ public class Bridge {
                     TextCheckCell textCheckCell = createTextCheckCell(settingsController.getContext());
                     param.args[0] = textCheckCell.getView();
                     param.args[1] = textCheckCell.textCell;
+                }
+            });
+
+            XposedHelpers.findAndHookConstructor(expandableTextCheckCellClass, View.class, Object.class, new AbstractMethodHook() {
+                @Override
+                protected void beforeMethod(XC_MethodHook.MethodHookParam param) {
+                    ExpandableTextCheckCell expandableTextCheckCell = createExpandableTextCheckCell(settingsController.getContext());
+                    param.args[0] = expandableTextCheckCell;
+                    param.args[1] = expandableTextCheckCell;
                 }
             });
 
@@ -136,6 +145,21 @@ public class Bridge {
         textCheckCell.getView().setFocusable(true);
 
         return textCheckCell;
+    }
+    public static ExpandableTextCheckCell createExpandableTextCheckCell(Context context) {
+
+        ExpandableTextCheckCell expandableTextCheckCell = new ExpandableTextCheckCell(context);
+
+        expandableTextCheckCell.setBackgroundColor(
+                Theme.getBackgroundWhiteOrBlueColor()
+        );
+
+        expandableTextCheckCell.setBackgroundResource(outValue.resourceId);
+        expandableTextCheckCell.setBChildResource(outValue.resourceId);
+        expandableTextCheckCell.setClickable(true);
+        expandableTextCheckCell.setFocusable(true);
+
+        return expandableTextCheckCell;
     }
 
     public static TextSettingsCell createTextSettingsCell(Context context) {

@@ -217,7 +217,9 @@ public class Cherrygram {
         methodList.add(new MethodInfo("MessageObject","canForwardMessage","ᆈ"));
         methodList.add(new MethodInfo("MessageObject","getDialogId","ᴢ"));
         methodList.add(new MethodInfo("MessageObject","getDialogIdO","㘥"));
+        methodList.add(new MethodInfo("MessageObject","isMusic","㥊"));
         methodList.add(new MethodInfo("MessageObject","isSecret","ᢊ"));
+        methodList.add(new MethodInfo("MessageObject","isVoice","㔂"));
         methodList.add(new MethodInfo("MessagesController","checkPromoInfoInternal","ᅱ"));
         methodList.add(new MethodInfo("MessagesController","deleteMessagesAAOJIZI","㛿"));
         methodList.add(new MethodInfo("MessagesController","deleteMessagesAAOJIZIZ","㐚"));

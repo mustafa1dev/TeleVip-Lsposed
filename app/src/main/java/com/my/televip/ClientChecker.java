@@ -15,6 +15,11 @@ public class ClientChecker {
         return check(client, Utils.pkgName);
     }
 
+    public static boolean isTgnetObfuscated()
+    {
+        return ClientType.fromPackage(Utils.pkgName).isTgnetObfuscated();
+    }
+
     public enum ClientType {
         Telegram("org.telegram.messenger", com.my.televip.Clients.Telegram.class),
         TelegramWeb("org.telegram.messenger.web", com.my.televip.Clients.TelegramWeb.class),
@@ -32,26 +37,37 @@ public class ClientChecker {
         Telegraph("ir.ilmili.telegraph", com.my.televip.Clients.Telegraph.class),
         Telega("ru.dahl.messenger", com.my.televip.Clients.Telega.class),
         Momogram(new String[]{"nekox.messenger.broken", "momo.gram"}, com.my.televip.Clients.Momogram.class),
-        Nekogram("tw.nekomimi.nekogram", com.my.televip.Clients.Nekogram.class),
-        Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class),
+        Nekogram("tw.nekomimi.nekogram", com.my.televip.Clients.Nekogram.class, true),
+        Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class, true),
         ForkgramClassic("org.forkgram.classic", com.my.televip.Clients.ForkgramClassic.class),
-        Turrit("org.telegram.group", com.my.televip.Clients.Turrit.class);
+        Turrit("org.telegram.group", com.my.televip.Clients.Turrit.class),
+        NagramXF("fork.risin42.nagramx", com.my.televip.Clients.NagramXF.class);
 
         private final String[] packageNames;
         private final Class<?> resolverClass;
+        private final boolean tgnetObfuscated;
 
         ClientType(String packageName, Class<?> resolverClass) {
             this.packageNames = new String[]{packageName};
             this.resolverClass = resolverClass;
+            tgnetObfuscated = false;
+        }
+
+        ClientType(String packageName, Class<?> resolverClass, boolean tgnetObfuscated) {
+            this.packageNames = new String[]{packageName};
+            this.resolverClass = resolverClass;
+            this.tgnetObfuscated = tgnetObfuscated;
         }
 
         ClientType(String[] packageNames, Class<?> resolverClass) {
             this.packageNames = packageNames;
             this.resolverClass = resolverClass;
+            tgnetObfuscated = false;
         }
 
         public String[] getPackageNames() { return packageNames; }
         public Class<?> getResolverClass() { return resolverClass; }
+        public boolean isTgnetObfuscated() { return tgnetObfuscated; }
 
         public static ClientType fromPackage(String pkg){
             for (ClientType type: ClientType.values()){

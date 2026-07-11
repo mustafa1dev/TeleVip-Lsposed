@@ -4,6 +4,7 @@ import android.util.SparseArray;
 
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
+import com.my.televip.ClientChecker;
 import com.my.televip.Configs.ConfigManager;
 import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.hooks.HMethod;
@@ -62,11 +63,20 @@ public class ShowDeletedMessages {
                                     ArrayList<Object> newUpdates = new ArrayList<>();
 
                                     for (Object item : updates) {
-                                        if ((!item.getClass().getName().contains("TL_updateDeleteChannelMessages") && !item.getClass().getName().contains("TL_updateDeleteMessages")) ||
-                                                (!item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_CHANNEL_MESSAGES)) && !item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_MESSAGES))))
-                                            newUpdates.add(item);
+                                        boolean updateDeleteChannelMessages;
+                                        boolean updateDeleteMessages;
+                                        if (!ClientChecker.isTgnetObfuscated()) {
+                                            updateDeleteChannelMessages = item.getClass().getName().contains("TL_updateDeleteChannelMessages");
+                                            updateDeleteMessages = item.getClass().getName().contains("TL_updateDeleteMessages");
+                                        } else {
+                                            updateDeleteChannelMessages = item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_CHANNEL_MESSAGES));
+                                            updateDeleteMessages = item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_MESSAGES));
+                                        }
 
-                                        if (item.getClass().getName().contains("TL_updateDeleteChannelMessages") || item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_CHANNEL_MESSAGES))) {
+                                        if (!updateDeleteChannelMessages && !updateDeleteMessages)
+                                             newUpdates.add(item);
+
+                                        if (updateDeleteChannelMessages) {
                                             TLRPC.TL_updateDeleteChannelMessages channelMessages = new TLRPC.TL_updateDeleteChannelMessages(item);
 
                                             LongSparseArray dialogMessage = messagesController.getDialogMessage();
@@ -84,7 +94,7 @@ public class ShowDeletedMessages {
                                             markMessagesDeletedForController(messagesController.getMessagesStorage(), -channelMessages.getChannelID(), channelMessages.getMessages());
                                         }
 
-                                        if (item.getClass().getName().contains("TL_updateDeleteMessages") || item.getClass().equals(ClassLoad.getClass(ClassNames.TL_UPDATE_DELETE_MESSAGES))) {
+                                        if (updateDeleteMessages) {
                                             ArrayList<Integer> messages = new TLRPC.TL_updateDeleteMessages(item).getMessages();
                                             SparseArray<Object> dialogMessages = messagesController.getDialogMessagesByIds();
                                             for (int id : messages) {

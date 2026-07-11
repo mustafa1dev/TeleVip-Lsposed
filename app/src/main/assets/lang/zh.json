@@ -99,5 +99,11 @@
   "GregorianMonthDecember": "十二月",
   "ShowUserID": "显示用户ID",
   "Open": "打开",
-  "OpenGhostMode": "您想现在打开幽灵模式吗？"
+  "OpenGhostMode": "您想现在打开幽灵模式吗？",
+  "HideSeenPrivateChat": "私人聊天",
+  "HideSeenChannel": "频道和群组",
+  "ApproximateCreationDate": "估计创建日期",
+  "Age": "账号年龄",
+  "ApproximateCreationDateNotice": "此日期是根据 Telegram ID 推算得出的估计值，可能与实际创建日期不一致。",
+  "EnableVoiceMessageSaving": "开启语音消息保存"
 }

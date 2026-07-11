@@ -23,6 +23,10 @@ public class MessageObject {
         return (long) XposedHelpers.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method));
     }
 
+    public boolean isVoice() {
+        return (boolean) XposedHelpers.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "isVoice", AutomationResolver.ResolverType.Method));
+    }
+
     public static long getDialogId(TLRPC.Message message) {
         return (long) XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
     }

@@ -210,6 +210,7 @@ public class Nekogram {
         fieldList.add(new FieldInfo("TLRPC$TL_messages_affectedMessages","pts_count", "b"));
         fieldList.add(new FieldInfo("TLRPC$TL_messages_readHistory","max_id", "b"));
         fieldList.add(new FieldInfo("TLRPC$TL_messages_readHistory","peer", "a"));
+        fieldList.add(new FieldInfo("TLRPC$TL_messages_readDiscussion","peer", "a"));
         fieldList.add(new FieldInfo("TLRPC$TL_messages_sendMedia","peer", "h"));
         fieldList.add(new FieldInfo("TLRPC$TL_messages_sendMessage","peer", "j"));
         fieldList.add(new FieldInfo("TLRPC$TL_messages_sendMultiMedia","peer", "h"));
@@ -258,7 +259,10 @@ public class Nekogram {
         methodList.add(new MethodInfo("MessageObject","canForwardMessage","O"));
         methodList.add(new MethodInfo("MessageObject","getDialogId","i1"));
         methodList.add(new MethodInfo("MessageObject","getDialogIdO","j1"));
+        methodList.add(new MethodInfo("MessageObject","isMusic","y5"));
         methodList.add(new MethodInfo("MessageObject","isSecret","v4"));
+        methodList.add(new MethodInfo("MessageObject","isVoice","T6"));
+
         methodList.add(new MethodInfo("MessagesController","checkPromoInfoInternal","x9"));
         methodList.add(new MethodInfo("MessagesController","deleteMessagesAAOJIZI","W9"));
         methodList.add(new MethodInfo("MessagesController","deleteMessagesAAOJIZIZ","X9"));

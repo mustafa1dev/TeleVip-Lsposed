@@ -23,6 +23,7 @@ import com.my.televip.features.SaveEditsHistory;
 import com.my.televip.features.SecretMediaSave;
 import com.my.televip.features.ShowDeletedMessages;
 import com.my.televip.features.TelePremium;
+import com.my.televip.features.VoiceToMusicHook;
 import com.my.televip.features.otherFeatures.AlwaysSaveMedia;
 import com.my.televip.features.otherFeatures.CopyNameHook;
 import com.my.televip.features.otherFeatures.EditOnlineTextView;
@@ -43,6 +44,8 @@ public class ConfigManager {
 
     // GhostMode
     public static ConfigItem ghostModeSettings;
+    public static ConfigItem hideSeenPrivateChat;
+    public static ConfigItem hideSeenChannel;
     public static ConfigItem hideSeen;
     public static ConfigItem markReadAfterSend;
     public static ConfigItem hideTyping;
@@ -72,6 +75,7 @@ public class ConfigManager {
     public static ConfigItem secretMediaSave;
     public static ConfigItem preventMedia;
     public static ConfigItem enableSavingStories;
+    public static ConfigItem enableVoiceMessageSaving;
 
     //UI
     public static ConfigItem ui;
@@ -101,11 +105,21 @@ public class ConfigManager {
     }
 
     public static void load(Context context) {
+        items.clear();
+
         // GhostMode
         ghostModeSettings = new ConfigItem(ConfigItem.HEADER, Keys.GhostModeSettings);
         items.add(ghostModeSettings);
 
-        hideSeen = new ConfigItem(ConfigItem.SWITCH, Keys.HideSeen, ConfigPreferences.getBoolean(Keys.HideSeen), GhostMode::init);
+        List<ConfigItem> childrenHideSeen = new ArrayList<>();
+
+        hideSeenPrivateChat = new ConfigItem(ConfigItem.SWITCH, Keys.HideSeenPrivateChat, ConfigPreferences.getBoolean(Keys.HideSeenPrivateChat), GhostMode::init);
+        childrenHideSeen.add(hideSeenPrivateChat);
+
+        hideSeenChannel = new ConfigItem(ConfigItem.SWITCH, Keys.HideSeenChannel, ConfigPreferences.getBoolean(Keys.HideSeenChannel), GhostMode::init);
+        childrenHideSeen.add(hideSeenChannel);
+
+        hideSeen = new ConfigItem(ConfigItem.EXPANDABLE_SWITCH, Keys.HideSeen, childrenHideSeen);
         items.add(hideSeen);
 
         markReadAfterSend = new ConfigItem(ConfigItem.SWITCH, Keys.MarkReadAfterSend, ConfigPreferences.getBoolean(Keys.MarkReadAfterSend), GhostMode::init);
@@ -178,6 +192,9 @@ public class ConfigManager {
 
         enableSavingStories = new ConfigItem(ConfigItem.SWITCH, Keys.EnableSavingStories, ConfigPreferences.getBoolean(Keys.EnableSavingStories), EnableSavingStories::init);
         items.add(enableSavingStories);
+
+        enableVoiceMessageSaving = new ConfigItem(ConfigItem.SWITCH, Keys.EnableVoiceMessageSaving, ConfigPreferences.getBoolean(Keys.EnableVoiceMessageSaving), VoiceToMusicHook::init);
+        items.add(enableVoiceMessageSaving);
 
         items.add(shadows);
 
