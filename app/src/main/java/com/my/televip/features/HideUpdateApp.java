@@ -10,7 +10,7 @@ import com.my.televip.hooks.HMethod;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XC_MethodReplacement;
+import com.my.televip.base.MethodReplacement;
 
 public class HideUpdateApp {
 
@@ -31,7 +31,7 @@ public class HideUpdateApp {
                     HMethod.hookMethod(
                             ClassLoad.getClass(ClassNames.SHARED_CONFIG),
                             AutomationResolver.resolve("SharedConfig", "setNewAppVersionAvailable", AutomationResolver.ResolverType.Method),
-                            AutomationResolver.merge(AutomationResolver.resolveObject("setNewAppVersionAvailable", new Class[]{ClassLoad.getClass(ClassNames.TL_HELP_APP_UPDATE)}), new XC_MethodReplacement() {
+                            AutomationResolver.merge(AutomationResolver.resolveObject("setNewAppVersionAvailable", new Class[]{ClassLoad.getClass(ClassNames.TL_HELP_APP_UPDATE)}), new MethodReplacement() {
                                 @Override
                                 protected Object replaceHookedMethod(MethodHookParam param) {
                                     return false;
@@ -40,7 +40,7 @@ public class HideUpdateApp {
 
                     HMethod.hookMethod(
                             ClassLoad.getClass(ClassNames.SHARED_CONFIG),
-                            AutomationResolver.resolve("SharedConfig", "isAppUpdateAvailable", AutomationResolver.ResolverType.Method), new XC_MethodReplacement() {
+                            AutomationResolver.resolve("SharedConfig", "isAppUpdateAvailable", AutomationResolver.ResolverType.Method), new MethodReplacement() {
                                 @Override
                                 protected Object replaceHookedMethod(MethodHookParam param) {
                                     return false;

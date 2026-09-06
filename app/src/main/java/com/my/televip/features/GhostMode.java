@@ -9,8 +9,7 @@ import com.my.televip.hooks.HMethod;
 import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class GhostMode {
 
@@ -34,7 +33,7 @@ public class GhostMode {
                                     }
                                     if (ConfigManager.hideOnline.isEnable()) {
                                         if (isOnlineRequest(object))
-                                            XposedHelpers.setBooleanField(object, AutomationResolver.resolve("TL_account$updateStatus", "offline", AutomationResolver.ResolverType.Field), true);
+                                            XReflect.setBooleanField(object, AutomationResolver.resolve("TL_account$updateStatus", "offline", AutomationResolver.ResolverType.Field), true);
                                     }
 
                                     if (ConfigManager.hideSeen.isEnable() && HideSeen.isReadMessageRequest(object)) {
@@ -56,7 +55,7 @@ public class GhostMode {
                                     HideSeen.handleReadAfterSend(object);
                                 }
                             } catch (Throwable e) {
-                                XposedBridge.log(e);
+                                Logger.e(e);
                             }
                         }
                     }));

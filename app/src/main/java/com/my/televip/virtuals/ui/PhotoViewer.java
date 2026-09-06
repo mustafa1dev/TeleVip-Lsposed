@@ -9,7 +9,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.messenger.ImageReceiver;
 import com.my.televip.virtuals.messenger.MessageObject;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class PhotoViewer {
 
@@ -20,19 +20,19 @@ public class PhotoViewer {
     }
 
     public static PhotoViewer getInstance(){
-        return new PhotoViewer(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.PHOTO_VIEWER), AutomationResolver.resolve("PhotoViewer", "getInstance", AutomationResolver.ResolverType.Method)));
+        return new PhotoViewer(XReflect.callStaticMethod(ClassLoad.getClass(ClassNames.PHOTO_VIEWER), AutomationResolver.resolve("PhotoViewer", "getInstance", AutomationResolver.ResolverType.Method)));
     }
 
     public void setParentActivity(Activity activity){
-        XposedHelpers.callMethod(photoViewer,  AutomationResolver.resolve("PhotoViewer", "setParentActivity", AutomationResolver.ResolverType.Method), activity);
+        XReflect.callMethod(photoViewer,  AutomationResolver.resolve("PhotoViewer", "setParentActivity", AutomationResolver.ResolverType.Method), activity);
     }
 
     public void openPhoto(MessageObject messageObject, long l, long l2, long l3, PhotoViewerProvider provider, boolean b){
-        XposedHelpers.callMethod(photoViewer,  AutomationResolver.resolve("PhotoViewer", "openPhoto", AutomationResolver.ResolverType.Method), messageObject.getMessageObject(),l, l2, l3, provider.getPhotoViewerProvider(), b);
+        XReflect.callMethod(photoViewer,  AutomationResolver.resolve("PhotoViewer", "openPhoto", AutomationResolver.ResolverType.Method), messageObject.getMessageObject(),l, l2, l3, provider.getPhotoViewerProvider(), b);
     }
 
     public View getGalleryButton(){
-        return (View) XposedHelpers.getObjectField(photoViewer,  AutomationResolver.resolve("PhotoViewer", "galleryButton", AutomationResolver.ResolverType.Field));
+        return (View) XReflect.getObjectField(photoViewer,  AutomationResolver.resolve("PhotoViewer", "galleryButton", AutomationResolver.ResolverType.Field));
     }
 
     public static class PhotoViewerProvider {
@@ -43,7 +43,7 @@ public class PhotoViewer {
         }
 
         public PlaceProviderObject getPlaceForPhoto(MessageObject messageObject, Object fileLocation, int index, boolean needPreview, boolean closing) {
-            return new PlaceProviderObject(XposedHelpers.callMethod(photoViewerProvider,  AutomationResolver.resolve("PhotoViewer$PhotoViewerProvider", "getPlaceForPhoto", AutomationResolver.ResolverType.Method), messageObject.getMessageObject(), fileLocation, index, needPreview, closing));
+            return new PlaceProviderObject(XReflect.callMethod(photoViewerProvider,  AutomationResolver.resolve("PhotoViewer$PhotoViewerProvider", "getPlaceForPhoto", AutomationResolver.ResolverType.Method), messageObject.getMessageObject(), fileLocation, index, needPreview, closing));
         }
 
         public Object getPhotoViewerProvider() {
@@ -60,7 +60,7 @@ public class PhotoViewer {
         }
 
         public ImageReceiver getImageReceiver() {
-            return new ImageReceiver(XposedHelpers.getObjectField(placeProviderObject,  AutomationResolver.resolve("PhotoViewer$PlaceProviderObject", "imageReceiver", AutomationResolver.ResolverType.Field)));
+            return new ImageReceiver(XReflect.getObjectField(placeProviderObject,  AutomationResolver.resolve("PhotoViewer$PlaceProviderObject", "imageReceiver", AutomationResolver.ResolverType.Field)));
         }
 
     }

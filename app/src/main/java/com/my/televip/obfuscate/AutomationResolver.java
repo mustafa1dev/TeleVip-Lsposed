@@ -1,9 +1,9 @@
 package com.my.televip.obfuscate;
 
 
+import com.my.televip.base.AbstractMethodHook;
 import com.my.televip.obfuscate.struct.ResolverRegistry;
 
-import de.robv.android.xposed.XC_MethodHook;
 
 
 public class AutomationResolver {
@@ -45,7 +45,7 @@ public class AutomationResolver {
     }
 
 
-    public static Object[] merge(Class<?>[] classes, XC_MethodHook hook)
+    public static Object[] merge(Class<?>[] classes, AbstractMethodHook hook)
     {
         if (classes != null) {
             Object[] result = new Object[classes.length + 1];

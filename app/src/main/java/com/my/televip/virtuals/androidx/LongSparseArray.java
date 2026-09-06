@@ -4,7 +4,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 
 import java.util.ArrayList;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class LongSparseArray {
 
@@ -15,6 +15,6 @@ public class LongSparseArray {
     }
 
     public ArrayList<Object> get(long id){
-        return (ArrayList<Object>) XposedHelpers.callMethod(longSparseArray, AutomationResolver.resolve("LongSparseArray", "get", AutomationResolver.ResolverType.Method), id);
+        return (ArrayList<Object>) XReflect.callMethod(longSparseArray, AutomationResolver.resolve("LongSparseArray", "get", AutomationResolver.ResolverType.Method), id);
     }
 }

@@ -25,8 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SettingsHook {
 
@@ -42,7 +41,7 @@ public class SettingsHook {
                 protected void afterMethod(MethodHookParam param) {
                     int id = (int) param.args[2];
                     if (id == 8353847) {
-                        ImageView iconView = (ImageView) XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("SettingsActivity$SettingCell", "iconView", AutomationResolver.ResolverType.Field));
+                        ImageView iconView = (ImageView) XReflect.getObjectField(param.thisObject, AutomationResolver.resolve("SettingsActivity$SettingCell", "iconView", AutomationResolver.ResolverType.Field));
                         iconView.setImageDrawable(ghostDrawable);
                     }
                 }
@@ -58,7 +57,7 @@ public class SettingsHook {
                                 int color1 = 0xFFF46F6F;
                                 int color2 = 0xFFDF5555;
 
-                                Object uItem = XposedHelpers.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingsActivity$SettingCell$Factory", "of", AutomationResolver.ResolverType.Method), 8353847,
+                                Object uItem = XReflect.callStaticMethod(SettingsActivity$SettingCell$FactoryClass, AutomationResolver.resolve("SettingsActivity$SettingCell$Factory", "of", AutomationResolver.ResolverType.Method), 8353847,
                                         color1,
                                         color2,
                                         8353847,
@@ -99,7 +98,7 @@ public class SettingsHook {
     }
 
     public void oldSettings(SettingsController settingsController){
-        final Class<?> itemClass = XposedHelpers.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), Utils.classLoader);
+        final Class<?> itemClass = XReflect.findClassIfExists(AutomationResolver.resolve("org.telegram.ui.Adapters.DrawerLayoutAdapter$Item"), Utils.classLoader);
 
         if (itemClass != null) {
             HMethod.hookMethod(
@@ -134,19 +133,19 @@ public class SettingsHook {
 
                     Object Launch = param.thisObject;
 
-                    Object drawerLayoutAdapter = XposedHelpers.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
+                    Object drawerLayoutAdapter = XReflect.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutAdapter", AutomationResolver.ResolverType.Field));
                     if (drawerLayoutAdapter != null) {
                         Object args = param.args[1];
 
-                        int id = (int) XposedHelpers.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
+                        int id = (int) XReflect.callMethod(drawerLayoutAdapter, AutomationResolver.resolve("DrawerLayoutAdapter", "getId", AutomationResolver.ResolverType.Method), args);
                         if (id == 8353847) {
 
-                            Object drawerLayoutContainer = XposedHelpers.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
+                            Object drawerLayoutContainer = XReflect.getObjectField(Launch, AutomationResolver.resolve("LaunchActivity", "drawerLayoutContainer", AutomationResolver.ResolverType.Field));
                             if (drawerLayoutContainer != null) {
                                 if (!ClientChecker.check(ClientChecker.ClientType.ForkgramClassic)) {
-                                    XposedHelpers.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method));
+                                    XReflect.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method));
                                 } else {
-                                    XposedHelpers.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method), true);
+                                    XReflect.callMethod(drawerLayoutContainer, AutomationResolver.resolve("DrawerLayoutContainer", "closeDrawer", AutomationResolver.ResolverType.Method), true);
                                 }
                             }
 
@@ -172,7 +171,7 @@ public class SettingsHook {
                     return;
                 }
 
-                XposedBridge.hookMethod(onCreateMethod, onCreateHook);
+                HMethod.hookMember(onCreateMethod, onCreateHook);
             }
         }
 

@@ -8,8 +8,8 @@ android {
         applicationId "com.my.televip"
         minSdk 27
         targetSdk 36
-        versionCode 330
-        versionName "3.6.2"
+        versionCode 340
+        versionName "3.7.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -28,11 +28,21 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    // src/main/resources is packaged as java resources, which is where the modern Xposed
+    // entry descriptors (META-INF/xposed/*) and the language packs (lang/*) live. They are
+    // reached through the module class loader, so no APK path lookup is needed at runtime.
+
 }
 
 dependencies {
     implementation(libs.jcal)
+
+    // Legacy Xposed API (module API 93) - entry point com.my.televip.MainHook.
     compileOnly libs.api
+    // Modern libxposed API (100/102) - entry point com.my.televip.xposed.TeleVipModule.
+    // Both are compileOnly: whichever framework loads us provides its own implementation.
+    compileOnly libs.libxposed
+
     implementation(libs.gson)
     implementation(libs.appcompat)
     implementation(libs.material)

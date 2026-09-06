@@ -5,7 +5,7 @@ import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.tgnet.TLRPC;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class MessageObject {
 
@@ -16,19 +16,19 @@ public class MessageObject {
     }
 
     public TLRPC.Message getMessageOwner(){
-        return new TLRPC.Message(XposedHelpers.getObjectField(messageObject, AutomationResolver.resolve("MessageObject","messageOwner", AutomationResolver.ResolverType.Field)));
+        return new TLRPC.Message(XReflect.getObjectField(messageObject, AutomationResolver.resolve("MessageObject","messageOwner", AutomationResolver.ResolverType.Field)));
     }
 
     public long getDialogId() {
-        return (long) XposedHelpers.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method));
+        return (long) XReflect.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method));
     }
 
     public boolean isVoice() {
-        return (boolean) XposedHelpers.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "isVoice", AutomationResolver.ResolverType.Method));
+        return (boolean) XReflect.callMethod(messageObject, AutomationResolver.resolve("MessageObject", "isVoice", AutomationResolver.ResolverType.Method));
     }
 
     public static long getDialogId(TLRPC.Message message) {
-        return (long) XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
+        return (long) XReflect.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGE_OBJECT), AutomationResolver.resolve("MessageObject", "getDialogId", AutomationResolver.ResolverType.Method), message.message);
     }
 
     public Object getMessageObject(){

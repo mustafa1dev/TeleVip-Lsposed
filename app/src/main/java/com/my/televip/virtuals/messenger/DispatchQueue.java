@@ -2,7 +2,7 @@ package com.my.televip.virtuals.messenger;
 
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class DispatchQueue {
 
@@ -13,7 +13,7 @@ public class DispatchQueue {
     }
 
     public void postRunnable(Runnable runnable) {
-        XposedHelpers.callMethod(dispatchQueue, AutomationResolver.resolve("DispatchQueue", "postRunnable", AutomationResolver.ResolverType.Method), runnable);
+        XReflect.callMethod(dispatchQueue, AutomationResolver.resolve("DispatchQueue", "postRunnable", AutomationResolver.ResolverType.Method), runnable);
     }
 
 }

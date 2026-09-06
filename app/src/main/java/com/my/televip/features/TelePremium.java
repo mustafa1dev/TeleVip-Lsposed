@@ -10,8 +10,7 @@ import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.logging.Logger;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class TelePremium {
 
@@ -26,13 +25,13 @@ public class TelePremium {
 
                     HMethod.hookMethod(ClassLoad.getClass(ClassNames.USER_CONFIG), AutomationResolver.resolve("UserConfig", "isPremium", AutomationResolver.ResolverType.Method), new AbstractMethodHook() {
                         @Override
-                        public void beforeMethod(XC_MethodHook.MethodHookParam param) {
+                        public void beforeMethod(AbstractMethodHook.MethodHookParam param) {
                             if (ConfigManager.telegramPremium.isEnable()) param.setResult(true);
                         }
                     });
                 }
                 if (ClientChecker.check(ClientChecker.ClientType.iMe) || ClientChecker.check(ClientChecker.ClientType.iMeWeb)) {
-                    Class<?> ForkPremiumPreferencClass = XposedHelpers.findClassIfExists("com.iMe.storage.data.locale.prefs.impl.ForkPremiumPreference", Utils.classLoader);
+                    Class<?> ForkPremiumPreferencClass = XReflect.findClassIfExists("com.iMe.storage.data.locale.prefs.impl.ForkPremiumPreference", Utils.classLoader);
                     if (ForkPremiumPreferencClass != null) {
                         HMethod.hookMethod(ForkPremiumPreferencClass, "isPremium", new AbstractMethodHook() {
                             @Override

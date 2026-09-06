@@ -10,7 +10,7 @@ import com.my.televip.logging.Logger;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.utils.Utils;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class FeatureInitializer {
 
@@ -19,7 +19,7 @@ public class FeatureInitializer {
         try {
             if (!FeatureStateManager.isChatEnabled() || !FeatureStateManager.isProfileEnabled()) {
 
-                Class<?> actionBarClass = XposedHelpers.findClassIfExists(
+                Class<?> actionBarClass = XReflect.findClassIfExists(
                         AutomationResolver.resolve("org.telegram.ui.ActionBar.ActionBar"),
                         Utils.classLoader
                 );

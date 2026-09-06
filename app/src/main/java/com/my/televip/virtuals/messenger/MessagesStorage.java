@@ -5,7 +5,7 @@ import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.SQLite.SQLiteDatabase;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class MessagesStorage {
 
@@ -17,16 +17,16 @@ public class MessagesStorage {
 
     public SQLiteDatabase getDatabase() {
 
-        return new SQLiteDatabase(XposedHelpers.callMethod(messagesStorage, AutomationResolver.resolve("MessagesStorage", "getDatabase", AutomationResolver.ResolverType.Method)));
+        return new SQLiteDatabase(XReflect.callMethod(messagesStorage, AutomationResolver.resolve("MessagesStorage", "getDatabase", AutomationResolver.ResolverType.Method)));
     }
 
     public DispatchQueue getStorageQueue() {
 
-        return new DispatchQueue(XposedHelpers.callMethod(messagesStorage, AutomationResolver.resolve("MessagesStorage", "getStorageQueue", AutomationResolver.ResolverType.Method)));
+        return new DispatchQueue(XReflect.callMethod(messagesStorage, AutomationResolver.resolve("MessagesStorage", "getStorageQueue", AutomationResolver.ResolverType.Method)));
     }
 
     public static MessagesStorage getInstance(int num) {
-        return new MessagesStorage(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGES_STORAGE), AutomationResolver.resolve("MessagesStorage", "getInstance", AutomationResolver.ResolverType.Method), num));
+        return new MessagesStorage(XReflect.callStaticMethod(ClassLoad.getClass(ClassNames.MESSAGES_STORAGE), AutomationResolver.resolve("MessagesStorage", "getInstance", AutomationResolver.ResolverType.Method), num));
     }
 
 }

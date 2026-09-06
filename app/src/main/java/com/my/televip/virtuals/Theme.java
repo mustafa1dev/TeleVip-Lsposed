@@ -7,17 +7,17 @@ import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class Theme {
 
     public static TextPaint getTextPaint()
     {
-        return (TextPaint) XposedHelpers.getStaticObjectField(ClassLoad.getClass(ClassNames.THEME), AutomationResolver.resolve("Theme", "chat_timePaint", AutomationResolver.ResolverType.Field));
+        return (TextPaint) XReflect.getStaticObjectField(ClassLoad.getClass(ClassNames.THEME), AutomationResolver.resolve("Theme", "chat_timePaint", AutomationResolver.ResolverType.Field));
     }
 
     public static boolean isLight(){
-        return !((boolean)XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.THEME), AutomationResolver.resolve("Theme", "isCurrentThemeDark", AutomationResolver.ResolverType.Method)));
+        return !((boolean)XReflect.callStaticMethod(ClassLoad.getClass(ClassNames.THEME), AutomationResolver.resolve("Theme", "isCurrentThemeDark", AutomationResolver.ResolverType.Method)));
     }
 
     public static int getBackgroundGrayColor(){

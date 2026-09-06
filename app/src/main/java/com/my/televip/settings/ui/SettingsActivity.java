@@ -25,7 +25,7 @@ import com.my.televip.virtuals.TeleVip.Bridge.Bridge;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.Components.RecyclerListView;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SettingsActivity {
 
@@ -58,7 +58,7 @@ public class SettingsActivity {
 
             listView = new RecyclerListView(context);
             if (DexInjector.classLoader != null) {
-                Object adapter = XposedHelpers.newInstance(
+                Object adapter = XReflect.newInstance(
                         ClassLoad.getClass(ClassNames.SETTINGS_ADAPTER_LIST_ADAPTER, DexInjector.classLoader),
                         context);
 

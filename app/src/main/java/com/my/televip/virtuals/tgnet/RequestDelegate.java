@@ -7,7 +7,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 
 import java.lang.reflect.Proxy;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class RequestDelegate {
 
@@ -18,7 +18,7 @@ public class RequestDelegate {
     }
 
     public void run(Object response, Object error){
-        XposedHelpers.callMethod(requestDelegate, AutomationResolver.resolve("RequestDelegate", "run", AutomationResolver.ResolverType.Method), response, error);
+        XReflect.callMethod(requestDelegate, AutomationResolver.resolve("RequestDelegate", "run", AutomationResolver.ResolverType.Method), response, error);
     }
 
 

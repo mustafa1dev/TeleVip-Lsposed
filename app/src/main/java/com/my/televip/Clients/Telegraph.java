@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XC_MethodReplacement;
+import com.my.televip.base.MethodReplacement;
 
 public class Telegraph {
     private static final List<ClassInfo> classList = new ArrayList<>();
@@ -289,25 +289,25 @@ public class Telegraph {
         try {
             Class<?> connectionsManager = ClassLoad.getClass(ClassNames.CONNECTIONS_MANAGER);
             if (connectionsManager != null) {
-                HMethod.hookMethod(connectionsManager, "native_expireFile", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_expireFile", long.class, new MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return false;
                     }
                 });
-                HMethod.hookMethod(connectionsManager, "native_daysFile", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_daysFile", long.class, new MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return 999;
                     }
                 });
-                HMethod.hookMethod(connectionsManager, "native_checkLicense", long.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_checkLicense", long.class, new MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return true;
                     }
                 });
-                HMethod.hookMethod(connectionsManager, "native_removeInstance", int.class, boolean.class, new XC_MethodReplacement() {
+                HMethod.hookMethod(connectionsManager, "native_removeInstance", int.class, boolean.class, new MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam param) {
                         return true;

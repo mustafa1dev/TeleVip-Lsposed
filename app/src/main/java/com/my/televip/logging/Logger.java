@@ -9,18 +9,18 @@ import android.os.Build;
 import com.my.televip.application.ApplicationLoaderHook;
 import com.my.televip.obfuscate.struct.ResolverRegistry;
 
-import de.robv.android.xposed.XposedBridge;
+import com.my.televip.xposed.XBridge;
 
 public class Logger {
 
     public static void w(String text)
     {
-        XposedBridge.log("[TeleVip] [Warning] pkgName: "+ pkgName + " " + text);
+        XBridge.log("[TeleVip] [Warning] pkgName: "+ pkgName + " " + text);
     }
 
     public static void l(String text)
     {
-        XposedBridge.log("[TeleVip] pkgName: "+ pkgName +" " + text);
+        XBridge.log("[TeleVip] pkgName: "+ pkgName +" " + text);
     }
 
     public static void e(Throwable throwable) {
@@ -51,7 +51,7 @@ public class Logger {
                 log.append("[TeleVip] at ").append(element.toString()).append("\n");
             }
 
-            XposedBridge.log(log.toString());
+            XBridge.log(log.toString());
         } catch (Throwable g) {}
     }
 

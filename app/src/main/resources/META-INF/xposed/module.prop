@@ -1,0 +1,6 @@
+# Modern Xposed module descriptor (libxposed API).
+# Read by LSPosed 1.10+ and Vector 2.2. Frameworks that do not understand this file
+# fall back to assets/xposed_init + the xposedminversion meta-data (module API 93).
+minApiVersion=102
+targetApiVersion=102
+staticScope=false

@@ -17,7 +17,7 @@ import com.my.televip.virtuals.tgnet.ConnectionsManager;
 import com.my.televip.virtuals.tgnet.RequestDelegate;
 import com.my.televip.virtuals.tgnet.TLRPC;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class HideSeen {
 
@@ -126,7 +126,7 @@ public class HideSeen {
                     objectName = "TLRPC$TL_messages_readDiscussion";
             }
             TLRPC.InputPeer inputPeer = new TLRPC.InputPeer(
-                    XposedHelpers.getObjectField(object, AutomationResolver.resolve(objectName,"peer", AutomationResolver.ResolverType.Field)));
+                    XReflect.getObjectField(object, AutomationResolver.resolve(objectName,"peer", AutomationResolver.ResolverType.Field)));
 
             boolean isChannelOrGroup =
                     inputPeer.getChannel_id() > 0 ||
@@ -281,9 +281,9 @@ public class HideSeen {
                 msgName = "TLRPC$TL_messages_sendPaidReaction";
             if (objectClass.equals(ClassLoad.getClass(AutomationResolver.resolve(ClassNames.TL_MESSAGES_SEND_MULTI_MEDIA))))
                 msgName = "TLRPC$TL_messages_sendMultiMedia";
-            return XposedHelpers.getObjectField(msg, AutomationResolver.resolve(msgName, "peer", AutomationResolver.ResolverType.Field));
+            return XReflect.getObjectField(msg, AutomationResolver.resolve(msgName, "peer", AutomationResolver.ResolverType.Field));
         } else {
-            return XposedHelpers.getObjectField(msg, "peer");
+            return XReflect.getObjectField(msg, "peer");
         }
     }
 

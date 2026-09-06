@@ -7,14 +7,14 @@ import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class HeaderCell {
 
     public Object headerCell;
 
     public HeaderCell(Context context){
-        headerCell = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.HEADER_CELL), context);
+        headerCell = XReflect.newInstance(ClassLoad.getClass(ClassNames.HEADER_CELL), context);
     }
 
     public HeaderCell(Object obj){
@@ -26,7 +26,7 @@ public class HeaderCell {
     }
 
     public void setText(CharSequence text){
-        XposedHelpers.callMethod(headerCell, AutomationResolver.resolve("HeaderCell","setText", AutomationResolver.ResolverType.Method), text);
+        XReflect.callMethod(headerCell, AutomationResolver.resolve("HeaderCell","setText", AutomationResolver.ResolverType.Method), text);
     }
 
 }

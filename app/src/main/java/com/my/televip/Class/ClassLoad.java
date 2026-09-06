@@ -8,7 +8,7 @@ import com.my.televip.utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ClassLoad {
 
@@ -22,7 +22,7 @@ public class ClassLoad {
         }
 
         try {
-            Class<?> cls = XposedHelpers.findClassIfExists(
+            Class<?> cls = XReflect.findClassIfExists(
                     resolved,
                     Utils.classLoader
             );
@@ -48,7 +48,7 @@ public class ClassLoad {
         }
 
         try {
-            Class<?> cls = XposedHelpers.findClassIfExists(
+            Class<?> cls = XReflect.findClassIfExists(
                     resolved,
                     classLoader
             );

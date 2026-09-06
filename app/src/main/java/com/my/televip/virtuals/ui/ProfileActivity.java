@@ -3,7 +3,7 @@ package com.my.televip.virtuals.ui;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ProfileActivity {
 
@@ -14,23 +14,23 @@ public class ProfileActivity {
     }
 
     public long getChatId(){
-        return XposedHelpers.getLongField(profileActivity, AutomationResolver.resolve("ProfileActivity", "chatId", AutomationResolver.ResolverType.Field));
+        return XReflect.getLongField(profileActivity, AutomationResolver.resolve("ProfileActivity", "chatId", AutomationResolver.ResolverType.Field));
     }
 
     public long getUserId(){
-        return XposedHelpers.getLongField(profileActivity, AutomationResolver.resolve("ProfileActivity", "userId", AutomationResolver.ResolverType.Field));
+        return XReflect.getLongField(profileActivity, AutomationResolver.resolve("ProfileActivity", "userId", AutomationResolver.ResolverType.Field));
     }
 
     public Object[] getNameTextView(){
-        return  (Object[]) XposedHelpers.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "nameTextView", AutomationResolver.ResolverType.Field));
+        return  (Object[]) XReflect.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "nameTextView", AutomationResolver.ResolverType.Field));
     }
 
     public Object[] getOnlineTextView(){
-        return  (Object[]) XposedHelpers.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "onlineTextView", AutomationResolver.ResolverType.Field));
+        return  (Object[]) XReflect.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "onlineTextView", AutomationResolver.ResolverType.Field));
     }
 
     public ActionBarMenuItem getOtherItem(){
-        return new ActionBarMenuItem(XposedHelpers.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "otherItem", AutomationResolver.ResolverType.Field)));
+        return new ActionBarMenuItem(XReflect.getObjectField(profileActivity, AutomationResolver.resolve("ProfileActivity", "otherItem", AutomationResolver.ResolverType.Field)));
     }
 
 

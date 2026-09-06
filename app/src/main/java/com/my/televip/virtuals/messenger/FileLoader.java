@@ -6,7 +6,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 
 import java.io.File;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class FileLoader {
 
@@ -17,11 +17,11 @@ public class FileLoader {
     }
 
     public File getLocalFile(ImageLocation location) {
-        return (File) XposedHelpers.callMethod(fileLoader, AutomationResolver.resolve("FileLoader", "getLocalFile", AutomationResolver.ResolverType.Method), location.imageLocation);
+        return (File) XReflect.callMethod(fileLoader, AutomationResolver.resolve("FileLoader", "getLocalFile", AutomationResolver.ResolverType.Method), location.imageLocation);
     }
 
     public static FileLoader getInstance(int num) {
-        return new FileLoader(XposedHelpers.callStaticMethod(ClassLoad.getClass(ClassNames.FILE_LOADER), AutomationResolver.resolve("FileLoader", "getInstance", AutomationResolver.ResolverType.Method), num));
+        return new FileLoader(XReflect.callStaticMethod(ClassLoad.getClass(ClassNames.FILE_LOADER), AutomationResolver.resolve("FileLoader", "getInstance", AutomationResolver.ResolverType.Method), num));
     }
 
 }

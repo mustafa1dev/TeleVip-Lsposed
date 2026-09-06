@@ -6,7 +6,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 import com.my.televip.virtuals.messenger.MessageObject;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ChatActivity {
 
@@ -18,18 +18,18 @@ public class ChatActivity {
     }
 
     public MessageObject getSelectedObject(){
-        return new MessageObject(XposedHelpers.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity","selectedObject", AutomationResolver.ResolverType.Field)));
+        return new MessageObject(XReflect.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity","selectedObject", AutomationResolver.ResolverType.Field)));
     }
 
     public ActionBarMenuItem getHeaderItem(){
-        return new ActionBarMenuItem(XposedHelpers.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity", "headerItem", AutomationResolver.ResolverType.Field)));
+        return new ActionBarMenuItem(XReflect.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity", "headerItem", AutomationResolver.ResolverType.Field)));
     }
     public View getPinnedMessageView(){
-        return (View) XposedHelpers.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity", "pinnedMessageView", AutomationResolver.ResolverType.Field));
+        return (View) XReflect.getObjectField(chatActivity, AutomationResolver.resolve("ChatActivity", "pinnedMessageView", AutomationResolver.ResolverType.Field));
     }
 
     public void scrollToMessageId(int id, int fromMessageId, boolean select, int loadIndex, boolean forceScroll, int forcePinnedMessageId){
-        XposedHelpers.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "scrollToMessageId", AutomationResolver.ResolverType.Method), id, fromMessageId, select, loadIndex, forceScroll, forcePinnedMessageId);
+        XReflect.callMethod(chatActivity, AutomationResolver.resolve("ChatActivity", "scrollToMessageId", AutomationResolver.ResolverType.Method), id, fromMessageId, select, loadIndex, forceScroll, forcePinnedMessageId);
     }
 
 }

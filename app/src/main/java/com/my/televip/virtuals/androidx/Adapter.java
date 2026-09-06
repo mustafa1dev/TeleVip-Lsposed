@@ -2,7 +2,7 @@ package com.my.televip.virtuals.androidx;
 
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class Adapter {
 
@@ -13,7 +13,7 @@ public class Adapter {
     }
 
     public void notifyItemChanged(int position) {
-        XposedHelpers.callMethod(adapter, AutomationResolver.resolve("RecyclerListView", "notifyItemChanged", AutomationResolver.ResolverType.Method), position);
+        XReflect.callMethod(adapter, AutomationResolver.resolve("RecyclerListView", "notifyItemChanged", AutomationResolver.ResolverType.Method), position);
     }
 
 }

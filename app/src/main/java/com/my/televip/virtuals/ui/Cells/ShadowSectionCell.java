@@ -6,14 +6,14 @@ import android.view.View;
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.Class.ClassNames;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ShadowSectionCell {
 
     Object shadowSectionCell;
 
     public ShadowSectionCell(Context context){
-        shadowSectionCell = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.SHADOW_SECTION_CELL), context);
+        shadowSectionCell = XReflect.newInstance(ClassLoad.getClass(ClassNames.SHADOW_SECTION_CELL), context);
     }
 
     public View getView(){

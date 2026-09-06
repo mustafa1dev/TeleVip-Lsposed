@@ -3,7 +3,7 @@ package com.my.televip.virtuals.SQLite;
 import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.virtuals.tgnet.NativeByteBuffer;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SQLiteCursor {
 
@@ -14,23 +14,23 @@ public class SQLiteCursor {
     }
 
     public boolean next(){
-        return (boolean) XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "next", AutomationResolver.ResolverType.Method));
+        return (boolean) XReflect.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "next", AutomationResolver.ResolverType.Method));
     }
 
     public int intValue(int columnIndex) {
-        return (int) XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "intValue", AutomationResolver.ResolverType.Method), columnIndex);
+        return (int) XReflect.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "intValue", AutomationResolver.ResolverType.Method), columnIndex);
     }
 
     public long longValue(int columnIndex) {
-        return (long) XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "longValue", AutomationResolver.ResolverType.Method), columnIndex);
+        return (long) XReflect.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "longValue", AutomationResolver.ResolverType.Method), columnIndex);
     }
 
     public void dispose() {
-        XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "dispose", AutomationResolver.ResolverType.Method));
+        XReflect.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "dispose", AutomationResolver.ResolverType.Method));
     }
 
     public NativeByteBuffer byteBufferValue(int columnIndex){
-        return new NativeByteBuffer(XposedHelpers.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "byteBufferValue", AutomationResolver.ResolverType.Method), columnIndex));
+        return new NativeByteBuffer(XReflect.callMethod(sqLiteCursor, AutomationResolver.resolve("SQLiteCursor", "byteBufferValue", AutomationResolver.ResolverType.Method), columnIndex));
     }
 
 }

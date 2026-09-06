@@ -1,5 +1,6 @@
 [versions]
 api = "82"
+libxposed = "102.0.0"
 gradle = "8.2.2"
 gson = "2.13.2"
 jcal = "1.3.3"
@@ -8,6 +9,7 @@ material = "1.12.0"
 
 [libraries]
 api = { module = "de.robv.android.xposed:api", version.ref = "api" }
+libxposed = { module = "io.github.libxposed:api", version.ref = "libxposed" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jcal = { module = "ir.huri:JalaliCalendar", version.ref = "jcal" }

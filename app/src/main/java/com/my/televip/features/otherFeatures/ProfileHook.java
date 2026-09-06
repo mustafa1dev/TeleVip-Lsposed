@@ -15,7 +15,7 @@ import com.my.televip.virtuals.ActionBar.ActionBarMenuItem;
 import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.ui.ProfileActivity;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ProfileHook {
 
@@ -42,7 +42,7 @@ public class ProfileHook {
                         int drawableResource = 0x7f0806d3;
 
                         if (!ClientChecker.check(ClientChecker.ClientType.Nagram) && !ClientChecker.check(ClientChecker.ClientType.Momogram)) {
-                            drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_filled_menu_users");
+                            drawableResource = XReflect.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_filled_menu_users");
                         }
 
                         otherItem.addSubItem(8353847, drawableResource, Translator.get(Keys.ApproximateCreationDate));
@@ -58,7 +58,7 @@ public class ProfileHook {
                 int id = (int) param.args[0];
 
                 if (id == 8353847) {
-                    final Object thisClass = XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ProfileActivity", "this$0", AutomationResolver.ResolverType.Field));
+                    final Object thisClass = XReflect.getObjectField(param.thisObject, AutomationResolver.resolve("ProfileActivity", "this$0", AutomationResolver.ResolverType.Field));
                     ProfileActivity profile = new ProfileActivity(thisClass);
 
                     AlertDialog alertDialog = new AlertDialog(context);

@@ -12,7 +12,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 
 import java.lang.reflect.Proxy;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class AlertDialog {
 
@@ -43,49 +43,49 @@ public class AlertDialog {
     Object alertDialog;
 
     public AlertDialog(Context context) {
-        alertDialog = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.ALERT_DIALOG_BUILDER), context);
+        alertDialog = XReflect.newInstance(ClassLoad.getClass(ClassNames.ALERT_DIALOG_BUILDER), context);
     }
 
     public void setTitle(CharSequence title) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setTitle", AutomationResolver.ResolverType.Method), title);
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setTitle", AutomationResolver.ResolverType.Method), title);
     }
 
     public void setView(View view) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setView", AutomationResolver.ResolverType.Method), view);
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setView", AutomationResolver.ResolverType.Method), view);
     }
 
     public void setMessage(CharSequence message) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setMessage", AutomationResolver.ResolverType.Method), message);
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setMessage", AutomationResolver.ResolverType.Method), message);
     }
 
     public void setPositiveButton(CharSequence text, Object obj) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setPositiveButton", AutomationResolver.ResolverType.Method),
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setPositiveButton", AutomationResolver.ResolverType.Method),
                 text, obj
         );
     }
 
     public void setNegativeButton(CharSequence text, Object obj) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setNegativeButton", AutomationResolver.ResolverType.Method),
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setNegativeButton", AutomationResolver.ResolverType.Method),
                 text, obj
         );
     }
 
     public void setNeutralButton(CharSequence text, Object obj) {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setNeutralButton", AutomationResolver.ResolverType.Method),
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "setNeutralButton", AutomationResolver.ResolverType.Method),
                 text, obj
         );
     }
 
     public void show() {
-        XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "show", AutomationResolver.ResolverType.Method));
+        XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "show", AutomationResolver.ResolverType.Method));
     }
 
     public Dialog create() {
-        return (Dialog) XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "create", AutomationResolver.ResolverType.Method));
+        return (Dialog) XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "create", AutomationResolver.ResolverType.Method));
     }
 
     public Runnable getDismissRunnable() {
-        return (Runnable) XposedHelpers.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "getDismissRunnable", AutomationResolver.ResolverType.Method));
+        return (Runnable) XReflect.callMethod(alertDialog, AutomationResolver.resolve("AlertDialog$Builder", "getDismissRunnable", AutomationResolver.ResolverType.Method));
     }
 
 }

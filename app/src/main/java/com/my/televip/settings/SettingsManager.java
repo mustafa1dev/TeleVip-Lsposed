@@ -8,7 +8,7 @@ import com.my.televip.settings.controller.SettingsController;
 import com.my.televip.settings.hook.SettingsHook;
 import com.my.televip.settings.ui.SettingsActivity;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SettingsManager {
 
@@ -16,12 +16,12 @@ public class SettingsManager {
 
         SettingsActivity.init(settingsController);
 
-        Class<?> SettingsActivityClass = XposedHelpers.findClassIfExists(
+        Class<?> SettingsActivityClass = XReflect.findClassIfExists(
                 AutomationResolver.resolve("org.telegram.ui.SettingsActivity"),
                 Utils.classLoader
         );
 
-        Class<?> SettingsActivity$SettingCell$FactoryClass = XposedHelpers.findClassIfExists(
+        Class<?> SettingsActivity$SettingCell$FactoryClass = XReflect.findClassIfExists(
                 AutomationResolver.resolve("org.telegram.ui.SettingsActivity$SettingCell$Factory"),
                 Utils.classLoader
         );

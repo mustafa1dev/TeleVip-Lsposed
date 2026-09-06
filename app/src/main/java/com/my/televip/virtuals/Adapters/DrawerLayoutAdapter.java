@@ -4,7 +4,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 
 import java.util.ArrayList;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class DrawerLayoutAdapter {
 
@@ -15,7 +15,7 @@ public class DrawerLayoutAdapter {
     }
 
     public ArrayList<?> getItems(){
-        return (ArrayList<?>) XposedHelpers.getObjectField(drawerLayout, AutomationResolver.resolve("DrawerLayoutAdapter", "items", AutomationResolver.ResolverType.Field));
+        return (ArrayList<?>) XReflect.getObjectField(drawerLayout, AutomationResolver.resolve("DrawerLayoutAdapter", "items", AutomationResolver.ResolverType.Field));
     }
 
 }

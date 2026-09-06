@@ -21,7 +21,7 @@ import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.messenger.MessageObject;
 import com.my.televip.virtuals.tgnet.TLRPC;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ChatMessageCell {
 
@@ -108,7 +108,7 @@ public class ChatMessageCell {
     public ChatMessageCell(Object cell){ chatMessageCell = cell; }
 
     public MessageObject getMessageObject() {
-        return new MessageObject(XposedHelpers.callMethod(chatMessageCell, AutomationResolver.resolve("ChatMessageCell", "getMessageObject", AutomationResolver.ResolverType.Method)));
+        return new MessageObject(XReflect.callMethod(chatMessageCell, AutomationResolver.resolve("ChatMessageCell", "getMessageObject", AutomationResolver.ResolverType.Method)));
     }
 
     public Object getChatMessageCell(){

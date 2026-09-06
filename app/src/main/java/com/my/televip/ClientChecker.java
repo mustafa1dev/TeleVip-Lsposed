@@ -1,8 +1,14 @@
 package com.my.televip;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
+import com.my.televip.logging.Logger;
 import com.my.televip.utils.Utils;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class ClientChecker {
     public static boolean check(ClientType client, String pkgName)
@@ -18,6 +24,80 @@ public class ClientChecker {
     public static boolean isTgnetObfuscated()
     {
         return ClientType.fromPackage(Utils.pkgName).isTgnetObfuscated();
+    }
+
+    /**
+     * Client build each resolver table was generated against.
+     *
+     * <p>The obfuscated clients (Nekogram, Cherrygram) map every class, field and method by its
+     * R8 name, and those names change on every client release. When the installed build differs
+     * from the one below, the module used to fail silently with a stream of "Not found ..." lines;
+     * {@link #checkClientVersion} now says so once, up front.</p>
+     */
+    private static final Map<ClientType, String> VERIFIED_BUILD = new EnumMap<>(ClientType.class);
+
+    static {
+        VERIFIED_BUILD.put(ClientType.Telegram, "12.8.3 (69222)");
+        VERIFIED_BUILD.put(ClientType.TelegramBeta, "12.9.0 (69579)");
+        VERIFIED_BUILD.put(ClientType.TelegramWeb, "12.8.3 (69229)");
+        VERIFIED_BUILD.put(ClientType.TelegramPlus, "12.8.1.0 (22350)");
+        VERIFIED_BUILD.put(ClientType.TGConnect, "11.13.1 (11130109)");
+        VERIFIED_BUILD.put(ClientType.Nagram, "12.8.1 (1239)");
+        VERIFIED_BUILD.put(ClientType.NagramX, "12.8.1-2bcd1bd (1253)");
+        VERIFIED_BUILD.put(ClientType.NagramXF, "12.7.3 (1245)");
+        VERIFIED_BUILD.put(ClientType.Nekogram, "12.8.1 (69160)");
+        VERIFIED_BUILD.put(ClientType.Cherrygram, "12.8.1 (69160)");
+        VERIFIED_BUILD.put(ClientType.Nicegram, "1.55.0 (2139)");
+        VERIFIED_BUILD.put(ClientType.iMe, "12.8.1 (12080102)");
+        VERIFIED_BUILD.put(ClientType.iMeWeb, "12.8.1 (12080109)");
+        VERIFIED_BUILD.put(ClientType.XPlus, "12.0.1 (61669)");
+        VERIFIED_BUILD.put(ClientType.forkgram, "12.8.4.0 (691908)");
+        VERIFIED_BUILD.put(ClientType.forkgramBeta, "12.8.4.0 (691909)");
+        VERIFIED_BUILD.put(ClientType.ForkgramClassic, "12.8.10.0");
+        VERIFIED_BUILD.put(ClientType.Telegraph, "12.8.1.1 (69172)");
+        VERIFIED_BUILD.put(ClientType.Telega, "2.4.3 (107)");
+        VERIFIED_BUILD.put(ClientType.Momogram, "12.6.4");
+        VERIFIED_BUILD.put(ClientType.Turrit, "1.8.9.9.5");
+    }
+
+    public static String verifiedBuild(ClientType client) {
+        return client == null ? null : VERIFIED_BUILD.get(client);
+    }
+
+    /**
+     * Logs the running client build, and warns when it is not the one the resolver tables were
+     * generated from. Obfuscated clients get a louder warning because every hook depends on the
+     * mapping table matching that exact build.
+     */
+    public static void checkClientVersion(android.content.Context context) {
+        try {
+            if (context == null) return;
+            ClientType client = ClientType.fromPackage(Utils.pkgName);
+            if (client == null) return;
+
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageInfo(context.getPackageName(), 0);
+            String running = info.versionName + " (" + info.versionCode + ")";
+            String verified = VERIFIED_BUILD.get(client);
+
+            if (verified == null) {
+                Logger.l("client " + client.name() + " " + running + " (no verified build on record)");
+                return;
+            }
+            if (verified.equals(running)) {
+                Logger.l("client " + client.name() + " " + running + " matches the verified build");
+                return;
+            }
+            if (client.isTgnetObfuscated()) {
+                Logger.w("client " + client.name() + " is " + running + " but the obfuscation map was"
+                        + " built for " + verified + ". Renamed symbols will not resolve and most"
+                        + " features will be inactive. " + Utils.issue);
+            } else {
+                Logger.w("client " + client.name() + " is " + running + ", verified build is "
+                        + verified + ". Some hooks may not apply.");
+            }
+        } catch (Throwable ignored) {
+        }
     }
 
     public enum ClientType {
@@ -38,6 +118,7 @@ public class ClientChecker {
         Telega("ru.dahl.messenger", com.my.televip.Clients.Telega.class),
         Momogram(new String[]{"nekox.messenger.broken", "momo.gram"}, com.my.televip.Clients.Momogram.class),
         Nekogram("tw.nekomimi.nekogram", com.my.televip.Clients.Nekogram.class, true),
+        NekogramX("nekox.messenger", com.my.televip.Clients.NekogramX.class),
         Cherrygram("uz.unnarsx.cherrygram", com.my.televip.Clients.Cherrygram.class, true),
         ForkgramClassic("org.forkgram.classic", com.my.televip.Clients.ForkgramClassic.class),
         Turrit("org.telegram.group", com.my.televip.Clients.Turrit.class),

@@ -4,7 +4,7 @@ package com.my.televip.virtuals;
 import com.my.televip.Class.ClassNames;
 import com.my.televip.Class.ClassLoad;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SettingsIconResolver {
 
@@ -26,7 +26,7 @@ public class SettingsIconResolver {
 
         for (String name : names) {
             try {
-                int drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), name);
+                int drawableResource = XReflect.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), name);
                 if (drawableResource != 0) {
                     cachedIcon = drawableResource;
                     return drawableResource;

@@ -9,7 +9,7 @@ import com.my.televip.obfuscate.AutomationResolver;
 import com.my.televip.logging.Logger;
 import com.my.televip.virtuals.ui.SecretMediaViewer;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class PreventMedia {
 
@@ -42,7 +42,7 @@ public class PreventMedia {
                         protected void beforeMethod(MethodHookParam param) {
                             if (ConfigManager.preventMedia.isEnable()) {
                                 Object thisObject = param.thisObject;
-                                XposedHelpers.setObjectField(thisObject, AutomationResolver.resolve("SecretMediaViewer", "onClose", AutomationResolver.ResolverType.Field), null);
+                                XReflect.setObjectField(thisObject, AutomationResolver.resolve("SecretMediaViewer", "onClose", AutomationResolver.ResolverType.Field), null);
                             }
                         }
                     }));

@@ -19,7 +19,7 @@ import com.my.televip.virtuals.ActionBar.AlertDialog;
 import com.my.televip.virtuals.Theme;
 import com.my.televip.virtuals.ui.ChatActivity;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class ChatHook {
 
@@ -41,12 +41,12 @@ public class ChatHook {
                         ActionBarMenuItem headerItem = chatActivity.getHeaderItem();
                         if (headerItem.getActionBarMenuItem() != null) {
 
-                            int drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_go_up");
+                            int drawableResource = XReflect.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "msg_go_up");
 
                             if (!ClientChecker.check(ClientChecker.ClientType.iMe) && !ClientChecker.check(ClientChecker.ClientType.iMeWeb) && !ClientChecker.check(ClientChecker.ClientType.TelegramPlus) && !ClientChecker.check(ClientChecker.ClientType.XPlus) && !ClientChecker.check(ClientChecker.ClientType.forkgram) && !ClientChecker.check(ClientChecker.ClientType.forkgramBeta)) {
                                 headerItem.lazilyAddSubItem(8353847, drawableResource, Translator.get(Keys.ToTheBeginning));
                             }
-                            drawableResource = XposedHelpers.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "player_new_order");
+                            drawableResource = XReflect.getStaticIntField(ClassLoad.getClass(ClassNames.DRAWABLE), "player_new_order");
 
                             headerItem.lazilyAddSubItem(8353848, drawableResource, Translator.get(Keys.ToTheMessage));
 
@@ -58,13 +58,13 @@ public class ChatHook {
                 }
             }));
 
-            XposedHelpers.findAndHookMethod(clazz, "onItemClick", int.class, new AbstractMethodHook() {
+            HMethod.hookMethod(clazz, "onItemClick", int.class, new AbstractMethodHook() {
                 @Override
                 protected void afterMethod(MethodHookParam param) {
                     try {
                         int id = (int) param.args[0];
 
-                        final Object thisClass = XposedHelpers.getObjectField(param.thisObject, AutomationResolver.resolve("ChatActivity", "this$0", AutomationResolver.ResolverType.Field));
+                        final Object thisClass = XReflect.getObjectField(param.thisObject, AutomationResolver.resolve("ChatActivity", "this$0", AutomationResolver.ResolverType.Field));
                         ChatActivity chat = new ChatActivity(thisClass);
 
                         if (id == 8353847) {

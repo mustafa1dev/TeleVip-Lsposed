@@ -8,14 +8,14 @@ import com.my.televip.Class.ClassNames;
 import com.my.televip.Class.ClassLoad;
 import com.my.televip.obfuscate.AutomationResolver;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class TextSettingsCell {
 
     public Object textSettingsCell;
 
     public TextSettingsCell(Context context){
-        textSettingsCell = XposedHelpers.newInstance(ClassLoad.getClass(ClassNames.TEXT_SETTINGS_CELL), context);
+        textSettingsCell = XReflect.newInstance(ClassLoad.getClass(ClassNames.TEXT_SETTINGS_CELL), context);
     }
 
     public TextSettingsCell(Object obj){
@@ -27,15 +27,15 @@ public class TextSettingsCell {
     }
 
     public void setText(CharSequence text, boolean divider){
-        XposedHelpers.callMethod(textSettingsCell, AutomationResolver.resolve("TextSettingsCell","setText", AutomationResolver.ResolverType.Method), text, divider);
+        XReflect.callMethod(textSettingsCell, AutomationResolver.resolve("TextSettingsCell","setText", AutomationResolver.ResolverType.Method), text, divider);
     }
 
     public void setTextAndValue(CharSequence text, String value, boolean animated, boolean divider){
-        XposedHelpers.callMethod(textSettingsCell, AutomationResolver.resolve("TextSettingsCell","setTextAndValue", AutomationResolver.ResolverType.Method), text, value, animated, divider);
+        XReflect.callMethod(textSettingsCell, AutomationResolver.resolve("TextSettingsCell","setTextAndValue", AutomationResolver.ResolverType.Method), text, value, animated, divider);
     }
 
     public TextView getTextView(){
-        return (TextView) XposedHelpers.getObjectField(textSettingsCell,AutomationResolver.resolve("TextSettingsCell","textView", AutomationResolver.ResolverType.Field));
+        return (TextView) XReflect.getObjectField(textSettingsCell,AutomationResolver.resolve("TextSettingsCell","textView", AutomationResolver.ResolverType.Field));
     }
 
 }

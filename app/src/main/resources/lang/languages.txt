@@ -1,0 +1,4 @@
+ar
+en
+fa
+zh

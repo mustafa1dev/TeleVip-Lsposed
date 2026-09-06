@@ -26,7 +26,7 @@ import com.my.televip.virtuals.ui.Cells.TextCheckCell;
 import com.my.televip.virtuals.ui.Cells.TextInfoCell;
 import com.my.televip.virtuals.ui.Cells.TextSettingsCell;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.my.televip.reflect.XReflect;
 
 public class SettingsAdapter {
 
@@ -193,7 +193,7 @@ public class SettingsAdapter {
         HeaderCell cell;
 
         public HeaderCellHolder(Object obj) {
-            cell = new HeaderCell(XposedHelpers.getObjectField(obj, "headerCell"));
+            cell = new HeaderCell(XReflect.getObjectField(obj, "headerCell"));
         }
     }
 
@@ -201,14 +201,14 @@ public class SettingsAdapter {
         TextCheckCell cell;
 
         public TextCheckCellHolder(Object obj) {
-            cell = new TextCheckCell(XposedHelpers.getObjectField(obj, "textCheckCell"));
+            cell = new TextCheckCell(XReflect.getObjectField(obj, "textCheckCell"));
         }
     }
     public static class ExpandableTextCheckCellHolder {
         ExpandableTextCheckCell cell;
 
         public ExpandableTextCheckCellHolder(Object obj) {
-            cell = (ExpandableTextCheckCell) XposedHelpers.getObjectField(obj, "expandableTextCheckCell");
+            cell = (ExpandableTextCheckCell) XReflect.getObjectField(obj, "expandableTextCheckCell");
         }
     }
 
@@ -216,7 +216,7 @@ public class SettingsAdapter {
         TextSettingsCell cell;
 
         public TextSettingsCellHolder(Object obj) {
-            cell = new TextSettingsCell(XposedHelpers.getObjectField(obj, "textSettingsCell"));
+            cell = new TextSettingsCell(XReflect.getObjectField(obj, "textSettingsCell"));
         }
     }
 
@@ -224,7 +224,7 @@ public class SettingsAdapter {
         View cell;
 
         public ShadowSectionCellHolder(Object obj) {
-            cell = (View) XposedHelpers.getObjectField(obj, "view");
+            cell = (View) XReflect.getObjectField(obj, "view");
         }
     }
 
@@ -232,7 +232,7 @@ public class SettingsAdapter {
         TextInfoCell text;
 
         public TextInfoCellHolder(Object obj) {
-            text = (TextInfoCell) XposedHelpers.getObjectField(obj, "view");
+            text = (TextInfoCell) XReflect.getObjectField(obj, "view");
         }
     }
 
